@@ -1,6 +1,4 @@
-import 'dart:convert';
-
-import 'package:intl/intl.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class UserKeys {
   static String token = 'token';
@@ -147,33 +145,24 @@ class ContactData {
 class ProductData {
   int? id;
   String? nameAr;
-  int? categoryId;
-  String? barcode;
+
   num? price;
 
   ProductData({
     this.id,
     this.nameAr,
-    this.categoryId,
-    this.barcode,
     this.price,
   });
 
   factory ProductData.fromJson(Map<String, dynamic> json) {
     return ProductData(
-        id: json['id'],
-        nameAr: json['nameAr'],
-        categoryId: json['categoryId'],
-        barcode: json['barcode'],
-        price: json['price']);
+        id: json['id'], nameAr: json['name'], price: json['price']);
   }
 
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'nameAr': nameAr,
-      'categoryId': categoryId,
-      'barcode': barcode,
+      'name': nameAr,
       'price': price,
     };
   }

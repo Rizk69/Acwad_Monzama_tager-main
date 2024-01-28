@@ -1,26 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:nb_utils/nb_utils.dart';
-import 'package:smartcard/app/models/model_keys.dart';
-import 'package:flutter_bcrypt/flutter_bcrypt.dart';
+
 import 'package:smartcard/app/utils/color_manager.dart';
 
-import '../../main.dart';
 import '../cubits/nfc_contact/nfc_contact_cubit.dart';
-import '../utils/common.dart';
-import 'package:barcode_scan2/barcode_scan2.dart';
 
+import '../models/benficary_data_model.dart';
 import '../utils/routes_manager.dart';
 
-// class AddInvoice extends StatefulWidget {
-//   const AddInvoice({super.key});
-//
-//   @override
-//   State<AddInvoice> createState() => _AddInvoiceState();
-// }
-
 class AddInvoice extends StatelessWidget {
-  const AddInvoice({super.key});
+  PaidBeneficaryModel paidBeneficaryModel;
+
+  AddInvoice({super.key, required this.paidBeneficaryModel});
 
   // TextEditingController passwordController = TextEditingController();
   // TextEditingController barcodeController = TextEditingController();

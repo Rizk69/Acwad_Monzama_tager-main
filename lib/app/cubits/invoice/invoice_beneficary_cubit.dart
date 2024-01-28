@@ -19,8 +19,8 @@ class InvoiceBeneficaryCubit extends Cubit<InvoiceBeneficaryState> {
     try {
       emit(GetPaidBeneficaryLoadingState());
 
-      var paidBeneficaryId = Uri.parse(
-          "${ApiHelper.getPaidBeneficary}$beneficaryId");
+      var paidBeneficaryId =
+          Uri.parse("${ApiHelper.getPaidBeneficary}$beneficaryId");
 
       Map<String, String> headers = {'Accept': 'application/json'};
 

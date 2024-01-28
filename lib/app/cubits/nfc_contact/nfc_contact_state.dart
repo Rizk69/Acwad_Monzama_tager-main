@@ -7,6 +7,15 @@ abstract class NfcDataState extends Equatable {
   List<Object?> get props => [];
 }
 
+class NfcDataError extends NfcDataState {
+  final String message;
+
+  const NfcDataError(this.message);
+
+  @override
+  List<Object?> get props => [message];
+}
+
 class NfcDataInitial extends NfcDataState {}
 
 class AddProductScusses extends NfcDataState {}

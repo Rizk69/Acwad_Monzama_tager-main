@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:smartcard/app/screens/addinvoice.dart';
 import 'package:smartcard/app/utils/color_manager.dart';
 import 'package:smartcard/main.dart';
 
@@ -25,15 +26,14 @@ class PaidBeneficaryScreen extends StatelessWidget {
         backgroundColor: Colors.transparent,
         appBar: AppBar(
           backgroundColor: ColorManager.baseYellow,
-
-          title: const Text('الدفعات',
+          title: const Text(
+            'الدفعات',
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
             ),
           ),
           centerTitle: true,
-
         ),
         body: SingleChildScrollView(
           child: Column(
@@ -82,17 +82,20 @@ class PaidBeneficaryScreen extends StatelessWidget {
                         color: Colors.white,
                       ),
                       padding: const EdgeInsets.all(11),
-                      margin:  EdgeInsets.all(11),
+                      margin: EdgeInsets.all(11),
                       child: InkWell(
-                        onTap: (){
+                        onTap: () {
                           //appStore.userId
                           // paidBeneficaryModel.paidBeneficary!.date![index].id
                           //  paidBeneficaryModel.beneficary!.id;
-                          print("Vendor Id : ${appStore.userId}" );
-                          print("Beneficary Id : ${paidBeneficaryModel.beneficary!.id}" );
-                          print("Paid Beneficary Id : ${paidBeneficaryModel.paidBeneficary!.date![index].id}" );
+                          print("Vendor Id : ${appStore.userId}");
+                          print(
+                              "Beneficary Id : ${paidBeneficaryModel.beneficary!.id}");
+                          print(
+                              "Paid Beneficary Id : ${paidBeneficaryModel.paidBeneficary!.date![index].id}");
 
-                          print(paidBeneficaryModel.paidBeneficary!.date![index].cashOrCategory);
+                          print(paidBeneficaryModel
+                              .paidBeneficary!.date![index].cashOrCategory);
                         },
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -119,9 +122,19 @@ class PaidBeneficaryScreen extends StatelessWidget {
                 child: ElevatedButton(
                   style: ButtonStyle(
                     padding: MaterialStateProperty.all(const EdgeInsets.all(8)),
-                    backgroundColor: MaterialStateProperty.all(ColorManager.secondary),
+                    backgroundColor:
+                        MaterialStateProperty.all(ColorManager.secondary),
                   ),
                   onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => AddInvoice(
+                          paidBeneficaryModel: paidBeneficaryModel,
+                        ),
+                      ),
+                    );
+
                     // _onPayButtonPressed(context, 5);
                   },
                   child: const Text('Continue',
