@@ -13,6 +13,13 @@ class NfcDataCubit extends Cubit<NfcDataState> {
   NfcDataCubit() : super(NfcDataInitial());
   late ContactData savedContact;
 
+  List<ProductData?> scannedItems = [];
+
+  void addProduct(ProductData product) {
+    scannedItems.add(product);
+    emit(AddProductScusses());
+  }
+
   static NfcDataCubit get(context) => BlocProvider.of(context);
 
   void setContact(ContactData contact) async {

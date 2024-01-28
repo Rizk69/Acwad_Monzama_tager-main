@@ -9,6 +9,8 @@ abstract class NfcDataState extends Equatable {
 
 class NfcDataInitial extends NfcDataState {}
 
+class AddProductScusses extends NfcDataState {}
+
 class NfcDataLoaded extends NfcDataState {
   final ContactData contact;
 
