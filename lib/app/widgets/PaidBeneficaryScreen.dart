@@ -79,35 +79,45 @@ class PaidBeneficaryScreen extends StatelessWidget {
                           color: ColorManager.baseYellow,
                           width: 1,
                         ),
-                        color: Colors.white,
+                        color: paidBeneficaryModel.paidBeneficary!.date![index].paidDone==0?Colors.white:Colors.greenAccent,
                       ),
                       padding: const EdgeInsets.all(11),
                       margin:  EdgeInsets.all(11),
-                      child: InkWell(
-                        onTap: (){
-                          //appStore.userId
-                          // paidBeneficaryModel.paidBeneficary!.date![index].id
-                          //  paidBeneficaryModel.beneficary!.id;
-                          print("Vendor Id : ${appStore.userId}" );
-                          print("Beneficary Id : ${paidBeneficaryModel.beneficary!.id}" );
-                          print("Paid Beneficary Id : ${paidBeneficaryModel.paidBeneficary!.date![index].id}" );
+                      child: Stack(
+                        alignment: AlignmentDirectional.topStart,
+                        children: [
+                          paidBeneficaryModel.paidBeneficary!.date![index].paidDone==1?Positioned.fill( // Ensuring the CustomPaint covers the whole area
+                            child: CustomPaint(
+                              painter: DiagonalLinePainter(),
+                            ),
+                          ):Container(),
+                          InkWell(
+                            onTap: (){
+                              //appStore.userId
+                              // paidBeneficaryModel.paidBeneficary!.date![index].id
+                              //  paidBeneficaryModel.beneficary!.id;
+                              print("Vendor Id : ${appStore.userId}" );
+                              print("Beneficary Id : ${paidBeneficaryModel.beneficary!.id}" );
+                              print("Paid Beneficary Id : ${paidBeneficaryModel.paidBeneficary!.date![index].id}" );
 
-                          print(paidBeneficaryModel.paidBeneficary!.date![index].cashOrCategory);
-                        },
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Text(
-                                'cashOrCategory: ${paidBeneficaryModel.paidBeneficary!.date![index].cashOrCategory ?? ''}'),
-                            Text(
-                                'paidMoney: ${paidBeneficaryModel.paidBeneficary!.date![index].paidMoney ?? ''}'),
-                            Text(
-                                'paidDone: ${paidBeneficaryModel.paidBeneficary!.date![index].paidDone ?? ''}'),
-                            Text(
-                                'date: ${paidBeneficaryModel.paidBeneficary!.date![index].date ?? ''}'),
-                          ],
-                        ),
+                              print(paidBeneficaryModel.paidBeneficary!.date![index].cashOrCategory);
+                            },
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text(
+                                    'نوع الصرف: ${paidBeneficaryModel.paidBeneficary!.date![index].type==0?"نقدا":"مواد عينية" ?? ''}'),
+                                Text(
+                                    'المبلغ المتاح: ${paidBeneficaryModel.paidBeneficary!.date![index].paidMoney ?? ''}'),
+                                Text(
+                                    'حاله الصرف: ${paidBeneficaryModel.paidBeneficary!.date![index].paidDone==0?"جاري":"تم الصرف" ?? ''}'),
+                                Text(
+                                    'التاريخ: ${paidBeneficaryModel.paidBeneficary!.date![index].date ?? ''}'),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
                     );
                   },
@@ -134,4 +144,19 @@ class PaidBeneficaryScreen extends StatelessWidget {
       ),
     );
   }
+}
+
+class DiagonalLinePainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = Colors.black // Set the color of the diagonal line
+      ..strokeWidth = 1; // Set the width of the diagonal line
+
+    // Draw the line from top right to bottom left
+    canvas.drawLine(Offset(size.width, 0), Offset(0, size.height), paint);
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) => false;
 }
