@@ -47,3 +47,15 @@ class MakeCashErrorState extends NfcDataState {
 class MakeCashSuccessState extends NfcDataState {}
 class MakeCashLoadingState extends NfcDataState {}
 
+
+class GetPaidBeneficaryLoadingState extends NfcDataState {}
+
+class GetPaidBeneficarySuccessState extends NfcDataState {}
+
+class GetPaidBeneficaryErrorState extends NfcDataState {
+  final String error;
+
+  GetPaidBeneficaryErrorState(this.error);
+}
+
+

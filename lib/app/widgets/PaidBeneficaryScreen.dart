@@ -29,6 +29,9 @@ class PaidBeneficaryScreen extends StatelessWidget {
         create: (context) => NfcDataCubit(),
         child: BlocConsumer<NfcDataCubit, NfcDataState>(
           listener: (context, state) {
+            if(state is MakeCashSuccessState){
+
+            }
           },
           builder: (context, state) {
             return Scaffold(

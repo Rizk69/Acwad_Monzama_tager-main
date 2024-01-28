@@ -4,6 +4,8 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smartcard/app/models/ProductModel.dart';
+import 'package:smartcard/app/models/benficary_data_model.dart';
+import 'package:smartcard/app/widgets/PaidBeneficaryScreen.dart';
 
 import '../../models/model_keys.dart';
 import '../../network/api_end_points.dart';
@@ -104,6 +106,67 @@ class NfcDataCubit extends Cubit<NfcDataState> {
       emit(MakeCashErrorState(onError.toString()));
     });
   }
+
+
+
+  late PaidBeneficaryModel paidBeneficary;
+
+  Future<void> getPaidBeneficary(
+      {required int beneficaryId, required BuildContext context}) async {
+    try {
+      emit(GetPaidBeneficaryLoadingState());
+
+      var paidBeneficaryId =
+      Uri.parse("${ApiHelper.getPaidBeneficary}$beneficaryId");
+
+      Map<String, String> headers = {'Accept': 'application/json'};
+
+      var response = await http.get(paidBeneficaryId, headers: headers);
+      if (response.statusCode == 200) {
+        var body = jsonDecode(response.body);
+        paidBeneficary = PaidBeneficaryModel.fromJson(body);
+        print(paidBeneficary.beneficary?.fullName ?? 'No name available');
+        if (paidBeneficary.message == 'Success') {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) =>
+                  PaidBeneficaryScreen(paidBeneficaryModel: paidBeneficary),
+            ),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(paidBeneficary.message ?? 'Not Found'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+
+        emit(GetPaidBeneficarySuccessState());
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to load data'),
+            backgroundColor: Colors.red,
+          ),
+        );
+        // في حالة فشل الاستجابة، يتم إصدار حالة خطأ
+        emit(GetPaidBeneficaryErrorState('Failed to load data'));
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(e.toString()),
+          backgroundColor: Colors.red,
+        ),
+      );
+
+      print(e.toString());
+      emit(GetPaidBeneficaryErrorState(e.toString()));
+    }
+  }
+
 
 }
 

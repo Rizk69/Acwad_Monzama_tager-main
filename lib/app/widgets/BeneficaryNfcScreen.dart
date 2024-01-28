@@ -1,20 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:smartcard/app/cubits/nfc_contact/nfc_contact_cubit.dart';
 import 'package:smartcard/app/utils/color_manager.dart';
 import '../cubits/invoice/invoice_beneficary_cubit.dart';
 import '../models/BeneficaryNfcModel.dart';
 
 class BeneficaryNfcScreen extends StatelessWidget {
   final BeneficaryNfcModel beneficaryNfcModel;
-  final InvoiceBeneficaryCubit cubit;
+  final NfcDataCubit cubit;
 
   const BeneficaryNfcScreen(
       {super.key, required this.beneficaryNfcModel, required this.cubit});
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<InvoiceBeneficaryCubit>(
-      create: (context) => InvoiceBeneficaryCubit(),
+    return BlocProvider(
+      create: (context) => NfcDataCubit(),
       child: Container(
         height: MediaQuery.of(context).size.height,
         decoration: const BoxDecoration(

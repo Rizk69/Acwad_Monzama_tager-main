@@ -7,6 +7,7 @@ import 'package:nfc_manager/nfc_manager.dart';
 import 'dart:typed_data';
 
 import 'package:http/http.dart' as http;
+import 'package:smartcard/app/cubits/nfc_contact/nfc_contact_cubit.dart';
 
 import '../cubits/invoice/invoice_beneficary_cubit.dart';
 import '../models/BeneficaryNfcModel.dart';
@@ -142,7 +143,7 @@ class _NfcContactCardScreenState extends State<NfcContactCardScreen> {
     const serverEndpoint = 'https://monazama.acwad-it.com/api/Beneficary/nfc';
 
     try {
-      final cubit = InvoiceBeneficaryCubit();
+      final cubit = NfcDataCubit();
 
       final response = await http.post(
         Uri.parse(serverEndpoint),
