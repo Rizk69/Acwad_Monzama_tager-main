@@ -86,6 +86,7 @@ class Date {
   int? uprove;
   int? paidMoney;
   int? paidDone;
+  int? type;
 
   Date(
       {this.id,
@@ -93,6 +94,7 @@ class Date {
       this.cashOrCategory,
       this.uprove,
       this.paidMoney,
+      this.type,
       this.paidDone});
 
   Date.fromJson(Map<String, dynamic> json) {
@@ -102,6 +104,7 @@ class Date {
     uprove = json['uprove'];
     paidMoney = json['paid_money'];
     paidDone = json['paidDone'];
+    type = json['type'];
   }
 
   Map<String, dynamic> toJson() {
@@ -112,6 +115,7 @@ class Date {
     data['uprove'] = this.uprove;
     data['paid_money'] = this.paidMoney;
     data['paidDone'] = this.paidDone;
+    data['type'] = this.type;
     return data;
   }
 }
