@@ -13,6 +13,8 @@ late SharedPreferences sharedPreferences;
 AppStore appStore = AppStore();
 final dbHelper = DatabaseHelper();
 
+
+//Test ^^
 void main() async {
   Bloc.observer = MyBlocObserver();
   WidgetsFlutterBinding.ensureInitialized();
