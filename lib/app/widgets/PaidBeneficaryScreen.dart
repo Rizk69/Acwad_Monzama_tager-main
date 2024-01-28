@@ -50,8 +50,8 @@ class PaidBeneficaryScreen extends StatelessWidget {
                   ),
                   color: Colors.white,
                 ),
-                padding: EdgeInsets.all(11),
-                margin: EdgeInsets.all(11),
+                padding: const EdgeInsets.all(11),
+                margin: const EdgeInsets.all(11),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -79,36 +79,37 @@ class PaidBeneficaryScreen extends StatelessWidget {
                           color: ColorManager.baseYellow,
                           width: 1,
                         ),
-                        color: Colors.white,
+                        color: paidBeneficaryModel.paidBeneficary!.date![index].paidDone==0?Colors.white:Colors.greenAccent,
                       ),
                       padding: const EdgeInsets.all(11),
                       margin: EdgeInsets.all(11),
                       child: InkWell(
-                        onTap: () {
+                        onTap: (){
                           //appStore.userId
                           // paidBeneficaryModel.paidBeneficary!.date![index].id
                           //  paidBeneficaryModel.beneficary!.id;
-                          print("Vendor Id : ${appStore.userId}");
-                          print(
-                              "Beneficary Id : ${paidBeneficaryModel.beneficary!.id}");
-                          print(
-                              "Paid Beneficary Id : ${paidBeneficaryModel.paidBeneficary!.date![index].id}");
+                          if(paidBeneficaryModel.paidBeneficary!.date![index].type==0){
+                            _showConfirmationDialog(context , index);
+                          }
+                          else {
 
-                          print(paidBeneficaryModel
-                              .paidBeneficary!.date![index].cashOrCategory);
+                          }
+                          print("Vendor Id : ${appStore.userId}" );
+                          print("Beneficary Id : ${paidBeneficaryModel.beneficary!.id}" );
+                          print("Paid Beneficary Id : ${paidBeneficaryModel.paidBeneficary!.date![index].id}" );
+                          print(paidBeneficaryModel.paidBeneficary!.date![index].cashOrCategory);
                         },
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
+                            Text('نوع الصرف: ${paidBeneficaryModel.paidBeneficary!.date![index].type==0?"نقدا":"مواد عينية" ?? ''}'),
                             Text(
-                                'cashOrCategory: ${paidBeneficaryModel.paidBeneficary!.date![index].cashOrCategory ?? ''}'),
+                                'المبلغ المتاح: ${paidBeneficaryModel.paidBeneficary!.date![index].paidMoney ?? ''}'),
                             Text(
-                                'paidMoney: ${paidBeneficaryModel.paidBeneficary!.date![index].paidMoney ?? ''}'),
+                                'حاله الصرف: ${paidBeneficaryModel.paidBeneficary!.date![index].paidDone==0?"جاري":"تم الصرف" ?? ''}'),
                             Text(
-                                'paidDone: ${paidBeneficaryModel.paidBeneficary!.date![index].paidDone ?? ''}'),
-                            Text(
-                                'date: ${paidBeneficaryModel.paidBeneficary!.date![index].date ?? ''}'),
+                                'التاريخ: ${paidBeneficaryModel.paidBeneficary!.date![index].date ?? ''}'),
                           ],
                         ),
                       ),
@@ -117,7 +118,7 @@ class PaidBeneficaryScreen extends StatelessWidget {
                 ),
               ),
               Container(
-                margin: EdgeInsets.all(8),
+                margin: const EdgeInsets.all(8),
                 width: MediaQuery.of(context).size.width,
                 child: ElevatedButton(
                   style: ButtonStyle(
@@ -147,4 +148,36 @@ class PaidBeneficaryScreen extends StatelessWidget {
       ),
     );
   }
+
+
+  void _showConfirmationDialog(BuildContext context, int index) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('تأكيد'),
+          content: Text('هل متأكد من صرف هذه الدفعه ؟'),
+          actions: <Widget>[
+            ElevatedButton(
+              child: Text('الغاء'),
+              onPressed: () {
+                Navigator.of(context).pop(); // Dismiss the dialog
+              },
+            ),
+            ElevatedButton(
+              child: Text('تأكيد'),
+              onPressed: () {
+                // Put your code here for what happens after confirmation
+                Navigator.of(context).pop(); // Dismiss the dialog
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+
+
 }
+
