@@ -129,15 +129,7 @@ class PaidBeneficaryScreen extends StatelessWidget {
                                                     .date![index]
                                                     .type ==
                                                 1) {
-                                              await NfcDataCubit.get(context)
-                                                  .getCategoryInvoiceShow(
-                                                idCategory: paidBeneficaryModel
-                                                    .paidBeneficary!
-                                                    .date![index]
-                                                    .id!,
-                                              );
-                                              if (state is NfcDataLoaded) {
-                                                Navigator.push(
+                                              Navigator.push(
                                                   context,
                                                   MaterialPageRoute(
                                                     builder: (context) =>
@@ -149,7 +141,6 @@ class PaidBeneficaryScreen extends StatelessWidget {
                                                 );
                                               }
                                             }
-                                          }
                                         : null,
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,

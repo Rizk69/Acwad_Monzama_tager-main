@@ -41,7 +41,7 @@ class AddInvoice extends StatelessWidget {
           ),
           body: BlocBuilder<NfcDataCubit, NfcDataState>(
             builder: (context, state) {
-              if (state is! NfcDataLoaded) {
+              if (state is NfcDataLoaded) {
                 return Center(
                   child: Column(
                     children: [
