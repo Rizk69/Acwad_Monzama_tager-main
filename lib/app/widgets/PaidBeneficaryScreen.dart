@@ -29,9 +29,7 @@ class PaidBeneficaryScreen extends StatelessWidget {
         create: (context) => NfcDataCubit(),
         child: BlocConsumer<NfcDataCubit, NfcDataState>(
           listener: (context, state) {
-            if(state is MakeCashSuccessState){
-
-            }
+            if (state is MakeCashSuccessState) {}
           },
           builder: (context, state) {
             return Scaffold(
@@ -79,23 +77,24 @@ class PaidBeneficaryScreen extends StatelessWidget {
                         ],
                       ),
                     ),
-                    SizedBox(
-                      height: MediaQuery.of(context).size.height / 1.5,
-                      child: ListView.builder(
-                        itemCount:
-                            paidBeneficaryModel.paidBeneficary!.date?.length ??
-                                0, // تحديد عدد العناصر
-                        itemBuilder: (context, index) {
-                          return Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(15),
+                    state is! NfcDataLoading
+                        ? SizedBox(
+                            height: MediaQuery.of(context).size.height / 1.5,
+                            child: ListView.builder(
+                              itemCount: paidBeneficaryModel
+                                      .paidBeneficary!.date?.length ??
+                                  0, // تحديد عدد العناصر
+                              itemBuilder: (context, index) {
+                                return Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(15),
                               border: Border.all(
                                 color: ColorManager.baseYellow,
                                 width: 1,
                               ),
                               color: paidBeneficaryModel.paidBeneficary!
-                                          .date![index].paidDone ==
-                                      0
+                                  .date![index].paidDone ==
+                                  0
                                   ? Colors.white
                                   : Colors.greenAccent,
                             ),
@@ -103,24 +102,55 @@ class PaidBeneficaryScreen extends StatelessWidget {
                             margin: EdgeInsets.all(11),
                             child: InkWell(
                               onTap: paidBeneficaryModel.paidBeneficary!
-                                          .date![index].paidDone ==
-                                      0
-                                  ? () {
-                                      if (paidBeneficaryModel.paidBeneficary!
-                                              .date![index].type ==
-                                          0) {
-                                        _showConfirmationDialog(
-                                          context: context,
-                                          index: index,
-                                          vendorId: appStore.userId,
-                                          paidBeneficaryId: paidBeneficaryModel
-                                              .paidBeneficary!.date![index].id!,
-                                          beneficaryId: paidBeneficaryModel
-                                              .beneficary!.id!,
-                                        );
-                                      } else {}
-                                    }
-                                  : null,
+                                                .date![index].paidDone ==
+                                            0
+                                        ? () async {
+                                            if (paidBeneficaryModel
+                                                    .paidBeneficary!
+                                                    .date![index]
+                                                    .type ==
+                                                0) {
+                                              _showConfirmationDialog(
+                                                context: context,
+                                                index: index,
+                                                vendorId: appStore.userId,
+                                                paidBeneficaryId:
+                                                    paidBeneficaryModel
+                                                        .paidBeneficary!
+                                                        .date![index]
+                                                        .id!,
+                                                beneficaryId:
+                                                    paidBeneficaryModel
+                                                        .beneficary!.id!,
+                                              );
+                                            }
+                                            if (paidBeneficaryModel
+                                                    .paidBeneficary!
+                                                    .date![index]
+                                                    .type ==
+                                                1) {
+                                              await NfcDataCubit.get(context)
+                                                  .getCategoryInvoiceShow(
+                                                idCategory: paidBeneficaryModel
+                                                    .paidBeneficary!
+                                                    .date![index]
+                                                    .id!,
+                                              );
+                                              if (state is NfcDataLoaded) {
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        AddInvoice(
+                                                            paidBeneficaryModel:
+                                                                paidBeneficaryModel,
+                                                            index: index),
+                                                  ),
+                                                );
+                                              }
+                                            }
+                                          }
+                                        : null,
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisAlignment: MainAxisAlignment.start,
@@ -129,17 +159,18 @@ class PaidBeneficaryScreen extends StatelessWidget {
                                       'نوع الصرف: ${paidBeneficaryModel.paidBeneficary!.date![index].type == 0 ? "نقدا" : "مواد عينية" ?? ''}'),
                                   Text(
                                       'المبلغ المتاح: ${paidBeneficaryModel.paidBeneficary!.date![index].paidMoney ?? ''}'),
-                                  Text(
-                                      'حاله الصرف: ${paidBeneficaryModel.paidBeneficary!.date![index].paidDone == 0 ? "جاري" : "تم الصرف" ?? ''}'),
-                                  Text(
-                                      'التاريخ: ${paidBeneficaryModel.paidBeneficary!.date![index].date ?? ''}'),
-                                ],
-                              ),
+                                        Text(
+                                            'حاله الصرف: ${paidBeneficaryModel.paidBeneficary!.date![index].paidDone == 0 ? "جاري" : "تم الصرف" ?? ''}'),
+                                        Text(
+                                            'التاريخ: ${paidBeneficaryModel.paidBeneficary!.date![index].date ?? ''}'),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              },
                             ),
-                          );
-                        },
-                      ),
-                    ),
+                          )
+                        : Center(child: CircularProgressIndicator()),
                   ],
                 ),
               ),

@@ -20,14 +20,9 @@ class NfcDataInitial extends NfcDataState {}
 
 class AddProductScusses extends NfcDataState {}
 
-class NfcDataLoaded extends NfcDataState {
-  final ContactData contact;
+class NfcDataLoaded extends NfcDataState {}
 
-  const NfcDataLoaded(this.contact);
-
-  @override
-  List<Object?> get props => [contact];
-}
+class NfcDataLoading extends NfcDataState {}
 
 class InvoiceDataLoaded extends NfcDataState {
   final InvoiceData invoice;
@@ -41,12 +36,14 @@ class InvoiceDataLoaded extends NfcDataState {
 }
 
 class MakeCashErrorState extends NfcDataState {
-  final error ;
+  final error;
+
   const MakeCashErrorState(this.error);
 }
-class MakeCashSuccessState extends NfcDataState {}
-class MakeCashLoadingState extends NfcDataState {}
 
+class MakeCashSuccessState extends NfcDataState {}
+
+class MakeCashLoadingState extends NfcDataState {}
 
 class GetPaidBeneficaryLoadingState extends NfcDataState {}
 
@@ -57,5 +54,3 @@ class GetPaidBeneficaryErrorState extends NfcDataState {
 
   GetPaidBeneficaryErrorState(this.error);
 }
-
-

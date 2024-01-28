@@ -16,9 +16,10 @@ part 'nfc_contact_state.dart';
 
 class NfcDataCubit extends Cubit<NfcDataState> {
   NfcDataCubit() : super(NfcDataInitial());
-
+  ProductModel productModel = ProductModel(message: '', product: []);
   List<Product?> scannedItems = [];
   ProductBody productBody = ProductBody(productId: 0, count: 0);
+
   static NfcDataCubit get(context) => BlocProvider.of(context);
 
   void addProduct(Product product) {
@@ -26,11 +27,11 @@ class NfcDataCubit extends Cubit<NfcDataState> {
     emit(AddProductScusses());
   }
 
-  Future<void> getCategoryInvoiceShow({
+  Future<bool> getCategoryInvoiceShow({
     required int idCategory,
-    required BuildContext context,
   }) async {
     try {
+      emit(NfcDataLoading());
       var paidBeneficaryId =
           Uri.parse("${ApiHelper.getProductBeneficary}$idCategory");
 
@@ -39,17 +40,26 @@ class NfcDataCubit extends Cubit<NfcDataState> {
       var response = await http.get(paidBeneficaryId, headers: headers);
       if (response.statusCode == 200) {
         var body = jsonDecode(response.body);
-        ProductModel productModel = ProductModel.fromJson(body);
+        productModel = ProductModel.fromJson(body);
         if (productModel.message == 'Success') {
+          print(productModel.message);
+          print(productModel.product?.first.name.toString());
+          emit(NfcDataLoaded());
+          return true;
         } else {
           emit(NfcDataError(
               'Failed to load data: ${productModel.message ?? 'Not Found'}'));
+          return false;
         }
       } else {
         emit(const NfcDataError('Failed to load data'));
+
+        return false;
       }
     } catch (e) {
       emit(NfcDataError('Failed to load data: ${e.toString()}'));
+
+      return false;
     }
   }
 
@@ -78,7 +88,6 @@ class NfcDataCubit extends Cubit<NfcDataState> {
     }
   }
 
-
   makeCashPayment({
     required int paidBeneficaryId,
     required int vendorId,
@@ -92,12 +101,12 @@ class NfcDataCubit extends Cubit<NfcDataState> {
     print(paidBeneficaryId);
     print(date);
 
-    var cashURL = Uri.parse("${ApiHelper.setInvoiceBeneficary}?PaidBeneficaryId=$paidBeneficaryId&vendorId=$vendorId&beneficaryId=$beneficaryId&date=$date");
+    var cashURL = Uri.parse(
+        "${ApiHelper.setInvoiceBeneficary}?PaidBeneficaryId=$paidBeneficaryId&vendorId=$vendorId&beneficaryId=$beneficaryId&date=$date");
 
     Map<String, String> headers = {'Accept': 'application/json'};
 
     await http.post(cashURL, headers: headers).then((value) {
-
       var body = jsonDecode(value.body);
       print(body['message']);
       emit(MakeCashSuccessState());
@@ -107,8 +116,6 @@ class NfcDataCubit extends Cubit<NfcDataState> {
     });
   }
 
-
-
   late PaidBeneficaryModel paidBeneficary;
 
   Future<void> getPaidBeneficary(
@@ -117,7 +124,7 @@ class NfcDataCubit extends Cubit<NfcDataState> {
       emit(GetPaidBeneficaryLoadingState());
 
       var paidBeneficaryId =
-      Uri.parse("${ApiHelper.getPaidBeneficary}$beneficaryId");
+          Uri.parse("${ApiHelper.getPaidBeneficary}$beneficaryId");
 
       Map<String, String> headers = {'Accept': 'application/json'};
 
@@ -166,8 +173,6 @@ class NfcDataCubit extends Cubit<NfcDataState> {
       emit(GetPaidBeneficaryErrorState(e.toString()));
     }
   }
-
-
 }
 
 class ProductBody {

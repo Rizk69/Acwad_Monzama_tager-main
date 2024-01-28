@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:nfc_manager/nfc_manager.dart';
 import 'dart:typed_data';
@@ -9,7 +8,6 @@ import 'dart:typed_data';
 import 'package:http/http.dart' as http;
 import 'package:smartcard/app/cubits/nfc_contact/nfc_contact_cubit.dart';
 
-import '../cubits/invoice/invoice_beneficary_cubit.dart';
 import '../models/BeneficaryNfcModel.dart';
 import 'BeneficaryNfcScreen.dart';
 
@@ -53,8 +51,7 @@ class _NfcContactCardScreenState extends State<NfcContactCardScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        body:
-        showPasswordDialog("63F84986"),
+        body: showPasswordDialog("63F84986"),
         // isNfcAvailable
         //     ? Center(
         //         child: Image.asset(
