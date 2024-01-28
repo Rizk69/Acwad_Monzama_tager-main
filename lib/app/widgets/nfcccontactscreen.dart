@@ -23,10 +23,15 @@ class _NfcContactCardScreenState extends State<NfcContactCardScreen> {
   ValueNotifier<dynamic> result = ValueNotifier(null);
   bool isNfcAvailable = false;
 
+  // @override
+  // void initState() {
+  //   checkNfcAvailability();
+  //   _tagRead();
+  //   super.initState();
+  // }
   @override
   void initState() {
-    checkNfcAvailability();
-    _tagRead();
+    showPasswordDialog("63F84986");
     super.initState();
   }
 
@@ -47,15 +52,17 @@ class _NfcContactCardScreenState extends State<NfcContactCardScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        body: isNfcAvailable
-            ? Center(
-                child: Image.asset(
-                  'assets/images/card.png',
-                  height: 200,
-                  width: 200,
-                ),
-              )
-            : const Center(child: Text('NFC is not available')),
+        body:
+        showPasswordDialog("63F84986"),
+        // isNfcAvailable
+        //     ? Center(
+        //         child: Image.asset(
+        //           'assets/images/card.png',
+        //           height: 200,
+        //           width: 200,
+        //         ),
+        //       )
+        //     : const Center(child: Text('NFC is not available')),
       ),
     );
   }
