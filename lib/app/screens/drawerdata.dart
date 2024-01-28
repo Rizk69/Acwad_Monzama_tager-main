@@ -29,12 +29,8 @@ class DrawerData extends StatelessWidget {
       DrawerItem('التقارير', Icons.notes, () {
         Navigator.pushNamed(context, Routes.allInvoiceRoute);
       }),
-      DrawerItem('ايصالات', Icons.message, () {
-        Navigator.pushNamed(context, Routes.receiptsRoute);
-      }),
       DrawerItem('تسجيل خروج', Icons.exit_to_app, () async {
         await logout(context);
-
         Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(builder: (context) => SignInScreen()),
