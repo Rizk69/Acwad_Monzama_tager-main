@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smartcard/app/models/benficary_data_model.dart';
 import 'package:http/http.dart' as http;
+import 'package:smartcard/app/network/api_end_points.dart';
 import 'package:smartcard/app/widgets/PaidBeneficaryScreen.dart';
 
 part 'invoice_beneficary_state.dart';
@@ -19,7 +20,7 @@ class InvoiceBeneficaryCubit extends Cubit<InvoiceBeneficaryState> {
       emit(GetPaidBeneficaryLoadingState());
 
       var paidBeneficaryId = Uri.parse(
-          "https://monazama.acwad-it.com/api/PaidBeneficary/$beneficaryId");
+          "${ApiHelper.getPaidBeneficary}$beneficaryId");
 
       Map<String, String> headers = {'Accept': 'application/json'};
 
@@ -68,7 +69,9 @@ class InvoiceBeneficaryCubit extends Cubit<InvoiceBeneficaryState> {
       emit(GetPaidBeneficaryErrorState(e.toString()));
     }
   }
-} // Future<void> invoiceBeneficary({
+}
+
+// Future<void> invoiceBeneficary({
 //   required int paidBeneficaryId,
 //   required int vendorId,
 //   required int beneficaryId,
