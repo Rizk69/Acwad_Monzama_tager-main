@@ -17,6 +17,7 @@ class NfcDataCubit extends Cubit<NfcDataState> {
 
   List<Product?> scannedItems = [];
   ProductBody productBody = ProductBody(productId: 0, count: 0);
+  static NfcDataCubit get(context) => BlocProvider.of(context);
 
   void addProduct(Product product) {
     scannedItems.add(product);
@@ -80,17 +81,24 @@ class NfcDataCubit extends Cubit<NfcDataState> {
     required int paidBeneficaryId,
     required int vendorId,
     required int beneficaryId,
+    required String date,
   }) async {
     emit(MakeCashLoadingState());
 
-    var cashURL = Uri.parse("${ApiHelper.setInvoiceBeneficary}?PaidBeneficaryId=$paidBeneficaryId&vendorId=$vendorId&beneficaryId=$beneficaryId&date=2024-1-28");
+    print(vendorId);
+    print(beneficaryId);
+    print(paidBeneficaryId);
+    print(date);
+
+    var cashURL = Uri.parse("${ApiHelper.setInvoiceBeneficary}?PaidBeneficaryId=$paidBeneficaryId&vendorId=$vendorId&beneficaryId=$beneficaryId&date=$date");
 
     Map<String, String> headers = {'Accept': 'application/json'};
 
     await http.post(cashURL, headers: headers).then((value) {
-      if (value.statusCode == 200) {
-        emit(MakeCashSuccessState());
-      }
+
+      var body = jsonDecode(value.body);
+      print(body['message']);
+      emit(MakeCashSuccessState());
     }).catchError((onError) {
       print(onError);
       emit(MakeCashErrorState(onError.toString()));
