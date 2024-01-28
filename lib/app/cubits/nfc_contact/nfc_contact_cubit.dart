@@ -74,6 +74,29 @@ class NfcDataCubit extends Cubit<NfcDataState> {
       print(e.toString());
     }
   }
+
+
+  makeCashPayment({
+    required int paidBeneficaryId,
+    required int vendorId,
+    required int beneficaryId,
+  }) async {
+    emit(MakeCashLoadingState());
+
+    var cashURL = Uri.parse("${ApiHelper.setInvoiceBeneficary}?PaidBeneficaryId=$paidBeneficaryId&vendorId=$vendorId&beneficaryId=$beneficaryId&date=2024-1-28");
+
+    Map<String, String> headers = {'Accept': 'application/json'};
+
+    await http.post(cashURL, headers: headers).then((value) {
+      if (value.statusCode == 200) {
+        emit(MakeCashSuccessState());
+      }
+    }).catchError((onError) {
+      print(onError);
+      emit(MakeCashErrorState(onError.toString()));
+    });
+  }
+
 }
 
 class ProductBody {

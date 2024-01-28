@@ -16,7 +16,7 @@ class InvoicePrintContact extends StatelessWidget {
     final invoiceData = context.read<NfcDataCubit>().state is InvoiceDataLoaded
         ? (context.read<NfcDataCubit>().state as InvoiceDataLoaded).invoice
         : null;
-    // final contactData = NfcDataCubit.get(context).savedContact;
+         // final contactData = NfcDataCubit.get(context).savedContact;
 
     final invoiceId = context.read<NfcDataCubit>().state is InvoiceDataLoaded
         ? (context.read<NfcDataCubit>().state as InvoiceDataLoaded).dataId

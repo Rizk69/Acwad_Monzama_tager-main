@@ -39,3 +39,11 @@ class InvoiceDataLoaded extends NfcDataState {
   @override
   List<Object?> get props => [invoice, contact];
 }
+
+class MakeCashErrorState extends NfcDataState {
+  final error ;
+  const MakeCashErrorState(this.error);
+}
+class MakeCashSuccessState extends NfcDataState {}
+class MakeCashLoadingState extends NfcDataState {}
+

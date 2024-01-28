@@ -53,8 +53,6 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => const HomeForm());
       case Routes.loginFormRoute:
         return MaterialPageRoute(builder: (_) => SignInScreen());
-      case Routes.addInvoiceRoute:
-        return MaterialPageRoute(builder: (_) => const AddInvoice());
       case Routes.balanceWithdrawalRoute:
         return MaterialPageRoute(builder: (_) => const BalanceWithdrawal());
       case Routes.invoicesRoute:
