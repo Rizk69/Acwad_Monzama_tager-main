@@ -60,14 +60,14 @@ Future<void> printInvoice(InvoiceBeneficaryData? data) async {
             pw.Directionality(
                 textDirection: pw.TextDirection.rtl,
                 child: pw.Center(
-                    child: pw.Text(appStore.name,
+                    child: pw.Text("${data?.vendorName}",
                         style: pw.TextStyle(
                           fontSize: 13,
                         )))),
             pw.Directionality(
                 textDirection: pw.TextDirection.rtl,
                 child: pw.Center(
-                    child: pw.Text('اسم المركز : ',
+                    child: pw.Text('اسم التاجر : ',
                         style: pw.TextStyle(
                           fontSize: 13,
                         )))),
@@ -141,7 +141,7 @@ Future<void> printInvoice(InvoiceBeneficaryData? data) async {
             pw.Directionality(
                 textDirection: pw.TextDirection.rtl,
                 child: pw.Center(
-                    child: pw.Text("balance.toString()",
+                    child: pw.Text("${data?.totalPrice??0}",
                         style: pw.TextStyle(
                           fontSize: 13,
                         )))),

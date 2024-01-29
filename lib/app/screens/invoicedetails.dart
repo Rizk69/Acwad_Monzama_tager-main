@@ -58,6 +58,22 @@ class _InvoiceDetailsState extends State<InvoiceDetails> {
                         Row(
                           children: [
                             const Text(
+                              'اسم التاجر :',
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(width: 16.0),
+                            Text(widget.item!.vendorName.toString() ?? ''),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 2.h,
+                        ),
+                        Row(
+                          children: [
+                            const Text(
                               ' رقم المستفيد  :',
                               style: TextStyle(
                                 fontSize: 14,
@@ -68,6 +84,7 @@ class _InvoiceDetailsState extends State<InvoiceDetails> {
                             Text(widget.item!.accountId.toString() ?? ''),
                           ],
                         ),
+
                         SizedBox(
                           height: 2.h,
                         ),

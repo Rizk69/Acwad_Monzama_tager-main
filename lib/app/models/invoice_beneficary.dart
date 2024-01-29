@@ -31,12 +31,14 @@ class InvoiceBeneficaryData {
   int? accountId;
   String? fullName;
   String? cashOrCategory;
+  String? vendorName;
 
   InvoiceBeneficaryData(
       {this.invoiceNo,
       this.date,
       this.totalPrice,
       this.accountId,
+      this.vendorName,
       this.fullName});
 
   InvoiceBeneficaryData.fromJson(Map<String, dynamic> json) {
@@ -45,6 +47,7 @@ class InvoiceBeneficaryData {
     totalPrice = json['total_price'];
     accountId = json['accountId'];
     fullName = json['fullName'];
+    vendorName = json['vendorName'];
     cashOrCategory = json['cashOrCategory'];
   }
 
@@ -55,6 +58,7 @@ class InvoiceBeneficaryData {
     data['total_price'] = this.totalPrice;
     data['accountId'] = this.accountId;
     data['fullName'] = this.fullName;
+    data['vendorName'] = this.vendorName;
     data['cashOrCategory'] = this.cashOrCategory;
     return data;
   }

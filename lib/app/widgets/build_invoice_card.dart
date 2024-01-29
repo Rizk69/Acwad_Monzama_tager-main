@@ -32,10 +32,21 @@ Widget buildInvoiceCard({required InvoiceBeneficary invoice, index}) {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Expanded(
-                          child: buildInvoiceInfo(
-                            label: 'اسم المستفيد',
-                            value: invoice.data![index].fullName.toString(),
-                            isMultiline: true,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              buildInvoiceInfo(
+                                label: 'اسم التاجر',
+                                value: invoice.data![index].vendorName.toString(),
+                                isMultiline: true,
+                              ),
+                              buildInvoiceInfo(
+                                label: 'اسم المستفيد',
+                                value: invoice.data![index].fullName.toString(),
+                                isMultiline: true,
+                              ),
+                            ],
                           ),
                         ),
                         buildInvoiceInfo(
