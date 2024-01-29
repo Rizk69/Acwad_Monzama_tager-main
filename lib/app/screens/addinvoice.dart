@@ -1,7 +1,13 @@
+import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lottie/lottie.dart';
+import 'package:responsive_sizer/responsive_sizer.dart';
 
 import 'package:smartcard/app/utils/color_manager.dart';
+import 'package:smartcard/app/utils/default_snake_bar.dart';
+import 'package:smartcard/main.dart';
 
 import '../cubits/nfc_contact/nfc_contact_cubit.dart';
 
@@ -40,14 +46,40 @@ class AddInvoice extends StatelessWidget {
               },
             ),
           ),
-          body: BlocBuilder<NfcDataCubit, NfcDataState>(
+          body: BlocConsumer<NfcDataCubit, NfcDataState>(
+            listener: (context, state) {
+              if (state is BuyProductsSuccessState) {
+                final snackBar = defaultSnakeBar(
+                  title: "تم",
+                  message: "تم صرف الفاتوره بنجاح!",
+                  state: ContentType.success,
+                );
+                ScaffoldMessenger.of(context)
+                  ..hideCurrentSnackBar()
+                  ..showSnackBar(snackBar);
+              }
+              if (state is BuyProductsErrorState) {
+                final snackBar = defaultSnakeBar(
+                  title: "هناك خطأ!",
+                  message: state.error,
+                  state: ContentType.failure,
+                );
+                ScaffoldMessenger.of(context)
+                  ..hideCurrentSnackBar()
+                  ..showSnackBar(snackBar);
+              }
+
+            },
             builder: (context, state) {
-              if (state is NfcDataLoaded) {
+              if (state is! NfcDataError) {
                 return Center(
                   child: Column(
                     children: [
+                      SizedBox(
+                        height: 3.h,
+                      ),
                       Padding(
-                        padding: const EdgeInsets.all(15.0),
+                        padding: const EdgeInsets.symmetric(horizontal: 15.0),
                         child: Column(
                           children: [
                             Row(
@@ -64,7 +96,9 @@ class AddInvoice extends StatelessWidget {
                                     '${paidBeneficaryModel.beneficary?.fullName}'),
                               ],
                             ),
-                            const SizedBox(height: 16.0),
+                            SizedBox(
+                              height: 2.h,
+                            ),
                             Row(
                               children: [
                                 const Text(
@@ -79,46 +113,63 @@ class AddInvoice extends StatelessWidget {
                                     '${paidBeneficaryModel.paidBeneficary?.date?[index].paidMoney}'),
                               ],
                             ),
-                          ],
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(15.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            DropdownButton(
-                              items: NfcDataCubit.get(context)
-                                  .productModel
-                                  .product!
-                                  .map((product) {
-                                return DropdownMenuItem(
-                                  value: product.name,
-                                  child: Text(product.name ?? 'notFound',
-                                      style: TextStyle(color: Colors.black)),
-                                );
-                              }).toList(),
-                              onChanged: (selectedValue) {
-                                print('Selected value: $selectedValue');
-                                Product? selectedProduct =
-                                    NfcDataCubit.get(context)
-                                        .productModel
-                                        .product!
-                                        .firstWhere((product) =>
-                                            product.name == selectedValue);
-                                NfcDataCubit.get(context)
-                                    .addProduct(selectedProduct);
-                              },
-                              icon: const Icon(Icons.list_alt),
+                            SizedBox(
+                              height: 2.h,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  "اختار منتج",
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const SizedBox(width: 16.0),
+                                DropdownButton(
+                                  items: NfcDataCubit.get(context)
+                                      .productModel
+                                      .product!
+                                      .map((product) {
+                                    return DropdownMenuItem(
+                                      value: product.name,
+                                      child: Text(product.name ?? 'notFound',
+                                          style: const TextStyle(
+                                              color: Colors.black)),
+                                    );
+                                  }).toList(),
+                                  onChanged: (String? selectedValue) {
+                                    if (selectedValue != null) {
+                                      Product? selectedProduct =
+                                      NfcDataCubit.get(context)
+                                          .productModel
+                                          .product!
+                                          .firstWhere((product) =>
+                                      product.name ==
+                                          selectedValue);
+                                      NfcDataCubit.get(context)
+                                          .addProduct(selectedProduct);
+                                    }
+                                  },
+                                  icon: const Icon(Icons.list_alt),
+                                ),
+                              ],
                             ),
                           ],
                         ),
+                      ),
+                      SizedBox(
+                        height: 3.h,
                       ),
                       Text(
                         'مجموع الفاتورة  : ${NfcDataCubit.get(context).calculateTotalPrice().toStringAsFixed(2)}',
                         style: const TextStyle(
                             fontSize: 18, fontWeight: FontWeight.bold),
                         // Ad
+                      ),
+                      SizedBox(
+                        height: 3.h,
                       ),
                       Expanded(
                         child: SingleChildScrollView(
@@ -139,7 +190,7 @@ class AddInvoice extends StatelessWidget {
                                     NfcDataCubit.get(context)
                                         .scannedItems
                                         .length,
-                                    (index) {
+                                        (index) {
                                       final product = NfcDataCubit.get(context)
                                           .scannedItems[index];
                                       return DataRow(cells: [
@@ -149,13 +200,13 @@ class AddInvoice extends StatelessWidget {
                                         DataCell(Text(
                                             product?.price.toString() ??
                                                 'Unknown')),
-                                        const DataCell(Text('1')),
+                                        DataCell(Text(
+                                            product?.count.toString() ?? '0')),
                                         DataCell(IconButton(
                                           color: ColorManager.error,
                                           onPressed: () {
                                             NfcDataCubit.get(context)
-                                                .scannedItems
-                                                .removeAt(index);
+                                                .removeProduct(index);
                                           },
                                           icon: const Icon(Icons.delete),
                                         )),
@@ -168,118 +219,33 @@ class AddInvoice extends StatelessWidget {
                           ),
                         ),
                       ),
-                      Spacer(),
+                      const Spacer(),
                       ElevatedButton(
                           onPressed: () {
-                            var model = NfcDataCubit.get(context).scannedItems;
-                            print(model.first?.id);
+                            var now = DateTime.now();
+                            String formattedDate =
+                            DateFormat('yyyy-MM-dd', 'en').format(now);
+
+                            NfcDataCubit.get(context)
+                                .convertScannedItemsToProductsBody(
+                                vendorId: appStore.userId,
+                                paidBeneficaryId: paidBeneficaryModel
+                                    .paidBeneficary!.date![index].id!,
+                                beneficaryId:
+                                paidBeneficaryModel.beneficary!.id!,
+                                date: formattedDate);
                           },
                           child: const Text('Continue'))
-
-                      // Display the total price of all items  9878
-
-                      // Padding(
-                      //   padding: const EdgeInsets.all(15.0),
-                      //   child: SizedBox(
-                      //       width: double.infinity,
-                      //       height: 50,
-                      //       child: isButtonEnabled
-                      //           ? ElevatedButton(
-                      //               onPressed: () {
-                      //                 final currentContext = context;
-                      //                 showDialog(
-                      //                   context: context,
-                      //                   builder: (BuildContext context) {
-                      //                     return AlertDialog(
-                      //                       title: const Text('ادخل كلمة المرور'),
-                      //                       content: AppTextField(
-                      //                         controller: passwordController,
-                      //                         autoFocus: true,
-                      //                         textFieldType:
-                      //                             TextFieldType.PASSWORD,
-                      //                         keyboardType: TextInputType.number,
-                      //                         nextFocus: passwordFocusNode,
-                      //                         decoration: inputDecoration(context,
-                      //                             hintText: "كلمة السر"),
-                      //                       ),
-                      //                       actions: [
-                      //                         ElevatedButton(
-                      //                           onPressed: () {
-                      //                             Navigator.pop(context,
-                      //                                 passwordController.text);
-                      //                           },
-                      //                           child: const Text('التحقق'),
-                      //                         ),
-                      //                       ],
-                      //                     );
-                      //                   },
-                      //                 ).then((value) async {
-                      //                   // Handle the result of the dialog
-                      //                   if (value != null) {
-                      //                     final enteredPassword = value;
-                      //                     final storedHashedPassword =
-                      //                         contact.password ?? '';
-                      //                     final passwordMatch =
-                      //                         await FlutterBcrypt.verify(
-                      //                             password: enteredPassword,
-                      //                             hash: storedHashedPassword);
-                      //                     if (passwordMatch) {
-                      //                       // Passwords match, perform further operations
-                      //                       final invoiceData = InvoiceData(
-                      //                         // Initialize the InvoiceData object with relevant data
-                      //                         customerId: contact.uuid.toString(),
-                      //                         fullName:
-                      //                             '${contact.firstName} ${contact.lastName}',
-                      //                         invoiceNo:
-                      //                             '${appStore.userName} - ?',
-                      //                         supplierId:
-                      //                             appStore.branchUUID.toString(),
-                      //                         date: DateTime.now(),
-                      //                         total: calculateTotalPrice(),
-                      //                         items: scannedItems.map((product) {
-                      //                           return InvoiceItem(
-                      //                             itemId: product?.id,
-                      //                             quantity: 1,
-                      //                             price: product?.price,
-                      //                             totalPrice: product?.price,
-                      //                             productName: product?.nameAr,
-                      //                           );
-                      //                         }).toList(),
-                      //                       );
-                      //
-                      //                       await NfcDataCubit.get(context)
-                      //                           .setInvoice(invoiceData);
-                      //                       Navigator.popAndPushNamed(context,
-                      //                           Routes.invoicePrintContactRoute);
-                      //                     } else {
-                      //                       ScaffoldMessenger.of(context)
-                      //                           .showSnackBar(
-                      //                         const SnackBar(
-                      //                           content:
-                      //                               Text('كلمة المرور غير صحيحة'),
-                      //                         ),
-                      //                       );
-                      //                       // Passwords do not match
-                      //                     }
-                      //                   } else {
-                      //                     // The user canceled the dialog
-                      //                     // Handle the cancellation, if needed
-                      //                   }
-                      //                 });
-                      //               },
-                      //               child: const Text('تثبيت'),
-                      //             )
-                      //           : ElevatedButton(
-                      //               onPressed: () => {},
-                      //               child: const Text("المجموع اكبر من الرصيد"),
-                      //             )),
-                      // ),
-                      // Display the total price of all items
                     ],
                   ),
                 );
               }
-              return const Center(child: Text('Loading...'));
+              return Center(
+                child: Lottie.asset(
+                  'assets/images/empty_invoice.json',
+                  fit: BoxFit.fill,
+                ),
+              );
             },
           ),
         ),
@@ -287,37 +253,3 @@ class AddInvoice extends StatelessWidget {
     );
   }
 }
-// Row(
-//   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-//   children: [
-//     DropdownButton(
-//       items: NfcDataCubit.get(context)
-//           .productModel
-//           .product!
-//           .map((product) {
-//         return DropdownMenuItem(
-//           value: product.name,
-//           child: Text(product.name ?? 'notFound',style: TextStyle(color: Colors.black)),
-//         );
-//       }).toList(),
-//       onChanged: (selectedValue) {
-//         print('Selected value: $selectedValue');
-//         Product? selectedProduct = NfcDataCubit.get(context)
-//             .productModel
-//             .product!
-//             .firstWhere((product) => product.name == selectedValue);
-//
-//         NfcDataCubit.get(context).addProduct(selectedProduct);
-//                                     },
-//       icon: const Icon(Icons.list_alt),
-//     ),
-//     IconButton(
-//       onPressed: () async {
-//         // NfcDataCubit.get(context).addProduct(selectedProduct);
-//
-//       },
-//       icon: const Icon(Icons.add),
-//       iconSize: 48.0,
-//     ),
-//   ],
-// ),
