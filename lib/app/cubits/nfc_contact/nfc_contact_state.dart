@@ -18,7 +18,14 @@ class NfcDataError extends NfcDataState {
 
 class NfcDataInitial extends NfcDataState {}
 
-class AddProductScusses extends NfcDataState {}
+class AddProductSuccess extends NfcDataState {}
+class RemoveProductSuccess extends NfcDataState {}
+
+
+
+class AddProductLoading extends NfcDataState {}
+class RemoveProductLoading extends NfcDataState {}
+
 
 class NfcDataLoaded extends NfcDataState {}
 
@@ -44,6 +51,19 @@ class MakeCashErrorState extends NfcDataState {
 class MakeCashSuccessState extends NfcDataState {}
 
 class MakeCashLoadingState extends NfcDataState {}
+
+
+
+class BuyProductsErrorState extends NfcDataState {
+  final error;
+
+  const BuyProductsErrorState(this.error);
+}
+
+class BuyProductsSuccessState extends NfcDataState {}
+
+class BuyProductsLoadingState extends NfcDataState {}
+
 
 class GetPaidBeneficaryLoadingState extends NfcDataState {}
 

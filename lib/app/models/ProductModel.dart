@@ -14,22 +14,15 @@ class ProductModel {
     }
   }
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['message'] = this.message;
-    if (this.product != null) {
-      data['product'] = this.product!.map((v) => v.toJson()).toList();
-    }
-    return data;
-  }
 }
 
 class Product {
   int? id;
   String? name;
   int? price;
+  int? count = 0;
 
-  Product({this.id, this.name, this.price});
+  Product({this.id, this.name, this.price, this.count});
 
   Product.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -37,11 +30,4 @@ class Product {
     price = json['price'];
   }
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['name'] = this.name;
-    data['price'] = this.price;
-    return data;
-  }
 }

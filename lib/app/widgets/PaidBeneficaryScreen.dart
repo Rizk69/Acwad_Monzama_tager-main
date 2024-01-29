@@ -202,7 +202,8 @@ class PaidBeneficaryScreen extends StatelessWidget {
                     paidBeneficaryId: paidBeneficaryId,
                     vendorId: vendorId,
                     beneficaryId: beneficaryId,
-                    date: formattedDate);
+                    date: formattedDate
+                );
                 // Put your code here for what happens after confirmation
                 Navigator.of(context).pop(); // Dismiss the dialog
               },

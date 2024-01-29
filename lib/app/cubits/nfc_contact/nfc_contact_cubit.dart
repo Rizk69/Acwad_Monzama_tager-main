@@ -16,30 +16,65 @@ part 'nfc_contact_state.dart';
 
 class NfcDataCubit extends Cubit<NfcDataState> {
   NfcDataCubit() : super(NfcDataInitial());
-  List<Product?> scannedItems = [];
-  List<ProductBody> selectscannedItems = [];
   ProductModel productModel = ProductModel(message: '', product: []);
-  ProductBody productBody = ProductBody(productId: 0, count: 0);
+  ProductBody productBody = ProductBody(id: 0, count: 0);
 
   static NfcDataCubit get(context) => BlocProvider.of(context);
 
+
+  List<Product?> scannedItems = [];
   void addProduct(Product product) {
-    scannedItems.add(product);
-    // emit(AddProductScusses());
-  }
+    emit(AddProductLoading());
 
-  void addProductAndSend(ProductBody productBody) {
-    selectscannedItems.add(productBody);
+    int index = scannedItems.indexWhere((p) => p?.id == product.id);
+    if (index != -1) {
+      scannedItems[index]?.count = (scannedItems[index]?.count ?? 0) + 1;
+    } else {
+      product.count = 1;
+      scannedItems.add(product);
+    }
+    emit(AddProductSuccess());
   }
-
+  removeProduct(int index) {
+    emit(RemoveProductLoading());
+    scannedItems.removeAt(index);
+    emit(RemoveProductSuccess());
+  }
   double calculateTotalPrice() {
     double totalPrice = 0.0;
     for (Product? product in scannedItems) {
       if (product != null && product.price != null) {
-        totalPrice += product.price!;
+        totalPrice += product.price! *  product.count!;
       }
     }
     return totalPrice;
+  }
+
+
+
+  List<ProductBody> productsBody = [];
+  void convertScannedItemsToProductsBody({
+    required int paidBeneficaryId,
+    required int vendorId,
+    required int beneficaryId,
+    required String date,
+}) {
+    productsBody = scannedItems.map((Product? product) {
+      if (product != null) {
+        return ProductBody(
+          id: product.id ?? 0,
+          count: product.count ?? 0,
+        );
+      } else {
+        return ProductBody(id: 0, count: 0);
+      }
+    }).toList();
+    invoiceBeneficaryCategory(
+      date: date,
+      paidBeneficaryId:paidBeneficaryId ,
+      beneficaryId: beneficaryId,
+      vendorId: vendorId,
+    );
   }
 
   Future<bool> getCategoryInvoiceShow({
@@ -53,8 +88,9 @@ class NfcDataCubit extends Cubit<NfcDataState> {
       Map<String, String> headers = {'Accept': 'application/json'};
 
       var response = await http.get(paidBeneficaryId, headers: headers);
-      if (response.statusCode == 200) {
-        var body = jsonDecode(response.body);
+      var body = jsonDecode(response.body);
+
+      if (response.statusCode == 200 && body['product'].length > 0) {
         productModel = ProductModel.fromJson(body);
         if (productModel.message == 'Success') {
           print(productModel.message);
@@ -62,8 +98,7 @@ class NfcDataCubit extends Cubit<NfcDataState> {
           emit(NfcDataLoaded());
           return true;
         } else {
-          emit(NfcDataError(
-              'Failed to load data: ${productModel.message ?? 'Not Found'}'));
+          emit(NfcDataError('Failed to load data: ${productModel.message ?? 'Not Found'}'));
           return false;
         }
       } else {
@@ -82,26 +117,39 @@ class NfcDataCubit extends Cubit<NfcDataState> {
     required int paidBeneficaryId,
     required int vendorId,
     required int beneficaryId,
-    required int date,
+    required String date,
   }) async {
+    emit(MakeCashLoadingState());
     try {
-      var paidBeneficaryId = Uri.parse(ApiHelper.setInvoiceBeneficary);
+      var paidBeneficaryUrl = Uri.parse("${ApiHelper.setInvoiceBeneficary}?PaidBeneficaryId=$paidBeneficaryId&vendorId=$vendorId&beneficaryId=$beneficaryId&date=$date");
 
       Map<String, String> headers = {'Accept': 'application/json'};
 
-      Map<String, List<String>> body = {
-        'Product': ["$productBody"]
+      Map<String, dynamic> requestBody = {
+        'product': productsBody.map((product) {
+          return {
+            'pro_id': product.id.toString(),
+            'count': product.count.toString(),
+          };
+        }).toList(),
       };
 
-      var response =
-          await http.post(paidBeneficaryId, body: body, headers: headers);
+      var response = await http.post(paidBeneficaryUrl, body: jsonEncode(requestBody), headers: headers);
+      var body = jsonDecode(response.body);
 
       if (response.statusCode == 200) {
-      } else {}
+        print(body);
+        emit(BuyProductsSuccessState());
+      } else {
+        emit(BuyProductsErrorState("Statues code is ${response.statusCode}: and message is  ${body["message"]}"));
+      }
     } catch (e) {
+      emit(BuyProductsErrorState(e.toString()));
       print(e.toString());
     }
   }
+
+
 
   makeCashPayment({
     required int paidBeneficaryId,
@@ -191,10 +239,10 @@ class NfcDataCubit extends Cubit<NfcDataState> {
 }
 
 class ProductBody {
-  int? productId;
+  int? id;
   int? count;
 
-  ProductBody({this.productId, this.count});
+  ProductBody({this.id, this.count});
 }
 
 // setInvoice(InvoiceData invoice) async {
