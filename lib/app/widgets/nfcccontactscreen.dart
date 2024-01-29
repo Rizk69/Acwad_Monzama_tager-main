@@ -22,17 +22,18 @@ class _NfcContactCardScreenState extends State<NfcContactCardScreen> {
   ValueNotifier<dynamic> result = ValueNotifier(null);
   bool isNfcAvailable = false;
 
-  // @override
-  // void initState() {
-  //   checkNfcAvailability();
-  //   _tagRead();
-  //   super.initState();
-  // }
   @override
   void initState() {
-    showPasswordDialog("63F84986");
+    checkNfcAvailability();
+    _tagRead();
     super.initState();
   }
+
+  // @override
+  // void initState() {
+  //   showPasswordDialog("63F84986");
+  //   super.initState();
+  // }
 
   Future<void> checkNfcAvailability() async {
     try {

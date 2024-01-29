@@ -5,6 +5,7 @@ import 'package:smartcard/app/utils/color_manager.dart';
 
 import '../cubits/nfc_contact/nfc_contact_cubit.dart';
 
+import '../models/ProductModel.dart';
 import '../models/benficary_data_model.dart';
 
 class AddInvoice extends StatelessWidget {
@@ -84,23 +85,8 @@ class AddInvoice extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.all(15.0),
                         child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            // DropdownButtonFormField<String>(
-                            //     onChanged: (value) {
-                            //     },
-                            //     items: ['دولار', 'ليرة'].map<DropdownMenuItem<String>>(
-                            //           (String value) {
-                            //         return DropdownMenuItem<String>(
-                            //           value: value,
-                            //           child: Text(value),
-                            //         );
-                            //       },
-                            //     ).toList(),
-                            //     decoration: const InputDecoration(
-                            //       labelText: 'العملة',
-                            //       prefixIcon: Icon(Icons.account_balance_wallet),
-                            //     ),
-                            //     ),
                             DropdownButton(
                               items: NfcDataCubit.get(context)
                                   .productModel
@@ -108,22 +94,28 @@ class AddInvoice extends StatelessWidget {
                                   .map((product) {
                                 return DropdownMenuItem(
                                   value: product.name,
-                                  child: Text(product.name ?? 'notFound'),
+                                  child: Text(product.name ?? 'notFound',
+                                      style: TextStyle(color: Colors.black)),
                                 );
                               }).toList(),
-                              onChanged: (value) {},
+                              onChanged: (selectedValue) {
+                                print('Selected value: $selectedValue');
+                                Product? selectedProduct =
+                                    NfcDataCubit.get(context)
+                                        .productModel
+                                        .product!
+                                        .firstWhere((product) =>
+                                            product.name == selectedValue);
+                                NfcDataCubit.get(context)
+                                    .addProduct(selectedProduct);
+                              },
                               icon: const Icon(Icons.list_alt),
-                            ),
-                            IconButton(
-                              onPressed: () async {},
-                              icon: const Icon(Icons.add),
-                              iconSize: 48.0,
                             ),
                           ],
                         ),
                       ),
                       Text(
-                        'مجموع الفاتورة  :    ${''}',
+                        'مجموع الفاتورة  : ${NfcDataCubit.get(context).calculateTotalPrice().toStringAsFixed(2)}',
                         style: const TextStyle(
                             fontSize: 18, fontWeight: FontWeight.bold),
                         // Ad
@@ -143,33 +135,46 @@ class AddInvoice extends StatelessWidget {
                                     DataColumn(label: Text('الكمية')),
                                     DataColumn(label: Text('')),
                                   ],
-                                  rows: [],
-                                  // rows: scannedItems.map((product) {
-                                  //   int index = scannedItems.indexOf(product);
-                                  //   return DataRow(cells: [
-                                  //     DataCell(Text("${index + 1}")),
-                                  //     DataCell(Text(product?.nameAr ?? '')),
-                                  //     DataCell(
-                                  //         Text(product?.price.toString() ?? '')),
-                                  //     const DataCell(Text("1")),
-                                  //     DataCell(IconButton(
-                                  //       color: ColorManager.error,
-                                  //       onPressed: () {
-                                  //         setState(() {
-                                  //           scannedItems.removeAt(
-                                  //               index); // Remove item from the list
-                                  //         });
-                                  //       },
-                                  //       icon: const Icon(Icons.delete),
-                                  //     )),
-                                  //   ]);
-                                  // }).toList(),
+                                  rows: List<DataRow>.generate(
+                                    NfcDataCubit.get(context)
+                                        .scannedItems
+                                        .length,
+                                    (index) {
+                                      final product = NfcDataCubit.get(context)
+                                          .scannedItems[index];
+                                      return DataRow(cells: [
+                                        DataCell(Text((index + 1).toString())),
+                                        DataCell(
+                                            Text(product?.name ?? 'Unknown')),
+                                        DataCell(Text(
+                                            product?.price.toString() ??
+                                                'Unknown')),
+                                        const DataCell(Text('1')),
+                                        DataCell(IconButton(
+                                          color: ColorManager.error,
+                                          onPressed: () {
+                                            NfcDataCubit.get(context)
+                                                .scannedItems
+                                                .removeAt(index);
+                                          },
+                                          icon: const Icon(Icons.delete),
+                                        )),
+                                      ]);
+                                    },
+                                  ),
                                 ),
                               ],
                             ),
                           ),
                         ),
                       ),
+                      Spacer(),
+                      ElevatedButton(
+                          onPressed: () {
+                            var model = NfcDataCubit.get(context).scannedItems;
+                            print(model.first?.id);
+                          },
+                          child: const Text('Continue'))
 
                       // Display the total price of all items  9878
 
@@ -282,3 +287,37 @@ class AddInvoice extends StatelessWidget {
     );
   }
 }
+// Row(
+//   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+//   children: [
+//     DropdownButton(
+//       items: NfcDataCubit.get(context)
+//           .productModel
+//           .product!
+//           .map((product) {
+//         return DropdownMenuItem(
+//           value: product.name,
+//           child: Text(product.name ?? 'notFound',style: TextStyle(color: Colors.black)),
+//         );
+//       }).toList(),
+//       onChanged: (selectedValue) {
+//         print('Selected value: $selectedValue');
+//         Product? selectedProduct = NfcDataCubit.get(context)
+//             .productModel
+//             .product!
+//             .firstWhere((product) => product.name == selectedValue);
+//
+//         NfcDataCubit.get(context).addProduct(selectedProduct);
+//                                     },
+//       icon: const Icon(Icons.list_alt),
+//     ),
+//     IconButton(
+//       onPressed: () async {
+//         // NfcDataCubit.get(context).addProduct(selectedProduct);
+//
+//       },
+//       icon: const Icon(Icons.add),
+//       iconSize: 48.0,
+//     ),
+//   ],
+// ),

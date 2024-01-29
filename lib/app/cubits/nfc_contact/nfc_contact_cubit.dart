@@ -16,15 +16,30 @@ part 'nfc_contact_state.dart';
 
 class NfcDataCubit extends Cubit<NfcDataState> {
   NfcDataCubit() : super(NfcDataInitial());
-  ProductModel productModel = ProductModel(message: '', product: []);
   List<Product?> scannedItems = [];
+  List<ProductBody> selectscannedItems = [];
+  ProductModel productModel = ProductModel(message: '', product: []);
   ProductBody productBody = ProductBody(productId: 0, count: 0);
 
   static NfcDataCubit get(context) => BlocProvider.of(context);
 
   void addProduct(Product product) {
     scannedItems.add(product);
-    emit(AddProductScusses());
+    // emit(AddProductScusses());
+  }
+
+  void addProductAndSend(ProductBody productBody) {
+    selectscannedItems.add(productBody);
+  }
+
+  double calculateTotalPrice() {
+    double totalPrice = 0.0;
+    for (Product? product in scannedItems) {
+      if (product != null && product.price != null) {
+        totalPrice += product.price!;
+      }
+    }
+    return totalPrice;
   }
 
   Future<bool> getCategoryInvoiceShow({
