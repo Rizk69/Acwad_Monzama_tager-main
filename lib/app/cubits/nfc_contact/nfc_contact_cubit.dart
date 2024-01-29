@@ -57,8 +57,9 @@ class NfcDataCubit extends Cubit<NfcDataState> {
     required int paidBeneficaryId,
     required int vendorId,
     required int beneficaryId,
+    required int paidmoney,
     required String date,
-}) {
+  }) {
     productsBody = scannedItems.map((Product? product) {
       if (product != null) {
         return ProductBody(
@@ -71,9 +72,10 @@ class NfcDataCubit extends Cubit<NfcDataState> {
     }).toList();
     invoiceBeneficaryCategory(
       date: date,
-      paidBeneficaryId:paidBeneficaryId ,
+      paidBeneficaryId: paidBeneficaryId,
       beneficaryId: beneficaryId,
       vendorId: vendorId,
+      paidmoney: paidmoney,
     );
   }
 
@@ -117,11 +119,13 @@ class NfcDataCubit extends Cubit<NfcDataState> {
     required int paidBeneficaryId,
     required int vendorId,
     required int beneficaryId,
+    required int paidmoney,
     required String date,
   }) async {
     emit(MakeCashLoadingState());
     try {
-      var paidBeneficaryUrl = Uri.parse("${ApiHelper.setInvoiceBeneficary}?PaidBeneficaryId=$paidBeneficaryId&vendorId=$vendorId&beneficaryId=$beneficaryId&date=$date");
+      var paidBeneficaryUrl = Uri.parse(
+          "${ApiHelper.setInvoiceBeneficary}?PaidBeneficaryId=$paidBeneficaryId&vendorId=$vendorId&beneficaryId=$beneficaryId&date=$date&paidmoney=$paidmoney");
 
       Map<String, String> headers = {'Accept': 'application/json'};
 

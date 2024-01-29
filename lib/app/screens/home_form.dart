@@ -168,37 +168,40 @@ class _HomeFormState extends State<HomeForm>
                         ],
                       ),
                       body: Center(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            SizedBox(
-                                height: MediaQuery.of(context).size.height / 3,
-                                child: const NfcContactCardScreen()),
-                            // Padding(
-                            //   padding: const EdgeInsets.all(15.0),
-                            //   child: defaultButton(
-                            //     background: ColorManager.secondary,
-                            //       context: context,
-                            //       text: "إصدار فاتورة",
-                            //       function: () {
-                            //
-                            //         // Navigator.popAndPushNamed(
-                            //         //     context, Routes.contactCardRoute);
-                            //       }),
-                            // ),
-                            // Padding(
-                            //   padding: const EdgeInsets.all(15.0),
-                            //   child: defaultButton(
-                            //       background: ColorManager.secondary,
-                            //       context: context,
-                            //       text: "سحب  رصيد",
-                            //       function: () async {
-                            //         Navigator.popAndPushNamed(
-                            //             context, Routes.employeeCardRoute);
-                            //       }),
-                            // ),
-                          ],
+                        child: SingleChildScrollView(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                  height:
+                                      MediaQuery.of(context).size.height / 3,
+                                  child: const NfcContactCardScreen()),
+                              // Padding(
+                              //   padding: const EdgeInsets.all(15.0),
+                              //   child: defaultButton(
+                              //     background: ColorManager.secondary,
+                              //       context: context,
+                              //       text: "إصدار فاتورة",
+                              //       function: () {
+                              //
+                              //         // Navigator.popAndPushNamed(
+                              //         //     context, Routes.contactCardRoute);
+                              //       }),
+                              // ),
+                              // Padding(
+                              //   padding: const EdgeInsets.all(15.0),
+                              //   child: defaultButton(
+                              //       background: ColorManager.secondary,
+                              //       context: context,
+                              //       text: "سحب  رصيد",
+                              //       function: () async {
+                              //         Navigator.popAndPushNamed(
+                              //             context, Routes.employeeCardRoute);
+                              //       }),
+                              // ),
+                            ],
+                          ),
                         ),
                       )),
                 ),

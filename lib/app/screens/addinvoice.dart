@@ -68,7 +68,6 @@ class AddInvoice extends StatelessWidget {
                   ..hideCurrentSnackBar()
                   ..showSnackBar(snackBar);
               }
-
             },
             builder: (context, state) {
               if (state is! NfcDataError) {
@@ -142,12 +141,12 @@ class AddInvoice extends StatelessWidget {
                                   onChanged: (String? selectedValue) {
                                     if (selectedValue != null) {
                                       Product? selectedProduct =
-                                      NfcDataCubit.get(context)
-                                          .productModel
-                                          .product!
-                                          .firstWhere((product) =>
-                                      product.name ==
-                                          selectedValue);
+                                          NfcDataCubit.get(context)
+                                              .productModel
+                                              .product!
+                                              .firstWhere((product) =>
+                                                  product.name ==
+                                                  selectedValue);
                                       NfcDataCubit.get(context)
                                           .addProduct(selectedProduct);
                                     }
@@ -171,7 +170,8 @@ class AddInvoice extends StatelessWidget {
                       SizedBox(
                         height: 3.h,
                       ),
-                      Expanded(
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height / 2.3,
                         child: SingleChildScrollView(
                           scrollDirection: Axis.horizontal,
                           child: SingleChildScrollView(
@@ -220,22 +220,32 @@ class AddInvoice extends StatelessWidget {
                         ),
                       ),
                       const Spacer(),
-                      ElevatedButton(
-                          onPressed: () {
-                            var now = DateTime.now();
-                            String formattedDate =
-                            DateFormat('yyyy-MM-dd', 'en').format(now);
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: ElevatedButton(
+                              onPressed: () {
+                                var now = DateTime.now();
+                                String formattedDate =
+                                    DateFormat('yyyy-MM-dd', 'en').format(now);
 
-                            NfcDataCubit.get(context)
-                                .convertScannedItemsToProductsBody(
-                                vendorId: appStore.userId,
-                                paidBeneficaryId: paidBeneficaryModel
-                                    .paidBeneficary!.date![index].id!,
-                                beneficaryId:
-                                paidBeneficaryModel.beneficary!.id!,
-                                date: formattedDate);
-                          },
-                          child: const Text('Continue'))
+                                NfcDataCubit.get(context)
+                                    .convertScannedItemsToProductsBody(
+                                        paidmoney: int.parse(
+                                            NfcDataCubit.get(context)
+                                                .calculateTotalPrice()
+                                                .toStringAsFixed(0)),
+                                        vendorId: appStore.userId,
+                                        paidBeneficaryId: paidBeneficaryModel
+                                            .paidBeneficary!.date![index].id!,
+                                        beneficaryId:
+                                            paidBeneficaryModel.beneficary!.id!,
+                                        date: formattedDate);
+                              },
+                              child: const Text('Continue')),
+                        ),
+                      )
                     ],
                   ),
                 );

@@ -39,70 +39,74 @@ class DrawerData extends StatelessWidget {
         // Add onTap logic for 'تسجيل خروج'
       }),
     ];
-    return Container(
-      color: ColorManager.secondary,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(24, 48, 24, 12),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 5.pt),
-              child: SvgPicture.asset(
-                "assets/images/icon.svg",
-                width: 40.w,
+    return SingleChildScrollView(
+      child: Container(
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
+        color: ColorManager.secondary,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(24, 48, 24, 12),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 5.pt),
+                child: SvgPicture.asset(
+                  "assets/images/icon.svg",
+                  width: 40.w,
+                ),
               ),
-            ),
-            SizedBox(
-              height: 30,
-            ),
-            const Divider(
-              color: Colors.white54,
-            ),
-            ListView.builder(
-              itemCount: drawer.length,
-              shrinkWrap: true,
-              itemBuilder: (_, index) {
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 20, right: 12),
-                  child: InkWell(
-                    onTap: drawer[index].onTap,
-                    child: Container(
-                      height: 40,
-                      width: double.infinity,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Icon(
-                              drawer[index].icon,
-                              color: ColorManager.white,
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(0.0),
-                            child: Text(
-                              drawer[index].name,
-                              style: TextStyle(
-                                fontSize: 16,
+              SizedBox(
+                height: 30,
+              ),
+              const Divider(
+                color: Colors.white54,
+              ),
+              ListView.builder(
+                itemCount: drawer.length,
+                shrinkWrap: true,
+                itemBuilder: (_, index) {
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 20, right: 12),
+                    child: InkWell(
+                      onTap: drawer[index].onTap,
+                      child: Container(
+                        height: 40,
+                        width: double.infinity,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Icon(
+                                drawer[index].icon,
                                 color: ColorManager.white,
                               ),
                             ),
-                          ),
-                        ],
+                            Padding(
+                              padding: const EdgeInsets.all(0.0),
+                              child: Text(
+                                drawer[index].name,
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: ColorManager.white,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                );
-              },
-            ),
-            const Divider(
-              color: Colors.white54,
-            ),
-          ],
+                  );
+                },
+              ),
+              const Divider(
+                color: Colors.white54,
+              ),
+            ],
+          ),
         ),
       ),
     );
