@@ -1,4 +1,3 @@
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -7,7 +6,6 @@ import 'package:smartcard/app/cubits/Reports/reports_cubit.dart';
 import 'package:smartcard/app/models/invoice_beneficary.dart';
 import 'package:smartcard/app/widgets/build_invoice_card.dart';
 import 'package:smartcard/app/widgets/default_appbar.dart';
-import '../utils/color_manager.dart';
 import '../widgets/backgrond_image.dart';
 import 'invoicedetails.dart';
 
