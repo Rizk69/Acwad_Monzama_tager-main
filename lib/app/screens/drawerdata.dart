@@ -29,21 +29,22 @@ class DrawerData extends StatelessWidget {
       DrawerItem('التقارير', Icons.notes, () {
         Navigator.pushNamed(context, Routes.allInvoiceRoute);
       }),
-      DrawerItem('تسجيل خروج', Icons.exit_to_app, () async {
-        await logout(context);
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (context) => SignInScreen()),
-          (Route<dynamic> route) => false,
-        );
-        // Add onTap logic for 'تسجيل خروج'
-      }),
+
+      // DrawerItem('تسجيل خروج', Icons.exit_to_app, () async {
+      //   await logout(context);
+      //   Navigator.pushAndRemoveUntil(
+      //     context,
+      //     MaterialPageRoute(builder: (context) => SignInScreen()),
+      //     (Route<dynamic> route) => false,
+      //   );
+      //   // Add onTap logic for 'تسجيل خروج'
+      // }),
     ];
     return SingleChildScrollView(
       child: Container(
-        width: MediaQuery.of(context).size.width,
+        // width: MediaQuery.of(context).size.width/2,
         height: MediaQuery.of(context).size.height,
-        color: ColorManager.secondary,
+        color: Colors.white,
         child: Padding(
           padding: const EdgeInsets.fromLTRB(24, 48, 24, 12),
           child: Column(
@@ -82,7 +83,7 @@ class DrawerData extends StatelessWidget {
                               padding: const EdgeInsets.all(8.0),
                               child: Icon(
                                 drawer[index].icon,
-                                color: ColorManager.white,
+                                color: ColorManager.black,
                               ),
                             ),
                             Padding(
@@ -91,7 +92,7 @@ class DrawerData extends StatelessWidget {
                                 drawer[index].name,
                                 style: TextStyle(
                                   fontSize: 16,
-                                  color: ColorManager.white,
+                                  color: Color(0XFF6A6969),
                                 ),
                               ),
                             ),
@@ -102,9 +103,46 @@ class DrawerData extends StatelessWidget {
                   );
                 },
               ),
-              const Divider(
-                color: Colors.white54,
+              SizedBox(
+                height: 20,
               ),
+              Align(
+                alignment: Alignment.center,
+                child: ElevatedButton(
+                  style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Colors.transparent),
+                    shape: MaterialStateProperty.all<OutlinedBorder>(
+                      RoundedRectangleBorder(
+                        side: BorderSide(
+                          color: Color(0XFFEFBB4A),
+                          width: 1,
+                        ),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    elevation: MaterialStateProperty.all<double>(0),
+                  ),
+                  onPressed: () async {
+                    await logout(context);
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(builder: (context) => SignInScreen()),
+                      (Route<dynamic> route) => false,
+                    );
+                  },
+                  child: Text(
+                    'تسجيل الخروج',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+              ),
+              // const Divider(
+              //   color: Colors.black,
+              // ),
             ],
           ),
         ),

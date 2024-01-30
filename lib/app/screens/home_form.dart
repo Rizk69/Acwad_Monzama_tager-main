@@ -85,8 +85,7 @@ class _HomeFormState extends State<HomeForm>
 
   @override
   Widget build(BuildContext context) {
-    final rightSlide = MediaQuery.of(context).size.width * -0.65;
-    // Define the currentIndex variable here
+    final rightSlide = MediaQuery.of(context).size.width * -0.55;
     return PopScope(
       onPopInvoked: _onWillPop,
       child: AnimatedBuilder(
@@ -98,7 +97,7 @@ class _HomeFormState extends State<HomeForm>
             return Stack(children: [
               MyConnectivityStatefulWidget(),
               Scaffold(
-                backgroundColor: ColorManager.primary,
+                backgroundColor: Colors.white,
                 body: DrawerData(),
               ),
               Transform(
@@ -106,82 +105,71 @@ class _HomeFormState extends State<HomeForm>
                   ..translate(slide)
                   ..scale(scale),
                 alignment: Alignment.center,
-                child: Container(
-                  height: MediaQuery.of(context).size.height,
-                  decoration: const BoxDecoration(
-                    color: Colors.black,
-                    image: DecorationImage(
-                      image: AssetImage('assets/images/img_constraction.png'),
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                  child: Scaffold(
+                child: Scaffold(
+                    backgroundColor: Colors.white,
+                    appBar: AppBar(
                       backgroundColor: Colors.transparent,
-                      appBar: AppBar(
-                        backgroundColor: Colors.transparent,
-                        centerTitle: true,
-                        title: SvgPicture.asset(
-                          "assets/images/icon.svg",
-                          width: 40.w,
+                      centerTitle: true,
+                      // title: SvgPicture.asset(
+                      //   "assets/images/icon.svg",
+                      //   width: 40.w,
+                      // ),
+                      leading: IconButton(
+                        onPressed: () => _toggleAnimation(),
+                        icon: AnimatedIcon(
+                          color: ColorManager.baseYellow,
+                          icon: AnimatedIcons.menu_close,
+                          progress: _animationController,
                         ),
-                        leading: IconButton(
-                          onPressed: () => _toggleAnimation(),
-                          icon: AnimatedIcon(
-                            color: ColorManager.baseYellow,
-                            icon: AnimatedIcons.menu_close,
-                            progress: _animationController,
-                          ),
-                        ),
-                        actions: [
-                          Stack(
-                            children: [
-                              IconButton(
-                                onPressed: () async {
-                                  await dbHelper.getAllInvoices();
-                                  _getInvoiceCount();
-                                },
-                                color: ColorManager.baseYellow,
-                                icon: const Icon(Icons.notifications),
-                              ),
-                              invoiceCount > 0
-                                  ? Positioned(
-                                      right: 10,
-                                      child: Container(
-                                        padding: const EdgeInsets.all(2),
-                                        decoration: const BoxDecoration(
-                                          color: Colors.red,
-                                          shape: BoxShape.circle,
-                                        ),
-                                        child: Text(
-                                          invoiceCount.toString(),
-                                          style: const TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ),
-                                    )
-                                  : const SizedBox.shrink(),
-                            ],
-                          ),
-                        ],
                       ),
-                      body: Center(
-                        child: SingleChildScrollView(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              SizedBox(
-                                  height:
-                                      MediaQuery.of(context).size.height / 3,
-                                  child: const NfcContactCardScreen()),
-                            ],
-                          ),
+                      // actions: [
+                      //   Stack(
+                      //     children: [
+                      //       IconButton(
+                      //         onPressed: () async {
+                      //           await dbHelper.getAllInvoices();
+                      //           _getInvoiceCount();
+                      //         },
+                      //         color: ColorManager.baseYellow,
+                      //         icon: const Icon(Icons.notifications),
+                      //       ),
+                      //       invoiceCount > 0
+                      //           ? Positioned(
+                      //               right: 10,
+                      //               child: Container(
+                      //                 padding: const EdgeInsets.all(2),
+                      //                 decoration: const BoxDecoration(
+                      //                   color: Colors.red,
+                      //                   shape: BoxShape.circle,
+                      //                 ),
+                      //                 child: Text(
+                      //                   invoiceCount.toString(),
+                      //                   style: const TextStyle(
+                      //                     color: Colors.white,
+                      //                     fontSize: 12,
+                      //                     fontWeight: FontWeight.bold,
+                      //                   ),
+                      //                 ),
+                      //               ),
+                      //             )
+                      //           : const SizedBox.shrink(),
+                      //     ],
+                      //   ),
+                      // ],
+                    ),
+                    body: Center(
+                      child: SingleChildScrollView(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SizedBox(
+                                height: MediaQuery.of(context).size.height,
+                                child: const NfcContactCardScreen()),
+                          ],
                         ),
-                      )),
-                ),
+                      ),
+                    )),
               )
             ]);
           }),

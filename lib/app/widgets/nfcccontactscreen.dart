@@ -324,7 +324,7 @@ class _NfcContactCardScreenState extends State<NfcContactCardScreen> {
           SnackBar(
             content: Text(responseBody['exists'] == false ? 'False' : 'True'),
             backgroundColor:
-            responseBody['exists'] == false ? Colors.red : Colors.green,
+                responseBody['exists'] == false ? Colors.red : Colors.green,
           ),
         );
         print('Server response: ${response.body}');
@@ -363,7 +363,8 @@ class _NfcContactCardScreenState extends State<NfcContactCardScreen> {
 
       if (response.statusCode == 200) {
         Map<String, dynamic> responseBody = jsonDecode(response.body);
-        BeneficaryNfcModel beneficaryNfcModel = BeneficaryNfcModel.fromJson(responseBody);
+        BeneficaryNfcModel beneficaryNfcModel =
+            BeneficaryNfcModel.fromJson(responseBody);
         ScaffoldMessenger.of(context).hideCurrentSnackBar();
         Navigator.pushReplacement(
           context,
@@ -409,31 +410,89 @@ class _NfcContactCardScreenState extends State<NfcContactCardScreen> {
 
   Widget showPasswordDialog(String cardId) {
     String password = '';
-    return AlertDialog(
-      title: const Text('Enter Password'),
-      content: TextFormField(
-        obscureText: true,
-        onChanged: (value) {
-          password = value;
-        },
-        decoration: const InputDecoration(
-          labelText: 'Password',
+    return Center(
+      child: Container(
+        margin: EdgeInsets.all(15),
+        height: MediaQuery.of(context).size.height / 3,
+        width: MediaQuery.of(context).size.width,
+        padding: EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(15),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.5),
+              spreadRadius: 5,
+              blurRadius: 7,
+              offset: const Offset(0, 8),
+            ),
+          ],
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            Text(
+              'أدخل كلمة المرور',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 18.0,
+                fontWeight: FontWeight.bold,
+                color: Colors.black, // Adjust text color
+              ),
+            ),
+            SizedBox(height: 23),
+            TextFormField(
+              obscureText: true,
+              onChanged: (value) {
+                password = value;
+              },
+              decoration: InputDecoration(
+                enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(13),
+                    borderSide: BorderSide(color: Colors.grey)),
+                focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(13),
+                    borderSide: BorderSide(color: Colors.grey)),
+                fillColor: Colors.white,
+                labelText: 'كلمة المرور',
+                border: OutlineInputBorder(
+                  borderSide: const BorderSide(color: Colors.grey, width: 1),
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+              ),
+            ),
+            Spacer(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                TextButton(
+                  onPressed: () async {
+                    await _checkPasswordNfc(cardId, password);
+                  },
+                  child: Text(
+                    'موافق',
+                    style: TextStyle(
+                      color: Colors.grey,
+                    ),
+                  ),
+                ),
+                SizedBox(width: 24.0),
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text(
+                    'إلغاء',
+                    style: TextStyle(
+                      color: Colors.grey,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
         ),
       ),
-      actions: <Widget>[
-        TextButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          child: const Text('Cancel'),
-        ),
-        TextButton(
-          onPressed: () async {
-            await _checkPasswordNfc(cardId, password);
-          },
-          child: const Text('OK'),
-        ),
-      ],
     );
   }
 
@@ -441,17 +500,16 @@ class _NfcContactCardScreenState extends State<NfcContactCardScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        body:
-            showPasswordDialog("336F7E86"),
-            // isNfcAvailable
-            //     ? Center(
-            //         child: Image.asset(
-            //           'assets/images/card.png',
-            //           height: 200,
-            //           width: 200,
-            //         ),
-            //       )
-            //     : const Center(child: Text('NFC is not available')),
+        body: showPasswordDialog("336F7E86"),
+        // isNfcAvailable
+        //     ? Center(
+        //         child: Image.asset(
+        //           'assets/images/card.png',
+        //           height: 200,
+        //           width: 200,
+        //         ),
+        //       )
+        //     : const Center(child: Text('NFC is not available')),
       ),
     );
   }
