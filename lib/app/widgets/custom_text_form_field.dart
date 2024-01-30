@@ -21,16 +21,14 @@ class CustomTextFormField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      style: const TextStyle(color: Colors.white),
-
+      style: const TextStyle(color: Colors.black),
       controller: controller,
       decoration: InputDecoration(
         hintText: hintText,
-        hintStyle: Styles.textStyleTitle16.copyWith(color: Colors.white),
+        hintStyle: Styles.textStyleTitle16.copyWith(color: Colors.black),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12.0),
         ),
-
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12.0),
           borderSide: const BorderSide(
@@ -45,15 +43,10 @@ class CustomTextFormField extends StatelessWidget {
             width: 2.0,
           ),
         ),
-
         prefixIcon: prefix,
-        // style: textStyle ?? CustomTextStyles.titleMedium16,
-        // obscureText: obscureText!,
       ),
-      // textInputAction: textInputAction,
       keyboardType: textInputType,
-      // maxLines: maxLines ?? 1,
-      // decoration: decoration,
+
       validator: validator,
     );
   }
