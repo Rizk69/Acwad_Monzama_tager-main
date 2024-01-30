@@ -39,7 +39,11 @@ class MakeCashErrorState extends NfcDataState {
   const MakeCashErrorState(this.error);
 }
 
-class MakeCashSuccessState extends NfcDataState {}
+class MakeCashSuccessState extends NfcDataState {
+  Invoice invoice;
+
+  MakeCashSuccessState(this.invoice);
+}
 
 class MakeCashLoadingState extends NfcDataState {}
 

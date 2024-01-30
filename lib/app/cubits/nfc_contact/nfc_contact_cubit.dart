@@ -7,6 +7,7 @@ import 'package:smartcard/app/models/ProductModel.dart';
 import 'package:smartcard/app/models/benficary_data_model.dart';
 import 'package:smartcard/app/models/invoice.dart';
 import 'package:smartcard/app/widgets/PaidBeneficaryScreen.dart';
+import 'package:smartcard/app/widgets/print_beneficary_Invoice.dart';
 
 import '../../models/model_keys.dart';
 import '../../network/api_end_points.dart';
@@ -116,6 +117,10 @@ class NfcDataCubit extends Cubit<NfcDataState> {
     }
   }
 
+
+
+  Invoice? beneficaryInvoice;
+
   Future<void> invoiceBeneficaryCategory({
     required int paidBeneficaryId,
     required int vendorId,
@@ -144,6 +149,8 @@ class NfcDataCubit extends Cubit<NfcDataState> {
 
       if (response.statusCode == 200) {
         print(body);
+        beneficaryInvoice = Invoice.fromJson(body);
+        printInvoice(beneficaryInvoice);
         emit(BuyProductsSuccessState());
       } else {
         emit(BuyProductsErrorState("Statues code is ${response.statusCode}: and message is  ${body["message"]}"));
@@ -171,8 +178,9 @@ class NfcDataCubit extends Cubit<NfcDataState> {
 
     await http.post(cashURL, headers: headers).then((value) {
       var body = jsonDecode(value.body);
-
-      emit(MakeCashSuccessState());
+      cashInvoice = Invoice.fromJson(body);
+      printInvoice(cashInvoice);
+      emit(MakeCashSuccessState(cashInvoice!));
     }).catchError((onError) {
       emit(MakeCashErrorState(onError.toString()));
     });
