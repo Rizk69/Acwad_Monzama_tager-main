@@ -3,6 +3,7 @@ import 'package:smartcard/app/widgets/nfcccontactscreen.dart';
 import '../../main.dart';
 import '../utils/color_manager.dart';
 import '../widgets/MyConnectivityStatefulWidget.dart';
+import '../widgets/backgrond_image.dart';
 import 'drawerdata.dart';
 
 class HomeForm extends StatefulWidget {
@@ -97,37 +98,46 @@ class _HomeFormState extends State<HomeForm>
                   ..translate(slide)
                   ..scale(scale),
                 alignment: Alignment.center,
-                child: Scaffold(
-                    backgroundColor: Colors.white,
-                    appBar: AppBar(
-                      backgroundColor: Colors.white,
-                      centerTitle: true,
-                      elevation: 0,
-                      leading: IconButton(
-                        onPressed: () => _toggleAnimation(),
-                        icon: AnimatedIcon(
-                          color: ColorManager.black,
-                          icon: AnimatedIcons.menu_close,
-                          progress: _animationController,
-                        ),
-                      ),
-                    ),
-                    body: Container(
-                      color: Colors.white,
-                      child: Center(
-                        child: SingleChildScrollView(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              SizedBox(
-                                  height: MediaQuery.of(context).size.height,
-                                  child: const NfcContactCardScreen()),
-                            ],
+                child: Container(
+                  color: Colors.white,
+                  child: Stack(
+                    children: [
+                      imageBackground(context),
+                      Scaffold(
+                          backgroundColor: Colors.transparent,
+                          appBar: AppBar(
+                            backgroundColor: Colors.transparent,
+                            centerTitle: true,
+                            // elevation: 0,
+                            leading: IconButton(
+                              onPressed: () => _toggleAnimation(),
+                              icon: AnimatedIcon(
+                                color: ColorManager.black,
+                                icon: AnimatedIcons.menu_close,
+                                progress: _animationController,
+                              ),
+                            ),
                           ),
-                        ),
-                      ),
-                    )),
+                          body: Container(
+                            color: Colors.transparent,
+                            child: Center(
+                              child: SingleChildScrollView(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    SizedBox(
+                                        height:
+                                            MediaQuery.of(context).size.height,
+                                        child: const NfcContactCardScreen()),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          )),
+                    ],
+                  ),
+                ),
               )
             ]);
           }),

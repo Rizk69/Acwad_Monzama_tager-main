@@ -244,6 +244,7 @@ import 'package:http/http.dart' as http;
 import 'package:smartcard/app/cubits/nfc_contact/nfc_contact_cubit.dart';
 import '../models/BeneficaryNfcModel.dart';
 import 'BeneficaryNfcScreen.dart';
+import 'backgrond_image.dart';
 
 class NfcContactCardScreen extends StatefulWidget {
   const NfcContactCardScreen({Key? key}) : super(key: key);
@@ -499,17 +500,26 @@ class _NfcContactCardScreenState extends State<NfcContactCardScreen> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Scaffold(
-        body: showPasswordDialog("336F7E86"),
-        // isNfcAvailable
-        //     ? Center(
-        //         child: Image.asset(
-        //           'assets/images/card.png',
-        //           height: 200,
-        //           width: 200,
-        //         ),
-        //       )
-        //     : const Center(child: Text('NFC is not available')),
+      child: Container(
+        color: Colors.white,
+        child: Stack(
+          children: [
+            imageBackground(context),
+            Scaffold(
+              backgroundColor: Colors.transparent,
+              body: showPasswordDialog("336F7E86"),
+              // isNfcAvailable
+              // ? Center(
+              //     child: Image.asset(
+              //       'assets/images/arcticons_pdf-doc-scan.png',
+              //       height: 200,
+              //       width: 200,
+              //     ),
+              //   )
+              // : const Center(child: Text('NFC is not available')),
+            ),
+          ],
+        ),
       ),
     );
   }
