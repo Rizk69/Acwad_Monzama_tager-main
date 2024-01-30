@@ -169,8 +169,7 @@ class NfcDataCubit extends Cubit<NfcDataState> {
     print(paidBeneficaryId);
     print(date);
 
-    var cashURL = Uri.parse(
-        "${ApiHelper.setInvoiceBeneficary}?PaidBeneficaryId=$paidBeneficaryId&vendorId=$vendorId&beneficaryId=$beneficaryId&date=$date&paidmoney=$paidMoney");
+    var cashURL = Uri.parse("${ApiHelper.setInvoiceBeneficary}?PaidBeneficaryId=$paidBeneficaryId&vendorId=$vendorId&beneficaryId=$beneficaryId&date=$date&paidmoney=$paidMoney");
 
     Map<String, String> headers = {'Accept': 'application/json'};
 
@@ -249,36 +248,3 @@ class ProductBody {
 
   ProductBody({this.id, this.count});
 }
-
-// setInvoice(InvoiceData invoice) async {
-//   if (!await isNetworkAvailable()) {
-//     await dbHelper.saveInvoice(invoice);
-//     final newBalance = savedContact.balance! - (invoice.total ?? 0);
-//     await dbHelper.updateContactBalance(savedContact.id, newBalance);
-//     emit(InvoiceDataLoaded(invoice, savedContact, ''));
-//   } else {
-//     Map request = invoice.toJson();
-//     appStore.setLoading(true);
-//     await addInvoice(request).then((res) async {
-//       if (res.status == true) {
-//         final newBalance = savedContact.balance! - (invoice.total ?? 0);
-//         await dbHelper.updateContactBalance(savedContact.id, newBalance);
-//         emit(InvoiceDataLoaded(invoice, savedContact, res.data ?? ''));
-//         toast("تم تسجيل الفاتورة");
-//       } else {
-//         toast(res.message.toString());
-//         await dbHelper.saveInvoice(invoice);
-//         final newBalance = savedContact.balance! - (invoice.total ?? 0);
-//         await dbHelper.updateContactBalance(savedContact.id, newBalance);
-//       }
-//     });
-//   }
-//   // Emit the NfcDataLoaded state with the contact data
-// }
-// static NfcDataCubit get(context) => BlocProvider.of(context);
-//
-// void setContact(ContactData contact) async {
-//   // savedContact = contact;
-//   // emit(NfcDataLoaded(contact));
-//   // List<InvoiceData> data = await dbHelper.getAllInvoices();
-// }

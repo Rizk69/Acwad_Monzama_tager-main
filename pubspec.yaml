@@ -46,6 +46,8 @@ dependencies:
   simple_gradient_text:
   flutter_svg:
   flutter_dialogs:
+  flutter_svg_provider:
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
