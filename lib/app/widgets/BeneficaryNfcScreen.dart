@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smartcard/app/cubits/nfc_contact/nfc_contact_cubit.dart';
 import 'package:smartcard/app/utils/color_manager.dart';
+import 'package:smartcard/app/widgets/PaidBeneficaryScreen.dart';
 import '../models/BeneficaryNfcModel.dart';
 
 class BeneficaryNfcScreen extends StatelessWidget {
@@ -28,7 +29,6 @@ class BeneficaryNfcScreen extends StatelessWidget {
           backgroundColor: Colors.transparent,
           appBar: AppBar(
             backgroundColor: ColorManager.baseYellow,
-
             title: const Text('User Information',
               style: TextStyle(
                 fontSize: 20,
@@ -74,9 +74,13 @@ class BeneficaryNfcScreen extends StatelessWidget {
                       backgroundColor: MaterialStateProperty.all(ColorManager.secondary),
                     ),
                     onPressed: () {
-                      cubit.getPaidBeneficary(
-                          beneficaryId: beneficaryNfcModel.data!.id ?? 5,
-                          context: context);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              PaidBeneficaryScreen(paidBeneficaryId: beneficaryNfcModel.data!.id!),
+                        ),
+                      );
                     },
         //beneficaryNfcModel.data!.id ??
                     child:

@@ -363,8 +363,7 @@ class _NfcContactCardScreenState extends State<NfcContactCardScreen> {
 
       if (response.statusCode == 200) {
         Map<String, dynamic> responseBody = jsonDecode(response.body);
-        BeneficaryNfcModel beneficaryNfcModel =
-        BeneficaryNfcModel.fromJson(responseBody);
+        BeneficaryNfcModel beneficaryNfcModel = BeneficaryNfcModel.fromJson(responseBody);
         ScaffoldMessenger.of(context).hideCurrentSnackBar();
         Navigator.pushReplacement(
           context,
@@ -442,15 +441,17 @@ class _NfcContactCardScreenState extends State<NfcContactCardScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        body: isNfcAvailable
-            ? Center(
-                child: Image.asset(
-                  'assets/images/card.png',
-                  height: 200,
-                  width: 200,
-                ),
-              )
-            : const Center(child: Text('NFC is not available')),
+        body:
+            showPasswordDialog("336F7E86"),
+            // isNfcAvailable
+            //     ? Center(
+            //         child: Image.asset(
+            //           'assets/images/card.png',
+            //           height: 200,
+            //           width: 200,
+            //         ),
+            //       )
+            //     : const Center(child: Text('NFC is not available')),
       ),
     );
   }
