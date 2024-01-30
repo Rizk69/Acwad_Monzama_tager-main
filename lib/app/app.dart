@@ -6,7 +6,6 @@ import 'package:responsive_sizer/responsive_sizer.dart';
 import '../main.dart';
 import '/app/utils/constants_manager.dart';
 import 'cubits/nfc_contact/nfc_contact_cubit.dart';
-import 'cubits/nfc_employee/nfc_employee_cubit.dart';
 import 'utils/routes_manager.dart';
 import 'utils/theme_manager.dart';
 
@@ -50,9 +49,6 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (context) {
-          return BalanceCubit();
-        }),
         BlocProvider(create: (context) {
           return NfcDataCubit();
         }),

@@ -31,16 +31,7 @@ class NfcDataLoaded extends NfcDataState {}
 
 class NfcDataLoading extends NfcDataState {}
 
-class InvoiceDataLoaded extends NfcDataState {
-  final InvoiceData invoice;
-  final ContactData contact;
-  final String dataId;
 
-  const InvoiceDataLoaded(this.invoice, this.contact, this.dataId);
-
-  @override
-  List<Object?> get props => [invoice, contact];
-}
 
 class MakeCashErrorState extends NfcDataState {
   final error;

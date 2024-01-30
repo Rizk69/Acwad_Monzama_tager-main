@@ -2,16 +2,11 @@ import 'package:smartcard/app/models/invoice_beneficary.dart';
 import 'package:smartcard/app/screens/all_invoices.dart';
 import 'package:smartcard/app/screens/login.dart';
 import '../../app/screens/home_form.dart';
-import '../models/model_keys.dart';
 import '../screens/Recipts.dart';
-import '../screens/addinvoice.dart';
-import '../screens/balancewithdrawal.dart';
 import '../screens/contactcard.dart';
 import '../screens/dailysales.dart';
 import '../screens/employeecard.dart';
 import '../screens/invoicedetails.dart';
-import '../screens/invoiceprint_contact.dart';
-import '../screens/invoiceprint_employee.dart';
 import '../screens/invoices.dart';
 import '../screens/profile.dart';
 import '/app/utils/strings_manager.dart';
@@ -40,21 +35,16 @@ class RouteGenerator {
     switch (settings.name) {
       case Routes.receiptsRoute:
         return MaterialPageRoute(builder: (_) => Receipts());
-      case Routes.invoicePrintEmployeeRoute:
-        return MaterialPageRoute(builder: (_) => const InvoicePrintEmployee());
       case Routes.dailySalesRoute:
         return MaterialPageRoute(builder: (_) => DailyInvoices());
       case Routes.employeeCardRoute:
         return MaterialPageRoute(builder: (_) => const EmployeeCard());
-      case Routes.invoicePrintContactRoute:
-        return MaterialPageRoute(builder: (_) => const InvoicePrintContact());
 
       case Routes.homeFormRoute:
         return MaterialPageRoute(builder: (_) => const HomeForm());
       case Routes.loginFormRoute:
         return MaterialPageRoute(builder: (_) => SignInScreen());
-      case Routes.balanceWithdrawalRoute:
-        return MaterialPageRoute(builder: (_) => const BalanceWithdrawal());
+
       case Routes.invoicesRoute:
         return MaterialPageRoute(builder: (_) => Invoices());
       case Routes.allInvoiceRoute:

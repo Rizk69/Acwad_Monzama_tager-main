@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smartcard/app/models/ProductModel.dart';
 import 'package:smartcard/app/models/benficary_data_model.dart';
+import 'package:smartcard/app/models/invoice.dart';
 import 'package:smartcard/app/widgets/PaidBeneficaryScreen.dart';
 
 import '../../models/model_keys.dart';
@@ -154,7 +155,7 @@ class NfcDataCubit extends Cubit<NfcDataState> {
   }
 
 
-
+  Invoice? cashInvoice;
   makeCashPayment({
     required int paidBeneficaryId,
     required int vendorId,
@@ -164,21 +165,15 @@ class NfcDataCubit extends Cubit<NfcDataState> {
   }) async {
     emit(MakeCashLoadingState());
 
-    print(vendorId);
-    print(beneficaryId);
-    print(paidBeneficaryId);
-    print(date);
-
     var cashURL = Uri.parse("${ApiHelper.setInvoiceBeneficary}?PaidBeneficaryId=$paidBeneficaryId&vendorId=$vendorId&beneficaryId=$beneficaryId&date=$date&paidmoney=$paidMoney");
 
     Map<String, String> headers = {'Accept': 'application/json'};
 
     await http.post(cashURL, headers: headers).then((value) {
       var body = jsonDecode(value.body);
-      print(body['message']);
+
       emit(MakeCashSuccessState());
     }).catchError((onError) {
-      print(onError);
       emit(MakeCashErrorState(onError.toString()));
     });
   }
@@ -200,42 +195,15 @@ class NfcDataCubit extends Cubit<NfcDataState> {
         paidBeneficary = PaidBeneficaryModel.fromJson(body);
         print(paidBeneficary.beneficary?.fullName ?? 'No name available');
         if (paidBeneficary.message == 'Success') {
-          // Navigator.push(
-          //   context,
-          //   MaterialPageRoute(
-          //     builder: (context) =>
-          //         PaidBeneficaryScreen(paidBeneficaryModel: paidBeneficary),
-          //   ),
-          // );
           emit(GetPaidBeneficarySuccessState());
         } else {
-          // ScaffoldMessenger.of(context).showSnackBar(
-          //   SnackBar(
-          //     content: Text(paidBeneficary.message ?? 'Not Found'),
-          //     backgroundColor: Colors.red,
-          //   ),
-          // );
           emit(GetPaidBeneficaryErrorState(paidBeneficary.message.toString()));
 
         }
       } else {
-        // ScaffoldMessenger.of(context).showSnackBar(
-        //   SnackBar(
-        //     content: Text('Failed to load data'),
-        //     backgroundColor: Colors.red,
-        //   ),
-        // );
-        // في حالة فشل الاستجابة، يتم إصدار حالة خطأ
         emit(GetPaidBeneficaryErrorState('Failed to load data'));
       }
     } catch (e) {
-      // ScaffoldMessenger.of(context).showSnackBar(
-      //   SnackBar(
-      //     content: Text(e.toString()),
-      //     backgroundColor: Colors.red,
-      //   ),
-      // );
-
       print(e.toString());
       emit(GetPaidBeneficaryErrorState(e.toString()));
     }
