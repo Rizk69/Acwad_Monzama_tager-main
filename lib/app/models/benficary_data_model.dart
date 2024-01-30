@@ -85,6 +85,7 @@ class Date {
   String? cashOrCategory;
   int? uprove;
   int? paidMoney;
+  int? residualMoney;
   int? paidDone;
   int? type;
 
@@ -94,6 +95,7 @@ class Date {
       this.cashOrCategory,
       this.uprove,
       this.paidMoney,
+      this.residualMoney,
       this.type,
       this.paidDone});
 
@@ -103,6 +105,7 @@ class Date {
     cashOrCategory = json['cashOrCategory'];
     uprove = json['uprove'];
     paidMoney = json['paid_money'];
+    residualMoney = json['residual_money'];
     paidDone = json['paidDone'];
     type = json['type'];
   }
@@ -114,6 +117,7 @@ class Date {
     data['cashOrCategory'] = this.cashOrCategory;
     data['uprove'] = this.uprove;
     data['paid_money'] = this.paidMoney;
+    data['residual_money'] = this.residualMoney;
     data['paidDone'] = this.paidDone;
     data['type'] = this.type;
     return data;
