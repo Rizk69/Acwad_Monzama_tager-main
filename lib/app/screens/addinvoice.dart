@@ -230,16 +230,17 @@ class AddInvoice extends StatelessWidget {
                               ),
                             ),
                             const Spacer(),
-                            SizedBox(
-                              width: MediaQuery.of(context).size.width,
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
+                            Padding(
+                              padding:  EdgeInsets.symmetric(horizontal: 5.pt),
+                              child: SizedBox(
+                                width: MediaQuery.of(context).size.width,
                                 child: ElevatedButton(
+                                    style: ButtonStyle(
+                                      backgroundColor: MaterialStateProperty.all(ColorManager.baseYellow),
+                                    ),
                                     onPressed: () {
                                       var now = DateTime.now();
-                                      String formattedDate =
-                                          DateFormat('yyyy-MM-dd', 'en').format(now);
-              
+                                      String formattedDate = DateFormat('yyyy-MM-dd', 'en').format(now);
                                       NfcDataCubit.get(context)
                                           .convertScannedItemsToProductsBody(
                                               paidmoney: int.parse(
@@ -253,9 +254,14 @@ class AddInvoice extends StatelessWidget {
                                                   paidBeneficaryModel.beneficary!.id!,
                                               date: formattedDate);
                                     },
-                                    child: const Text('Continue')),
+                                    child: const Text('شراء',
+                                    style: TextStyle(color: Colors.white),
+                                    )),
                               ),
-                            )
+                            ),
+                            SizedBox(
+                              height: 2.h,
+                            ),
                           ],
                         ),
                       );
