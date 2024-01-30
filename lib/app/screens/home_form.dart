@@ -1,16 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:nb_utils/nb_utils.dart';
-import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:smartcard/app/widgets/nfcccontactscreen.dart';
-
 import '../../main.dart';
 import '../utils/color_manager.dart';
-import '../utils/database_helper.dart';
-import '../utils/routes_manager.dart';
 import '../widgets/MyConnectivityStatefulWidget.dart';
-import '../widgets/default_button_widget.dart';
 import 'drawerdata.dart';
 
 class HomeForm extends StatefulWidget {
@@ -96,7 +88,7 @@ class _HomeFormState extends State<HomeForm>
 
             return Stack(children: [
               MyConnectivityStatefulWidget(),
-              Scaffold(
+              const Scaffold(
                 backgroundColor: Colors.white,
                 body: DrawerData(),
               ),
@@ -142,26 +134,3 @@ class _HomeFormState extends State<HomeForm>
     );
   }
 }
-// Padding(
-//   padding: const EdgeInsets.all(15.0),
-//   child: defaultButton(
-//     background: ColorManager.secondary,
-//       context: context,
-//       text: "إصدار فاتورة",
-//       function: () {
-//
-//         // Navigator.popAndPushNamed(
-//         //     context, Routes.contactCardRoute);
-//       }),
-// ),
-// Padding(
-//   padding: const EdgeInsets.all(15.0),
-//   child: defaultButton(
-//       background: ColorManager.secondary,
-//       context: context,
-//       text: "سحب  رصيد",
-//       function: () async {
-//         Navigator.popAndPushNamed(
-//             context, Routes.employeeCardRoute);
-//       }),
-// ),
