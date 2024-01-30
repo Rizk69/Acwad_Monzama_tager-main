@@ -287,6 +287,59 @@ class AddInvoice extends StatelessWidget {
                               ],
                             ),
                           ),
+                                              DataCell(Text(
+                                                  product?.count.toString() ?? '0')),
+                                              DataCell(IconButton(
+                                                color: ColorManager.error,
+                                                onPressed: () {
+                                                  NfcDataCubit.get(context)
+                                                      .removeProduct(index);
+                                                },
+                                                icon: const Icon(Icons.delete),
+                                              )),
+                                            ]);
+                                          },
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const Spacer(),
+                            Padding(
+                              padding:  EdgeInsets.symmetric(horizontal: 5.pt),
+                              child: SizedBox(
+                                width: MediaQuery.of(context).size.width,
+                                child: ElevatedButton(
+                                    style: ButtonStyle(
+                                      backgroundColor: MaterialStateProperty.all(ColorManager.baseYellow),
+                                    ),
+                                    onPressed: () {
+                                      var now = DateTime.now();
+                                      String formattedDate = DateFormat('yyyy-MM-dd', 'en').format(now);
+                                      NfcDataCubit.get(context)
+                                          .convertScannedItemsToProductsBody(
+                                              paidmoney: int.parse(
+                                                  NfcDataCubit.get(context)
+                                                      .calculateTotalPrice()
+                                                      .toStringAsFixed(0)),
+                                              vendorId: appStore.userId,
+                                              paidBeneficaryId: paidBeneficaryModel
+                                                  .paidBeneficary!.date![index].id!,
+                                              beneficaryId:
+                                                  paidBeneficaryModel.beneficary!.id!,
+                                              date: formattedDate);
+                                    },
+                                    child: const Text('شراء',
+                                    style: TextStyle(color: Colors.white),
+                                    )),
+                              ),
+                            ),
+                            SizedBox(
+                              height: 2.h,
+                            ),
+                          ],
                         ),
                       );
                     }
