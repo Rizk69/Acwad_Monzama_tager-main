@@ -5,7 +5,6 @@ import '../../app/screens/home_form.dart';
 import '../screens/Recipts.dart';
 import '../screens/contactcard.dart';
 import '../screens/dailysales.dart';
-import '../screens/employeecard.dart';
 import '../screens/invoicedetails.dart';
 import '../screens/invoices.dart';
 import '../screens/profile.dart';
@@ -37,9 +36,6 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => Receipts());
       case Routes.dailySalesRoute:
         return MaterialPageRoute(builder: (_) => DailyInvoices());
-      case Routes.employeeCardRoute:
-        return MaterialPageRoute(builder: (_) => const EmployeeCard());
-
       case Routes.homeFormRoute:
         return MaterialPageRoute(builder: (_) => const HomeForm());
       case Routes.loginFormRoute:
