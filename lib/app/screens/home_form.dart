@@ -108,65 +108,31 @@ class _HomeFormState extends State<HomeForm>
                 child: Scaffold(
                     backgroundColor: Colors.white,
                     appBar: AppBar(
-                      backgroundColor: Colors.transparent,
+                      backgroundColor: Colors.white,
                       centerTitle: true,
-                      // title: SvgPicture.asset(
-                      //   "assets/images/icon.svg",
-                      //   width: 40.w,
-                      // ),
+                      elevation: 0,
                       leading: IconButton(
                         onPressed: () => _toggleAnimation(),
                         icon: AnimatedIcon(
-                          color: ColorManager.baseYellow,
+                          color: ColorManager.black,
                           icon: AnimatedIcons.menu_close,
                           progress: _animationController,
                         ),
                       ),
-                      // actions: [
-                      //   Stack(
-                      //     children: [
-                      //       IconButton(
-                      //         onPressed: () async {
-                      //           await dbHelper.getAllInvoices();
-                      //           _getInvoiceCount();
-                      //         },
-                      //         color: ColorManager.baseYellow,
-                      //         icon: const Icon(Icons.notifications),
-                      //       ),
-                      //       invoiceCount > 0
-                      //           ? Positioned(
-                      //               right: 10,
-                      //               child: Container(
-                      //                 padding: const EdgeInsets.all(2),
-                      //                 decoration: const BoxDecoration(
-                      //                   color: Colors.red,
-                      //                   shape: BoxShape.circle,
-                      //                 ),
-                      //                 child: Text(
-                      //                   invoiceCount.toString(),
-                      //                   style: const TextStyle(
-                      //                     color: Colors.white,
-                      //                     fontSize: 12,
-                      //                     fontWeight: FontWeight.bold,
-                      //                   ),
-                      //                 ),
-                      //               ),
-                      //             )
-                      //           : const SizedBox.shrink(),
-                      //     ],
-                      //   ),
-                      // ],
                     ),
-                    body: Center(
-                      child: SingleChildScrollView(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            SizedBox(
-                                height: MediaQuery.of(context).size.height,
-                                child: const NfcContactCardScreen()),
-                          ],
+                    body: Container(
+                      color: Colors.white,
+                      child: Center(
+                        child: SingleChildScrollView(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                  height: MediaQuery.of(context).size.height,
+                                  child: const NfcContactCardScreen()),
+                            ],
+                          ),
                         ),
                       ),
                     )),

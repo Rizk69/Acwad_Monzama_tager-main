@@ -4,7 +4,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lottie/lottie.dart';
 import 'package:smartcard/app/cubits/Reports/reports_cubit.dart';
 import 'package:smartcard/app/models/invoice_beneficary.dart';
+import 'package:smartcard/app/widgets/backgrond_image.dart';
 import 'package:smartcard/app/widgets/build_invoice_card.dart';
+import 'package:smartcard/app/widgets/default_appbar.dart';
 import 'package:smartcard/main.dart';
 import '../utils/color_manager.dart';
 import 'invoicedetails.dart';
@@ -18,66 +20,55 @@ class DailyInvoices extends StatelessWidget {
       child: BlocConsumer<ReportsCubit, ReportsState>(
         listener: (context, state) {},
         builder: (context, state) {
-          return Container(
-            height: MediaQuery.of(context).size.height,
-            decoration: const BoxDecoration(
-              color: Colors.black,
-              image: DecorationImage(
-                image: AssetImage('assets/images/img_constraction.png'),
-                fit: BoxFit.cover,
-              ),
-            ),
-            child: Scaffold(
-                backgroundColor: Colors.transparent,
-                appBar: AppBar(
-                  backgroundColor: ColorManager.secondary,
-                  title: const Text(
-                    'الفواتير',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                body: state is GetDailyInvoicesSuccessState &&
-                        ReportsCubit.get(context)
-                            .dailyInvoiceBeneficary
-                            .data!
-                            .isNotEmpty
-                    ? ListView.builder(
-                        padding: const EdgeInsets.all(16),
-                        itemCount: ReportsCubit.get(context)
-                            .dailyInvoiceBeneficary
-                            .data!
-                            .length,
-                        itemBuilder: (BuildContext context, int index) {
-                          final InvoiceBeneficary item =
-                              ReportsCubit.get(context).dailyInvoiceBeneficary;
-                          return Padding(
-                            padding: const EdgeInsets.only(bottom: 15),
-                            child: GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => InvoiceDetails(
-                                          item: item.data![index])),
-                                );
-                              },
-                              child: buildInvoiceCard(
-                                invoice: item,
-                                index: index,
-                              ),
+          return  Container(
+            color: Colors.white,
+            child: Stack(
+              children: [
+                imageBackground(context),
+                Scaffold(
+                    backgroundColor: Colors.transparent,
+                    appBar:defaultAppbar(title:"الفواتير اليومية" ),
+                    body: state is GetDailyInvoicesSuccessState &&
+                            ReportsCubit.get(context)
+                                .dailyInvoiceBeneficary
+                                .data!
+                                .isNotEmpty
+                        ? ListView.builder(
+                            padding: const EdgeInsets.all(16),
+                            itemCount: ReportsCubit.get(context)
+                                .dailyInvoiceBeneficary
+                                .data!
+                                .length,
+                            itemBuilder: (BuildContext context, int index) {
+                              final InvoiceBeneficary item =
+                                  ReportsCubit.get(context).dailyInvoiceBeneficary;
+                              return Padding(
+                                padding: const EdgeInsets.only(bottom: 15),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => InvoiceDetails(
+                                              item: item.data![index])),
+                                    );
+                                  },
+                                  child: buildInvoiceCard(
+                                    invoice: item,
+                                    index: index,
+                                  ),
+                                ),
+                              );
+                            },
+                          )
+                        : Center(
+                            child: Lottie.asset(
+                              'assets/images/empty_invoice.json',
+                              fit: BoxFit.fill,
                             ),
-                          );
-                        },
-                      )
-                    : Center(
-                        child: Lottie.asset(
-                          'assets/images/empty_invoice.json',
-                          fit: BoxFit.fill,
-                        ),
-                      )),
+                          )),
+              ],
+            ),
           );
         },
       ),

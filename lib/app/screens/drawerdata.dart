@@ -42,7 +42,6 @@ class DrawerData extends StatelessWidget {
     ];
     return SingleChildScrollView(
       child: Container(
-        // width: MediaQuery.of(context).size.width/2,
         height: MediaQuery.of(context).size.height,
         color: Colors.white,
         child: Padding(
@@ -51,14 +50,16 @@ class DrawerData extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 5.pt),
-                child: SvgPicture.asset(
-                  "assets/images/icon.svg",
-                  width: 40.w,
-                ),
-              ),
               SizedBox(
+                height: 5.h,
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 7.pt),
+                child: Image.asset("assets/images/icon.png",
+                width: 20.w,
+                )
+              ),
+              const SizedBox(
                 height: 30,
               ),
               const Divider(
@@ -90,7 +91,7 @@ class DrawerData extends StatelessWidget {
                               padding: const EdgeInsets.all(0.0),
                               child: Text(
                                 drawer[index].name,
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontSize: 16,
                                   color: Color(0XFF6A6969),
                                 ),
@@ -103,7 +104,7 @@ class DrawerData extends StatelessWidget {
                   );
                 },
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
               Align(
@@ -114,7 +115,7 @@ class DrawerData extends StatelessWidget {
                         MaterialStateProperty.all<Color>(Colors.transparent),
                     shape: MaterialStateProperty.all<OutlinedBorder>(
                       RoundedRectangleBorder(
-                        side: BorderSide(
+                        side: const BorderSide(
                           color: Color(0XFFEFBB4A),
                           width: 1,
                         ),
@@ -131,7 +132,7 @@ class DrawerData extends StatelessWidget {
                       (Route<dynamic> route) => false,
                     );
                   },
-                  child: Text(
+                  child: const Text(
                     'تسجيل الخروج',
                     style: TextStyle(
                       fontSize: 16,
