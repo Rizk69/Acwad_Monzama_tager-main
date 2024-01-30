@@ -38,7 +38,9 @@ class AddInvoice extends StatelessWidget {
               Scaffold(
                 backgroundColor: Colors.transparent,
                 resizeToAvoidBottomInset: false,
-                appBar: defaultAppbar(title:"إصدار فاتورة", ),
+                appBar: defaultAppbar(
+                  title: "إصدار فاتورة",
+                ),
                 body: BlocConsumer<NfcDataCubit, NfcDataState>(
                   listener: (context, state) {
                     if (state is BuyProductsSuccessState) {
@@ -65,198 +67,226 @@ class AddInvoice extends StatelessWidget {
                   builder: (context, state) {
                     if (state is! NfcDataError) {
                       return Center(
-                        child: Column(
-                          children: [
-                            SizedBox(
-                              height: 3.h,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                              child: Column(
-                                children: [
-                                  Row(
-                                    children: [
-                                      const Text(
-                                        'اسم المستفيد',
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      const SizedBox(width: 16.0),
-                                      Text(
-                                          '${paidBeneficaryModel.beneficary?.fullName}'),
-                                    ],
-                                  ),
-                                  SizedBox(
-                                    height: 2.h,
-                                  ),
-                                  Row(
-                                    children: [
-                                      const Text(
-                                        'الرصيد الحالي',
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      const SizedBox(width: 16.0),
-                                      Text(
-                                          '${paidBeneficaryModel.paidBeneficary?.date?[index].paidMoney}'),
-                                    ],
-                                  ),
-                                  SizedBox(
-                                    height: 2.h,
-                                  ),
-                                  Row(
-                                    children: [
-                                      const Text(
-                                        'الرصيد الدفعة المتبقي',
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      const SizedBox(width: 16.0),
-                                      Text(
-                                          '${paidBeneficaryModel.paidBeneficary?.date?[index].residualMoney}'),
-                                    ],
-                                  ),
-                                  SizedBox(
-                                    height: 2.h,
-                                  ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      const Text(
-                                        "اختار منتج",
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      const SizedBox(width: 16.0),
-                                      DropdownButton(
-                                        items: NfcDataCubit.get(context)
-                                            .productModel
-                                            .product!
-                                            .map((product) {
-                                          return DropdownMenuItem(
-                                            value: product.name,
-                                            child: Text(product.name ?? 'notFound',
-                                                style: const TextStyle(
-                                                    color: Colors.black)),
-                                          );
-                                        }).toList(),
-                                        onChanged: (String? selectedValue) {
-                                          if (selectedValue != null) {
-                                            Product? selectedProduct =
-                                                NfcDataCubit.get(context)
-                                                    .productModel
-                                                    .product!
-                                                    .firstWhere((product) =>
-                                                        product.name ==
-                                                        selectedValue);
-                                            NfcDataCubit.get(context)
-                                                .addProduct(selectedProduct);
-                                          }
-                                        },
-                                        icon: const Icon(Icons.list_alt),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                            SizedBox(
-                              height: 3.h,
-                            ),
-                            Text(
-                              'مجموع الفاتورة  : ${NfcDataCubit.get(context).calculateTotalPrice().toStringAsFixed(2)}',
-                              style: const TextStyle(
-                                  fontSize: 18, fontWeight: FontWeight.bold),
-                              // Ad
-                            ),
-                            SizedBox(
-                              height: 3.h,
-                            ),
-                            SizedBox(
-                              height: MediaQuery.of(context).size.height / 2.3,
-                              child: SingleChildScrollView(
-                                scrollDirection: Axis.horizontal,
-                                child: SingleChildScrollView(
-                                  scrollDirection: Axis.vertical,
+                        child: SingleChildScrollView(
+                          child: SizedBox(
+                            width: MediaQuery.of(context).size.width,
+                            height: MediaQuery.of(context).size.height * 0.9,
+                            child: Column(
+                              children: [
+                                SizedBox(
+                                  height: 3.h,
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 15.0),
                                   child: Column(
                                     children: [
-                                      DataTable(
-                                        columns: const [
-                                          DataColumn(label: Text('الرقم')),
-                                          DataColumn(label: Text('المادة')),
-                                          DataColumn(label: Text('السعر')),
-                                          DataColumn(label: Text('الكمية')),
-                                          DataColumn(label: Text('')),
+                                      Row(
+                                        children: [
+                                          const Text(
+                                            'اسم المستفيد',
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          const SizedBox(width: 16.0),
+                                          Text(
+                                              '${paidBeneficaryModel.beneficary?.fullName}'),
                                         ],
-                                        rows: List<DataRow>.generate(
-                                          NfcDataCubit.get(context)
-                                              .scannedItems
-                                              .length,
-                                              (index) {
-                                            final product = NfcDataCubit.get(context)
-                                                .scannedItems[index];
-                                            return DataRow(cells: [
-                                              DataCell(Text((index + 1).toString())),
-                                              DataCell(
-                                                  Text(product?.name ?? 'Unknown')),
-                                              DataCell(Text(
-                                                  product?.price.toString() ??
-                                                      'Unknown')),
-                                              DataCell(Text(
-                                                  product?.count.toString() ?? '0')),
-                                              DataCell(IconButton(
-                                                color: ColorManager.error,
-                                                onPressed: () {
-                                                  NfcDataCubit.get(context)
-                                                      .removeProduct(index);
-                                                },
-                                                icon: const Icon(Icons.delete),
-                                              )),
-                                            ]);
-                                          },
-                                        ),
+                                      ),
+                                      SizedBox(
+                                        height: 2.h,
+                                      ),
+                                      Row(
+                                        children: [
+                                          const Text(
+                                            'الرصيد الحالي',
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          const SizedBox(width: 16.0),
+                                          Text(
+                                              '${paidBeneficaryModel.paidBeneficary?.date?[index].paidMoney}'),
+                                        ],
+                                      ),
+                                      SizedBox(
+                                        height: 2.h,
+                                      ),
+                                      Row(
+                                        children: [
+                                          const Text(
+                                            'الرصيد الدفعة المتبقي',
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          const SizedBox(width: 16.0),
+                                          Text(
+                                              '${paidBeneficaryModel.paidBeneficary?.date?[index].residualMoney}'),
+                                        ],
+                                      ),
+                                      SizedBox(
+                                        height: 2.h,
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          const Text(
+                                            "اختار منتج",
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          const SizedBox(width: 16.0),
+                                          DropdownButton(
+                                            items: NfcDataCubit.get(context)
+                                                .productModel
+                                                .product!
+                                                .map((product) {
+                                              return DropdownMenuItem(
+                                                value: product.name,
+                                                child: Text(
+                                                    product.name ?? 'notFound',
+                                                    style: const TextStyle(
+                                                        color: Colors.black)),
+                                              );
+                                            }).toList(),
+                                            onChanged: (String? selectedValue) {
+                                              if (selectedValue != null) {
+                                                Product? selectedProduct =
+                                                    NfcDataCubit.get(context)
+                                                        .productModel
+                                                        .product!
+                                                        .firstWhere((product) =>
+                                                            product.name ==
+                                                            selectedValue);
+                                                NfcDataCubit.get(context)
+                                                    .addProduct(
+                                                        selectedProduct);
+                                              }
+                                            },
+                                            icon: const Icon(Icons.list_alt),
+                                          ),
+                                        ],
                                       ),
                                     ],
                                   ),
                                 ),
-                              ),
+                                SizedBox(
+                                  height: 3.h,
+                                ),
+                                Text(
+                                  'مجموع الفاتورة  : ${NfcDataCubit.get(context).calculateTotalPrice().toStringAsFixed(2)}',
+                                  style: const TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold),
+                                  // Ad
+                                ),
+                                SizedBox(
+                                  height: 3.h,
+                                ),
+                                SizedBox(
+                                  height:
+                                      MediaQuery.of(context).size.height / 2.3,
+                                  child: SingleChildScrollView(
+                                    scrollDirection: Axis.horizontal,
+                                    child: SingleChildScrollView(
+                                      scrollDirection: Axis.vertical,
+                                      child: Column(
+                                        children: [
+                                          DataTable(
+                                            columns: const [
+                                              DataColumn(label: Text('الرقم')),
+                                              DataColumn(label: Text('المادة')),
+                                              DataColumn(label: Text('السعر')),
+                                              DataColumn(label: Text('الكمية')),
+                                              DataColumn(label: Text('')),
+                                            ],
+                                            rows: List<DataRow>.generate(
+                                              NfcDataCubit.get(context)
+                                                  .scannedItems
+                                                  .length,
+                                              (index) {
+                                                final product =
+                                                    NfcDataCubit.get(context)
+                                                        .scannedItems[index];
+                                                return DataRow(cells: [
+                                                  DataCell(Text(
+                                                      (index + 1).toString())),
+                                                  DataCell(Text(product?.name ??
+                                                      'Unknown')),
+                                                  DataCell(Text(product?.price
+                                                          .toString() ??
+                                                      'Unknown')),
+                                                  DataCell(Text(product?.count
+                                                          .toString() ??
+                                                      '0')),
+                                                  DataCell(IconButton(
+                                                    color: ColorManager.error,
+                                                    onPressed: () {
+                                                      NfcDataCubit.get(context)
+                                                          .removeProduct(index);
+                                                    },
+                                                    icon: const Icon(
+                                                        Icons.delete),
+                                                  )),
+                                                ]);
+                                              },
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                const Spacer(),
+                                SizedBox(
+                                  width: MediaQuery.of(context).size.width,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: ElevatedButton(
+                                        style: ButtonStyle(
+                                            backgroundColor:
+                                                MaterialStatePropertyAll<Color>(
+                                                    Color(0XFFEFBB4A))),
+                                        onPressed: () {
+                                          var now = DateTime.now();
+                                          String formattedDate =
+                                              DateFormat('yyyy-MM-dd', 'en')
+                                                  .format(now);
+
+                                          NfcDataCubit.get(context)
+                                              .convertScannedItemsToProductsBody(
+                                                  paidmoney: int.parse(
+                                                      NfcDataCubit.get(context)
+                                                          .calculateTotalPrice()
+                                                          .toStringAsFixed(0)),
+                                                  vendorId: appStore.userId,
+                                                  paidBeneficaryId:
+                                                      paidBeneficaryModel
+                                                          .paidBeneficary!
+                                                          .date![index]
+                                                          .id!,
+                                                  beneficaryId:
+                                                      paidBeneficaryModel
+                                                          .beneficary!.id!,
+                                                  date: formattedDate);
+                                        },
+                                        child: const Text(
+                                          'Continue',
+                                          style: TextStyle(color: Colors.white),
+                                        )),
+                                  ),
+                                )
+                              ],
                             ),
-                            const Spacer(),
-                            SizedBox(
-                              width: MediaQuery.of(context).size.width,
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: ElevatedButton(
-                                    onPressed: () {
-                                      var now = DateTime.now();
-                                      String formattedDate =
-                                          DateFormat('yyyy-MM-dd', 'en').format(now);
-              
-                                      NfcDataCubit.get(context)
-                                          .convertScannedItemsToProductsBody(
-                                              paidmoney: int.parse(
-                                                  NfcDataCubit.get(context)
-                                                      .calculateTotalPrice()
-                                                      .toStringAsFixed(0)),
-                                              vendorId: appStore.userId,
-                                              paidBeneficaryId: paidBeneficaryModel
-                                                  .paidBeneficary!.date![index].id!,
-                                              beneficaryId:
-                                                  paidBeneficaryModel.beneficary!.id!,
-                                              date: formattedDate);
-                                    },
-                                    child: const Text('Continue')),
-                              ),
-                            )
-                          ],
+                          ),
                         ),
                       );
                     }

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:smartcard/app/screens/Splash%20Screen.dart';
 import '../main.dart';
 import '/app/utils/constants_manager.dart';
 import 'cubits/nfc_contact/nfc_contact_cubit.dart';
@@ -61,9 +62,11 @@ class _MyAppState extends State<MyApp> {
             locale: context.locale,
             debugShowCheckedModeBanner: false,
             onGenerateRoute: RouteGenerator.getRoute,
-            initialRoute: (TOKEN.isNotEmpty && FIRSTLOGIN == 1)
-                ? Routes.homeFormRoute
-                : Routes.loginFormRoute,
+            home: SplashScreen(),
+            // initialRoute:
+            // (TOKEN.isNotEmpty && FIRSTLOGIN == 1)
+            //     ? Routes.homeFormRoute
+            //     : Routes.loginFormRoute,
             theme: getApplicationTheme(),
           );
         },
