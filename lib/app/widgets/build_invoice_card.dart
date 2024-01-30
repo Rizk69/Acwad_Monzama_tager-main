@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:smartcard/app/models/invoice_beneficary.dart';
 import 'package:smartcard/app/screens/invoicedetails.dart';
-import 'package:smartcard/app/utils/common.dart';
-import 'package:smartcard/app/utils/extenstion.dart';
 
 Widget buildInvoiceCard({required InvoiceBeneficary invoice, index}) {
   return Column(
