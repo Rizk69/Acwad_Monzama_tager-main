@@ -47,69 +47,68 @@ class _ProfileState extends State<Profile> {
         child: Container(
       height: MediaQuery.of(context).size.height,
       decoration: const BoxDecoration(
-        color: Colors.black,
-        image: DecorationImage(
-          image: AssetImage('assets/images/img_constraction.png'),
-          fit: BoxFit.cover,
-        ),
+        color: Color(0XffF8F6F6),
       ),
       child: Scaffold(
         backgroundColor: Colors.transparent,
         appBar: AppBar(
-          title: SvgPicture.asset(
-            "assets/images/icon.svg",
-            width: 40.w,
+          title: Text(
+            "حسابي",
+            style: TextStyle(
+              fontSize: 24,
+              color: Colors.black,
+              fontWeight: FontWeight.bold,
+            ),
           ),
-          actionsIconTheme: IconThemeData(color: ColorManager.baseYellow),
           leading: BackButton(
-            color: ColorManager.baseYellow, // <-- SEE HERE
+            color: Colors.black,
           ),
           backgroundColor: Colors.transparent,
         ),
         body: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.only(top: 24, bottom: 8, right: 8),
+            padding: const EdgeInsets.only(top: 40, bottom: 8, right: 8),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 const CircleAvatar(
-                  radius: 60,
-                  backgroundImage: AssetImage('assets/images/user.png'),
-                ),
-                SizedBox(height: 2.h),
-                Text(
-                  "حسابي",
-                  style: TextStyle(
-                    fontSize: 20,
-                    color: ColorManager.baseYellow,
-                    fontWeight: FontWeight.bold,
+                  radius: 40,
+                  backgroundImage: AssetImage(
+                    "assets/images/profile.png",
                   ),
                 ),
-                const SizedBox(height: 45),
-                Table(
-                  defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-                  columnWidths: {
-                    0: IntrinsicColumnWidth(),
-                    1: FlexColumnWidth(),
-                  },
-                  children: [
-                    buildTableRow("اسم المسؤول :", appStore.name),
-                    buildTableRow("الهاتف :", appStore.phone),
-                    buildTableRow("العنوان :", appStore.address),
-                  ],
-                ),
+                SizedBox(height: 2.h),
+                const SizedBox(height: 20),
+                buildTableRow("اسم المسؤول :", appStore.name, Colors.white),
+                buildTableRow("الهاتف :", appStore.phone, Color(0XffF8F6F6)),
+                buildTableRow("العنوان :", appStore.address, Colors.white),
                 const SizedBox(height: 20),
                 Padding(
-                  padding: EdgeInsets.all(5.pt),
-                  child: defaultButton(
-                      background: ColorManager.baseYellow,
-                      context: context,
-                      text: "تغيير كلمة السر",
-                      textStyle:
-                          TextStyle(fontSize: 18.sp, color: Colors.white),
-                      width: 40.w,
-                      function: () async {}),
-                ),
+                    padding: EdgeInsets.all(5.pt),
+                    child: ElevatedButton(
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all<Color>(
+                            Colors.transparent),
+                        shape: MaterialStateProperty.all<OutlinedBorder>(
+                          RoundedRectangleBorder(
+                            side: const BorderSide(
+                              color: Color(0XFFEFBB4A),
+                              width: 1,
+                            ),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                        elevation: MaterialStateProperty.all<double>(0),
+                      ),
+                      onPressed: () {},
+                      child: const Text(
+                        'تغيير كلمة السر',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.black,
+                        ),
+                      ),
+                    )),
               ],
             ),
           ),
@@ -119,36 +118,36 @@ class _ProfileState extends State<Profile> {
   }
 }
 
-TableRow buildTableRow(String label, String value) {
-  return TableRow(
+Widget buildTableRow(String label, String value, Color color) {
+  return Row(
     children: [
-      Container(
-        padding: const EdgeInsets.all(10.0),
-        color: ColorManager.baseYellow,
-        child: Column(
-          children: [
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: 18.sp,
-                fontWeight: FontWeight.bold,
-                color: Colors.black, // لون النص في خلفية العنصر
+      Expanded(
+        child: Container(
+          padding: const EdgeInsets.all(18),
+          decoration: BoxDecoration(color: color, boxShadow: const [
+            BoxShadow(color: Colors.grey, blurRadius: 3, spreadRadius: 0.3)
+          ]),
+          child: Row(
+            children: [
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: 18.sp,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black, // لون النص في خلفية العنصر
+                ),
               ),
-            ),
-            Container(
-              height: 1.h,
-            ),
-          ],
-        ),
-      ),
-      Container(
-        padding: const EdgeInsets.all(8.0),
-        color: Colors.white,
-        child: Text(
-          value,
-          style: TextStyle(
-            fontSize: 18.sp,
-            color: Colors.black, // لون النص في خلفية العنصر
+              SizedBox(
+                width: 10,
+              ),
+              Text(
+                value,
+                style: TextStyle(
+                  fontSize: 18.sp,
+                  color: Colors.grey, // لون النص في خلفية العنصر
+                ),
+              )
+            ],
           ),
         ),
       ),
