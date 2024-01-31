@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-PreferredSizeWidget defaultAppbar({required String title}){
+PreferredSizeWidget defaultAppbar({required String title , required BuildContext context}){
   return AppBar(
-    backgroundColor: Colors.transparent,
+    backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
     title:  Text(
       title,
       style: const TextStyle(

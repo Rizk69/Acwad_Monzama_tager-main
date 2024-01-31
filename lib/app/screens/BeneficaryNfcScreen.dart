@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smartcard/app/cubits/nfc_contact/nfc_contact_cubit.dart';
+import 'package:smartcard/app/screens/PaidBeneficaryScreen.dart';
 import 'package:smartcard/app/screens/home_form.dart';
 import 'package:smartcard/app/utils/color_manager.dart';
-import 'package:smartcard/app/widgets/PaidBeneficaryScreen.dart';
 import 'package:smartcard/app/widgets/backgrond_image.dart';
 import '../models/BeneficaryNfcModel.dart';
 
@@ -24,9 +24,9 @@ class BeneficaryNfcScreen extends StatelessWidget {
           children: [
             imageBackground(context),
             Scaffold(
-              backgroundColor: Colors.transparent,
+               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               appBar: AppBar(
-                backgroundColor: Colors.transparent,
+                 backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                 title: const Text(
                   'معلومات المستخدم',
                   style: TextStyle(

@@ -50,7 +50,7 @@ class _ProfileState extends State<Profile> {
         color: Color(0XffF8F6F6),
       ),
       child: Scaffold(
-        backgroundColor: Colors.transparent,
+         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         appBar: AppBar(
           title: Text(
             "حسابي",
@@ -63,7 +63,7 @@ class _ProfileState extends State<Profile> {
           leading: BackButton(
             color: Colors.black,
           ),
-          backgroundColor: Colors.transparent,
+           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         ),
         body: SingleChildScrollView(
           child: Padding(

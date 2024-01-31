@@ -4,15 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lottie/lottie.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
-
 import 'package:smartcard/app/utils/color_manager.dart';
 import 'package:smartcard/app/utils/default_snake_bar.dart';
 import 'package:smartcard/app/widgets/backgrond_image.dart';
 import 'package:smartcard/app/widgets/default_appbar.dart';
 import 'package:smartcard/main.dart';
-
 import '../cubits/nfc_contact/nfc_contact_cubit.dart';
-
 import '../models/ProductModel.dart';
 import '../models/benficary_data_model.dart';
 
@@ -20,8 +17,7 @@ class AddInvoice extends StatelessWidget {
   PaidBeneficaryModel paidBeneficaryModel;
   int index;
 
-  AddInvoice(
-      {super.key, required this.paidBeneficaryModel, required this.index});
+  AddInvoice({super.key, required this.paidBeneficaryModel, required this.index});
 
   @override
   Widget build(BuildContext context) {
@@ -36,10 +32,11 @@ class AddInvoice extends StatelessWidget {
             children: [
               imageBackground(context),
               Scaffold(
-                backgroundColor: Colors.transparent,
+                 backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                 resizeToAvoidBottomInset: false,
                 appBar: defaultAppbar(
                   title: "إصدار فاتورة",
+                  context: context
                 ),
                 body: BlocConsumer<NfcDataCubit, NfcDataState>(
                   listener: (context, state) {

@@ -45,9 +45,9 @@ class PaidBeneficaryScreen extends StatelessWidget {
                   var paidBeneficaryModel =
                       NfcDataCubit.get(context).paidBeneficary;
                   return Scaffold(
-                      backgroundColor: Colors.transparent,
+                       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                       appBar: AppBar(
-                        backgroundColor: Colors.transparent,
+                         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                         title: const Text(
                           'الدفعات',
                           style: TextStyle(
@@ -194,7 +194,7 @@ class PaidBeneficaryScreen extends StatelessWidget {
                       ));
                 }
                 return Scaffold(
-                  backgroundColor: Colors.transparent,
+                   backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                   appBar: AppBar(
                     backgroundColor: ColorManager.baseYellow,
                     title: const Text(

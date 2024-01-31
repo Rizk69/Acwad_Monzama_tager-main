@@ -25,8 +25,8 @@ class Invoices extends StatelessWidget {
               children: [
                 imageBackground(context),
                 Scaffold(
-                    backgroundColor: Colors.transparent,
-                    appBar:defaultAppbar(title:"الفواتير" ),
+                     backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                    appBar:defaultAppbar(title:"الفواتير" ,context: context),
 
                     body: state is GetInvoicesSuccessState &&
                             ReportsCubit.get(context)

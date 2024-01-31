@@ -21,13 +21,14 @@ class DailyInvoices extends StatelessWidget {
         listener: (context, state) {},
         builder: (context, state) {
           return  Container(
-            color: Colors.white,
+            color: Theme.of(context).primaryColor,
             child: Stack(
               children: [
                 imageBackground(context),
                 Scaffold(
-                    backgroundColor: Colors.transparent,
-                    appBar:defaultAppbar(title:"الفواتير اليومية" ),
+                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                    appBar:defaultAppbar(title:"الفواتير اليومية" ,
+                    context: context),
                     body: state is GetDailyInvoicesSuccessState &&
                             ReportsCubit.get(context)
                                 .dailyInvoiceBeneficary

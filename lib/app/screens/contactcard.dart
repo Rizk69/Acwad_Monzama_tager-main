@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:smartcard/app/utils/color_manager.dart';
 
-import '../widgets/nfcccontactscreen.dart';
+import 'nfcccontactscreen.dart';
 
 class ContactCard extends StatefulWidget {
   const ContactCard({super.key});

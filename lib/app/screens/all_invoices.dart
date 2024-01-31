@@ -23,8 +23,8 @@ class AllInvoicesView extends StatelessWidget {
               children: [
                 imageBackground(context),
                 Scaffold(
-                    backgroundColor: Colors.transparent,
-                    appBar:defaultAppbar(title:"التقارير" ),
+                    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                    appBar: defaultAppbar(title: "التقارير", context: context),
                     body: state is GetAllInvoicesSuccessState &&
                             ReportsCubit.get(context)
                                 .allInvoiceBeneficary
@@ -38,7 +38,8 @@ class AllInvoicesView extends StatelessWidget {
                                 .length,
                             itemBuilder: (BuildContext context, int index) {
                               final InvoiceBeneficary item =
-                                  ReportsCubit.get(context).allInvoiceBeneficary;
+                                  ReportsCubit.get(context)
+                                      .allInvoiceBeneficary;
                               return Padding(
                                 padding: const EdgeInsets.only(bottom: 15),
                                 child: GestureDetector(

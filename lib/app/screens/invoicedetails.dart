@@ -31,12 +31,14 @@ class _InvoiceDetailsState extends State<InvoiceDetails> {
         children: [
           imageBackground(context),
           Scaffold(
-            backgroundColor: Colors.transparent,
-            appBar: defaultAppbar(title: "تفاصيل الفاتورة"),
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            appBar: defaultAppbar(title: "تفاصيل الفاتورة", context: context),
             body: Center(
               child: Column(
                 children: [
-                  SizedBox(height: 2.h,),
+                  SizedBox(
+                    height: 2.h,
+                  ),
                   Padding(
                     padding: const EdgeInsets.all(15.0),
                     child: Card(
@@ -130,7 +132,9 @@ class _InvoiceDetailsState extends State<InvoiceDetails> {
                             Text(
                               "مجموع الفاتورة  :   ${widget.item?.totalPrice ?? 0}",
                               style: TextStyle(
-                                  fontSize: 18, fontWeight: FontWeight.bold,color: Colors.green),
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.green),
                               // Ad
                             ),
                             SizedBox(
@@ -148,22 +152,25 @@ class _InvoiceDetailsState extends State<InvoiceDetails> {
                       width: MediaQuery.of(context).size.width,
                       child: ElevatedButton(
                         style: ButtonStyle(
-                          padding: MaterialStateProperty.all(const EdgeInsets.all(8)),
-                          backgroundColor: MaterialStateProperty.all(ColorManager.baseYellow),
+                          padding: MaterialStateProperty.all(
+                              const EdgeInsets.all(8)),
+                          backgroundColor: MaterialStateProperty.all(
+                              ColorManager.baseYellow),
                         ),
                         onPressed: () {
                           printInvoice(widget.item);
-
                         },
-                        child: const Text('طباعة',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold
-                        ),),
+                        child: const Text(
+                          'طباعة',
+                          style: TextStyle(
+                              color: Colors.white, fontWeight: FontWeight.bold),
+                        ),
                       ),
                     ),
                   ),
-                  SizedBox(height: 4.h,),
+                  SizedBox(
+                    height: 4.h,
+                  ),
                 ],
               ),
             ),

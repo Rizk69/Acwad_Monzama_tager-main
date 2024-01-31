@@ -116,7 +116,7 @@ class SignInScreenState extends State<SignInScreen> {
               children: [
                 imageBackground(context),
                 Scaffold(
-                  backgroundColor: Colors.transparent,
+                   backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                     resizeToAvoidBottomInset: false,
                     body: SafeArea(
                       child: Animate(
