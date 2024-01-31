@@ -13,15 +13,13 @@ import 'package:smartcard/main.dart';
 import '../models/benficary_data_model.dart';
 
 class PaidBeneficaryScreen extends StatelessWidget {
-  // PaidBeneficaryModel paidBeneficaryModel;
   int paidBeneficaryId;
   PaidBeneficaryScreen({super.key, required this.paidBeneficaryId});
-  // PaidBeneficaryScreen({super.key, required this.paidBeneficaryModel});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.white,
+      color: Theme.of(context).canvasColor,
       child: Stack(
         children: [
           imageBackground(context),
@@ -45,18 +43,28 @@ class PaidBeneficaryScreen extends StatelessWidget {
                   var paidBeneficaryModel =
                       NfcDataCubit.get(context).paidBeneficary;
                   return Scaffold(
-                       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                      backgroundColor:
+                          Theme.of(context).scaffoldBackgroundColor,
                       appBar: AppBar(
-                         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                        title: const Text(
+                        backgroundColor:
+                            Theme.of(context).appBarTheme.backgroundColor,
+                        title: Text(
                           'الدفعات',
                           style: TextStyle(
                             fontSize: 24,
-                            color: Colors.black,
+                            color: Theme.of(context).primaryColor,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                         centerTitle: true,
+                        leading: IconButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            icon: Icon(
+                              Icons.arrow_back,
+                              color: Theme.of(context).primaryColor,
+                            )),
                       ),
                       body: SingleChildScrollView(
                         child: RefreshIndicator(
@@ -88,7 +96,8 @@ class PaidBeneficaryScreen extends StatelessWidget {
                                                       ColorManager.baseYellow,
                                                   width: 1,
                                                 ),
-                                                color: Colors.white),
+                                                color: Theme.of(context)
+                                                    .primaryColorDark),
                                             padding: const EdgeInsets.all(11),
                                             margin: const EdgeInsets.all(11),
                                             child: InkWell(
@@ -152,7 +161,12 @@ class PaidBeneficaryScreen extends StatelessWidget {
                                                   Row(
                                                     children: [
                                                       Text(
-                                                          'نوع الصرف: ${paidBeneficaryModel.paidBeneficary!.date![index].type == 0 ? "نقدا" : "مواد عينية" ?? ''}'),
+                                                        'نوع الصرف: ${paidBeneficaryModel.paidBeneficary!.date![index].type == 0 ? "نقدا" : "مواد عينية" ?? ''}',
+                                                        style: TextStyle(
+                                                            color: Theme.of(
+                                                                    context)
+                                                                .primaryColor),
+                                                      ),
                                                       Spacer(),
                                                       paidBeneficaryModel
                                                                   .paidBeneficary!
@@ -169,12 +183,28 @@ class PaidBeneficaryScreen extends StatelessWidget {
                                                     ],
                                                   ),
                                                   Text(
-                                                      'المبلغ الدفع: ${paidBeneficaryModel.paidBeneficary!.date![index].paidMoney ?? ''}'),
+                                                    'المبلغ الدفع: ${paidBeneficaryModel.paidBeneficary!.date![index].paidMoney ?? ''}',
+                                                    style: TextStyle(
+                                                        color: Theme.of(context)
+                                                            .primaryColor),
+                                                  ),
                                                   Text(
-                                                      'المبلغ المتبقي المتاح: ${paidBeneficaryModel.paidBeneficary!.date![index].residualMoney ?? ''}'),
+                                                    'المبلغ المتبقي المتاح: ${paidBeneficaryModel.paidBeneficary!.date![index].residualMoney ?? ''}',
+                                                    style: TextStyle(
+                                                        color: Theme.of(context)
+                                                            .primaryColor),
+                                                  ),
                                                   Text(
+                                                      style: TextStyle(
+                                                          color: Theme.of(
+                                                                  context)
+                                                              .primaryColor),
                                                       'حاله الصرف: ${paidBeneficaryModel.paidBeneficary!.date![index].uprove == 1 && paidBeneficaryModel.paidBeneficary!.date![index].paidDone == 0 ? "جاري" : paidBeneficaryModel.paidBeneficary!.date![index].paidDone == 0 && paidBeneficaryModel.paidBeneficary!.date![index].uprove == 0 ? "في انتظار الموافقة" : "تم الصرف" ?? ''}'),
                                                   Text(
+                                                      style: TextStyle(
+                                                          color: Theme.of(
+                                                                  context)
+                                                              .primaryColor),
                                                       'التاريخ: ${paidBeneficaryModel.paidBeneficary!.date![index].date ?? ''}'),
                                                 ],
                                               ),
@@ -194,9 +224,10 @@ class PaidBeneficaryScreen extends StatelessWidget {
                       ));
                 }
                 return Scaffold(
-                   backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                   appBar: AppBar(
-                    backgroundColor: ColorManager.baseYellow,
+                    backgroundColor:
+                        Theme.of(context).appBarTheme.backgroundColor,
                     title: const Text(
                       'الدفعات',
                       style: TextStyle(
@@ -237,30 +268,46 @@ class PaidBeneficaryScreen extends StatelessWidget {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('تأكيد'),
+          backgroundColor: Theme.of(context).primaryColorDark,
+          title: Text('تأكيد',
+              style: TextStyle(color: Theme.of(context).primaryColor)),
           content: IntrinsicHeight(
             child: Column(
               children: [
-                const Text('هل متأكد من صرف هذه الدفعه ؟'),
+                Text('هل متأكد من صرف هذه الدفعه ؟',
+                    style: TextStyle(color: Theme.of(context).primaryColor)),
                 SizedBox(height: 2.h),
                 TextField(
-                  controller: paidMoneyController, // استخدم الـ Controller هنا
-                  decoration: const InputDecoration(
-                    labelText: 'المبلغ المدفوع',
+                  style: TextStyle(
+                    color: Theme.of(context).primaryColorLight,
                   ),
+                  controller: paidMoneyController, // استخدم الـ Controller هنا
+                  decoration: InputDecoration(
+                      labelText: 'المبلغ المدفوع',
+                      labelStyle: TextStyle(
+                        color: Theme.of(context).primaryColorLight,
+                      )),
                 ),
               ],
             ),
           ),
           actions: <Widget>[
             ElevatedButton(
-              child: const Text('الغاء'),
+              style: ButtonStyle(
+                  backgroundColor: MaterialStatePropertyAll<Color>(
+                      Theme.of(context).primaryColor)),
+              child: Text('الغاء',
+                  style: TextStyle(color: Theme.of(context).primaryColorDark)),
               onPressed: () {
                 Navigator.of(context).pop(); // إغلاق الحوار
               },
             ),
             ElevatedButton(
-              child: const Text('تأكيد'),
+              style: ButtonStyle(
+                  backgroundColor: MaterialStatePropertyAll<Color>(
+                      Theme.of(context).primaryColor)),
+              child: Text('تأكيد',
+                  style: TextStyle(color: Theme.of(context).primaryColorDark)),
               onPressed: () {
                 NfcDataCubit.get(context).makeCashPayment(
                   paidBeneficaryId: paidBeneficaryId,

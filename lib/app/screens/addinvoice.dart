@@ -17,7 +17,8 @@ class AddInvoice extends StatelessWidget {
   PaidBeneficaryModel paidBeneficaryModel;
   int index;
 
-  AddInvoice({super.key, required this.paidBeneficaryModel, required this.index});
+  AddInvoice(
+      {super.key, required this.paidBeneficaryModel, required this.index});
 
   @override
   Widget build(BuildContext context) {
@@ -27,17 +28,14 @@ class AddInvoice extends StatelessWidget {
           ..getCategoryInvoiceShow(
               idCategory: paidBeneficaryModel.paidBeneficary!.date![index].id!),
         child: Container(
-          color: Colors.white,
+          color: Theme.of(context).canvasColor,
           child: Stack(
             children: [
               imageBackground(context),
               Scaffold(
-                 backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                 resizeToAvoidBottomInset: false,
-                appBar: defaultAppbar(
-                  title: "إصدار فاتورة",
-                  context: context
-                ),
+                appBar: defaultAppbar(title: "إصدار فاتورة", context: context),
                 body: BlocConsumer<NfcDataCubit, NfcDataState>(
                   listener: (context, state) {
                     if (state is BuyProductsSuccessState) {
@@ -67,7 +65,8 @@ class AddInvoice extends StatelessWidget {
                         child: SingleChildScrollView(
                           child: SizedBox(
                             width: MediaQuery.of(context).size.width,
-                            height: MediaQuery.of(context).size.height / 1.13,
+                            height: MediaQuery.of(context).size.height *
+                                0.12345633333.h,
                             child: Column(
                               children: [
                                 SizedBox(
@@ -80,16 +79,21 @@ class AddInvoice extends StatelessWidget {
                                     children: [
                                       Row(
                                         children: [
-                                          const Text(
+                                          Text(
                                             'اسم المستفيد',
                                             style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold,
-                                            ),
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.bold,
+                                                color: Theme.of(context)
+                                                    .primaryColor),
                                           ),
                                           const SizedBox(width: 16.0),
                                           Text(
-                                              '${paidBeneficaryModel.beneficary?.fullName}'),
+                                            '${paidBeneficaryModel.beneficary?.fullName}',
+                                            style: TextStyle(
+                                                color: Theme.of(context)
+                                                    .primaryColor),
+                                          ),
                                         ],
                                       ),
                                       SizedBox(
@@ -97,16 +101,21 @@ class AddInvoice extends StatelessWidget {
                                       ),
                                       Row(
                                         children: [
-                                          const Text(
+                                          Text(
                                             'الرصيد الحالي',
                                             style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold,
-                                            ),
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.bold,
+                                                color: Theme.of(context)
+                                                    .primaryColor),
                                           ),
                                           const SizedBox(width: 16.0),
                                           Text(
-                                              '${paidBeneficaryModel.paidBeneficary?.date?[index].paidMoney}'),
+                                            '${paidBeneficaryModel.paidBeneficary?.date?[index].paidMoney}',
+                                            style: TextStyle(
+                                                color: Theme.of(context)
+                                                    .primaryColor),
+                                          ),
                                         ],
                                       ),
                                       SizedBox(
@@ -114,16 +123,21 @@ class AddInvoice extends StatelessWidget {
                                       ),
                                       Row(
                                         children: [
-                                          const Text(
+                                          Text(
                                             'الرصيد الدفعة المتبقي',
                                             style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold,
-                                            ),
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.bold,
+                                                color: Theme.of(context)
+                                                    .primaryColor),
                                           ),
                                           const SizedBox(width: 16.0),
                                           Text(
-                                              '${paidBeneficaryModel.paidBeneficary?.date?[index].residualMoney}'),
+                                            '${paidBeneficaryModel.paidBeneficary?.date?[index].residualMoney}',
+                                            style: TextStyle(
+                                                color: Theme.of(context)
+                                                    .primaryColor),
+                                          ),
                                         ],
                                       ),
                                       SizedBox(
@@ -133,10 +147,12 @@ class AddInvoice extends StatelessWidget {
                                         mainAxisAlignment:
                                             MainAxisAlignment.start,
                                         children: [
-                                          const Text(
+                                          Text(
                                             "اختار منتج",
                                             style: TextStyle(
                                               fontSize: 16,
+                                              color: Theme.of(context)
+                                                  .primaryColor,
                                               fontWeight: FontWeight.bold,
                                             ),
                                           ),
@@ -150,8 +166,10 @@ class AddInvoice extends StatelessWidget {
                                                 value: product.name,
                                                 child: Text(
                                                     product.name ?? 'notFound',
-                                                    style: const TextStyle(
-                                                        color: Colors.black)),
+                                                    style: TextStyle(
+                                                      color: Theme.of(context)
+                                                          .primaryColor,
+                                                    )),
                                               );
                                             }).toList(),
                                             onChanged: (String? selectedValue) {
@@ -168,7 +186,11 @@ class AddInvoice extends StatelessWidget {
                                                         selectedProduct);
                                               }
                                             },
-                                            icon: const Icon(Icons.list_alt),
+                                            icon: Icon(
+                                              Icons.list_alt,
+                                              color: Theme.of(context)
+                                                  .primaryColor,
+                                            ),
                                           ),
                                         ],
                                       ),
@@ -180,8 +202,9 @@ class AddInvoice extends StatelessWidget {
                                 ),
                                 Text(
                                   'مجموع الفاتورة  : ${NfcDataCubit.get(context).calculateTotalPrice().toStringAsFixed(2)}',
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                       fontSize: 18,
+                                      color: Theme.of(context).primaryColor,
                                       fontWeight: FontWeight.bold),
                                   // Ad
                                 ),
@@ -190,7 +213,7 @@ class AddInvoice extends StatelessWidget {
                                 ),
                                 SizedBox(
                                   height:
-                                      MediaQuery.of(context).size.height / 2.3,
+                                      MediaQuery.of(context).size.height / 2.7,
                                   child: SingleChildScrollView(
                                     scrollDirection: Axis.horizontal,
                                     child: SingleChildScrollView(
@@ -198,12 +221,37 @@ class AddInvoice extends StatelessWidget {
                                       child: Column(
                                         children: [
                                           DataTable(
-                                            columns: const [
-                                              DataColumn(label: Text('الرقم')),
-                                              DataColumn(label: Text('المادة')),
-                                              DataColumn(label: Text('السعر')),
-                                              DataColumn(label: Text('الكمية')),
-                                              DataColumn(label: Text('')),
+                                            columns: [
+                                              DataColumn(
+                                                  label: Text('الرقم',
+                                                      style: TextStyle(
+                                                          color: Theme.of(
+                                                                  context)
+                                                              .primaryColor))),
+                                              DataColumn(
+                                                  label: Text('المادة',
+                                                      style: TextStyle(
+                                                          color: Theme.of(
+                                                                  context)
+                                                              .primaryColor))),
+                                              DataColumn(
+                                                  label: Text('السعر',
+                                                      style: TextStyle(
+                                                          color: Theme.of(
+                                                                  context)
+                                                              .primaryColor))),
+                                              DataColumn(
+                                                  label: Text('الكمية',
+                                                      style: TextStyle(
+                                                          color: Theme.of(
+                                                                  context)
+                                                              .primaryColor))),
+                                              DataColumn(
+                                                  label: Text('',
+                                                      style: TextStyle(
+                                                          color: Theme.of(
+                                                                  context)
+                                                              .primaryColor))),
                                             ],
                                             rows: List<DataRow>.generate(
                                               NfcDataCubit.get(context)
@@ -215,15 +263,34 @@ class AddInvoice extends StatelessWidget {
                                                         .scannedItems[index];
                                                 return DataRow(cells: [
                                                   DataCell(Text(
-                                                      (index + 1).toString())),
-                                                  DataCell(Text(product?.name ??
-                                                      'Unknown')),
-                                                  DataCell(Text(product?.price
-                                                          .toString() ??
-                                                      'Unknown')),
-                                                  DataCell(Text(product?.count
-                                                          .toString() ??
-                                                      '0')),
+                                                      (index + 1).toString(),
+                                                      style: TextStyle(
+                                                          color: Theme.of(
+                                                                  context)
+                                                              .primaryColor))),
+                                                  DataCell(Text(
+                                                      product?.name ??
+                                                          'Unknown',
+                                                      style: TextStyle(
+                                                          color: Theme.of(
+                                                                  context)
+                                                              .primaryColor))),
+                                                  DataCell(Text(
+                                                      product?.price
+                                                              .toString() ??
+                                                          'Unknown',
+                                                      style: TextStyle(
+                                                          color: Theme.of(
+                                                                  context)
+                                                              .primaryColor))),
+                                                  DataCell(Text(
+                                                      product?.count
+                                                              .toString() ??
+                                                          '0',
+                                                      style: TextStyle(
+                                                          color: Theme.of(
+                                                                  context)
+                                                              .primaryColor))),
                                                   DataCell(IconButton(
                                                     color: ColorManager.error,
                                                     onPressed: () {

@@ -449,6 +449,9 @@ class _NfcContactCardScreenState extends State<NfcContactCardScreen> {
               onChanged: (value) {
                 password = value;
               },
+              style: TextStyle(
+                color: Theme.of(context).primaryColorLight,
+              ),
               decoration: InputDecoration(
                 enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(13),
@@ -463,6 +466,9 @@ class _NfcContactCardScreenState extends State<NfcContactCardScreen> {
                 fillColor: Theme.of(context).primaryColorLight,
                 labelText: 'كلمة المرور',
                 labelStyle: TextStyle(
+                  color: Theme.of(context).primaryColorLight,
+                ),
+                hintStyle: TextStyle(
                   color: Theme.of(context).primaryColorLight,
                 ),
                 border: OutlineInputBorder(
@@ -527,7 +533,10 @@ class _NfcContactCardScreenState extends State<NfcContactCardScreen> {
               //           width: 200,
               //         ),
               //       )
-              //     : const Center(child: Text('NFC is not available')),
+              //     :  Center(child: Text('NFC is not available',style: TextStyle(
+              //   color:
+              //   Theme.of(context).primaryColorLight,
+              // ),)),
             ),
           ],
         ),

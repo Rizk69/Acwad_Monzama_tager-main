@@ -19,19 +19,19 @@ class BeneficaryNfcScreen extends StatelessWidget {
     return BlocProvider(
       create: (context) => NfcDataCubit(),
       child: Container(
-        color: Colors.white,
+        color: Theme.of(context).canvasColor,
         child: Stack(
           children: [
             imageBackground(context),
             Scaffold(
-               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               appBar: AppBar(
-                 backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                title: const Text(
+                backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
+                title: Text(
                   'معلومات المستخدم',
                   style: TextStyle(
                     fontSize: 20,
-                    color: Colors.black,
+                    color: Theme.of(context).primaryColor,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -43,7 +43,10 @@ class BeneficaryNfcScreen extends StatelessWidget {
                         MaterialPageRoute(builder: (context) => HomeForm()),
                       );
                     },
-                    icon: Icon(Icons.arrow_back)),
+                    icon: Icon(
+                      Icons.arrow_back,
+                      color: Theme.of(context).primaryColor,
+                    )),
               ),
               body: Padding(
                 padding: const EdgeInsets.all(16.0),
@@ -60,16 +63,20 @@ class BeneficaryNfcScreen extends StatelessWidget {
                         const SizedBox(
                           height: 35,
                         ),
-                        _buildInfoItem('الاسم',
-                            '${beneficaryNfcModel.data!.firstName} ${beneficaryNfcModel.data!.lastName}'),
-                        _buildInfoItem('رقم التليفون',
-                            beneficaryNfcModel.data!.mobile ?? ''),
-                        _buildInfoItem('الرصيد',
-                            beneficaryNfcModel.data!.balance.toString()),
-                        _buildInfoItem('رقم الكارت',
-                            beneficaryNfcModel.data!.cardID ?? ''),
                         _buildInfoItem(
-                            'العنوان', beneficaryNfcModel.data!.address ?? ''),
+                            'الاسم',
+                            '${beneficaryNfcModel.data!.firstName} ${beneficaryNfcModel.data!.lastName}',
+                            context),
+                        _buildInfoItem('رقم التليفون',
+                            beneficaryNfcModel.data!.mobile ?? '', context),
+                        _buildInfoItem(
+                            'الرصيد',
+                            beneficaryNfcModel.data!.balance.toString(),
+                            context),
+                        _buildInfoItem('رقم الكارت',
+                            beneficaryNfcModel.data!.cardID ?? '', context),
+                        _buildInfoItem('العنوان',
+                            beneficaryNfcModel.data!.address ?? '', context),
                       ],
                     ),
                     const Spacer(),
@@ -107,7 +114,7 @@ class BeneficaryNfcScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildInfoItem(String label, String value) {
+  Widget _buildInfoItem(String label, String value, BuildContext context) {
     return Column(
       children: [
         Padding(
@@ -118,8 +125,8 @@ class BeneficaryNfcScreen extends StatelessWidget {
               Text(
                 '$label: ',
                 style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                ),
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).primaryColor),
               ),
               SizedBox(
                 width: 10,
@@ -128,7 +135,7 @@ class BeneficaryNfcScreen extends StatelessWidget {
                 child: Text(
                   value,
                   style: TextStyle(
-                    color: Color(0XFF6A6969),
+                    color: Theme.of(context).primaryColorLight,
                   ),
                 ),
               ),

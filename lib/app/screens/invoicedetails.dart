@@ -26,7 +26,7 @@ class _InvoiceDetailsState extends State<InvoiceDetails> {
   Widget build(BuildContext context) {
     return SafeArea(
         child: Container(
-      color: Colors.white,
+      color: Theme.of(context).canvasColor,
       child: Stack(
         children: [
           imageBackground(context),
@@ -42,7 +42,7 @@ class _InvoiceDetailsState extends State<InvoiceDetails> {
                   Padding(
                     padding: const EdgeInsets.all(15.0),
                     child: Card(
-                      color: Colors.white,
+                      color: Theme.of(context).primaryColorDark,
                       elevation: 3,
                       shadowColor: Colors.white,
                       child: Padding(
@@ -51,15 +51,19 @@ class _InvoiceDetailsState extends State<InvoiceDetails> {
                           children: [
                             Row(
                               children: [
-                                const Text(
+                                Text(
                                   'اسم التاجر :',
                                   style: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                      color: Theme.of(context).primaryColor),
                                 ),
                                 const SizedBox(width: 16.0),
-                                Text(widget.item!.vendorName.toString() ?? ''),
+                                Text(
+                                  widget.item!.vendorName.toString() ?? '',
+                                  style: TextStyle(
+                                      color: Theme.of(context).primaryColor),
+                                ),
                               ],
                             ),
                             SizedBox(
@@ -67,15 +71,19 @@ class _InvoiceDetailsState extends State<InvoiceDetails> {
                             ),
                             Row(
                               children: [
-                                const Text(
+                                Text(
                                   ' رقم المستفيد  :',
                                   style: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                      color: Theme.of(context).primaryColor),
                                 ),
                                 const SizedBox(width: 16.0),
-                                Text(widget.item!.accountId.toString() ?? ''),
+                                Text(
+                                  widget.item!.accountId.toString() ?? '',
+                                  style: TextStyle(
+                                      color: Theme.of(context).primaryColor),
+                                ),
                               ],
                             ),
                             SizedBox(
@@ -83,15 +91,18 @@ class _InvoiceDetailsState extends State<InvoiceDetails> {
                             ),
                             Row(
                               children: [
-                                const Text(
+                                Text(
                                   ' اسم المستفيد  :',
                                   style: TextStyle(
                                     fontSize: 14,
+                                    color: Theme.of(context).primaryColor,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
                                 const SizedBox(width: 16.0),
-                                Text(widget.item?.fullName ?? ''),
+                                Text(widget.item?.fullName ?? '',
+                                    style: TextStyle(
+                                        color: Theme.of(context).primaryColor)),
                               ],
                             ),
                             SizedBox(
@@ -99,15 +110,18 @@ class _InvoiceDetailsState extends State<InvoiceDetails> {
                             ),
                             Row(
                               children: [
-                                const Text(
+                                Text(
                                   ' التاريخ :',
                                   style: TextStyle(
                                     fontSize: 14,
+                                    color: Theme.of(context).primaryColor,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
                                 const SizedBox(width: 16.0),
-                                Text(formatDate(widget.item?.date.toString())),
+                                Text(formatDate(widget.item?.date.toString()),
+                                    style: TextStyle(
+                                        color: Theme.of(context).primaryColor)),
                               ],
                             ),
                             SizedBox(
@@ -115,15 +129,17 @@ class _InvoiceDetailsState extends State<InvoiceDetails> {
                             ),
                             Row(
                               children: [
-                                const Text(
+                                Text(
                                   ' نوع الفاتورة :',
                                   style: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                      color: Theme.of(context).primaryColor),
                                 ),
                                 const SizedBox(width: 16.0),
-                                Text("${widget.item?.cashOrCategory}"),
+                                Text("${widget.item?.cashOrCategory}",
+                                    style: TextStyle(
+                                        color: Theme.of(context).primaryColor)),
                               ],
                             ),
                             SizedBox(
