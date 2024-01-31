@@ -4,7 +4,7 @@ import 'package:smartcard/app/screens/login.dart';
 import '../../app/screens/home_form.dart';
 import '../screens/Recipts.dart';
 import '../screens/contactcard.dart';
-import '../screens/dailysales.dart';
+import '../screens/daily_invoices.dart';
 import '../screens/invoicedetails.dart';
 import '../screens/invoices.dart';
 import '../screens/profile.dart';

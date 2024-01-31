@@ -1,17 +1,24 @@
 import 'package:flutter/material.dart';
 
-PreferredSizeWidget defaultAppbar({required String title , required BuildContext context}){
+PreferredSizeWidget defaultAppbar(
+    {required String title, required BuildContext context}) {
   return AppBar(
     backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
-    title:  Text(
+    title: Text(
       title,
-      style: const TextStyle(
+      style: TextStyle(
         fontSize: 20,
-        color: Colors.black,
+        color: Theme.of(context).primaryColor,
         fontWeight: FontWeight.bold,
       ),
     ),
+    leading: IconButton(
+      onPressed: (){
+        Navigator.of(context).pop();
+      },
+      icon: Icon(Icons.arrow_back,
+      color: Theme.of(context).primaryColor,
+    )),
     centerTitle: true,
-
   );
 }

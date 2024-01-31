@@ -18,7 +18,7 @@ class AllInvoicesView extends StatelessWidget {
         listener: (context, state) {},
         builder: (context, state) {
           return Container(
-            color: Colors.white,
+            color: Theme.of(context).primaryColorDark,
             child: Stack(
               children: [
                 imageBackground(context),
@@ -52,9 +52,9 @@ class AllInvoicesView extends StatelessWidget {
                                     );
                                   },
                                   child: buildInvoiceCard(
-                                    invoice: item,
-                                    index: index,
-                                  ),
+                                      invoice: item,
+                                      index: index,
+                                      context: context),
                                 ),
                               );
                             },

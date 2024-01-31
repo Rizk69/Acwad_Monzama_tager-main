@@ -3,7 +3,7 @@ import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:smartcard/app/models/invoice_beneficary.dart';
 import 'package:smartcard/app/screens/invoicedetails.dart';
 
-Widget buildInvoiceCard({required InvoiceBeneficary invoice, index}) {
+Widget buildInvoiceCard({required InvoiceBeneficary invoice, index , required context}) {
   return Column(
     children: [
       ClipRRect(
@@ -38,12 +38,15 @@ Widget buildInvoiceCard({required InvoiceBeneficary invoice, index}) {
                                 label: 'اسم التاجر',
                                 value: invoice.data![index].vendorName.toString(),
                                 isMultiline: true,
+                                  context: context
+
                               ),
                               SizedBox(height: 2.h,),
                               buildInvoiceInfo(
                                 label: 'اسم المستفيد',
                                 value: invoice.data![index].fullName.toString(),
                                 isMultiline: true,
+                                context: context
                               ),
                             ],
                           ),
@@ -51,20 +54,20 @@ Widget buildInvoiceCard({required InvoiceBeneficary invoice, index}) {
                         SizedBox(height: 2.h,),
                         Column(
                           children: [
-                            const Center(
+                             Center(
                                 child: Text(
                                   "رقم الفاتورة",
                                   style: TextStyle(
-                                    color: Colors.black,
+                                    color: Theme.of(context).primaryColor,
                                     fontWeight: FontWeight.bold,
                                     fontSize: 11,
                                   ),
                                 )),
                             Center(
                                 child: Text(
-                                  "${invoice.data![index].totalPrice}",
-                                  style: const TextStyle(
-                                    color: Colors.black,
+                                  "${invoice.data![index].invoiceNo}",
+                                  style:  TextStyle(
+                                    color: Theme.of(context).primaryColor,
                                     fontWeight: FontWeight.bold,
                                     fontSize: 14,
                                   ),
@@ -82,7 +85,8 @@ Widget buildInvoiceCard({required InvoiceBeneficary invoice, index}) {
                             children: [
                               buildInvoiceInfo(
                                 label: 'التاريخ',
-                                value: invoice.data![index].date.toString()
+                                value: invoice.data![index].date.toString(),
+                                context: context,
                               ),
 
                             ],
@@ -94,8 +98,8 @@ Widget buildInvoiceCard({required InvoiceBeneficary invoice, index}) {
                     Center(
                         child: Text(
                           "المجموع ${invoice.data![index].totalPrice}",
-                    style: const TextStyle(
-                      color: Colors.green,
+                    style:  TextStyle(
+                      color: Theme.of(context).primaryColor,
                       fontWeight: FontWeight.bold,
                       fontSize: 15,
                     ),
@@ -137,21 +141,21 @@ Widget buildInvoiceCard({required InvoiceBeneficary invoice, index}) {
 // }
 
 Widget buildInvoiceInfo(
-    {required String label, required String value, bool isMultiline = false}) {
+    {required String label, required String value, bool isMultiline = false , required BuildContext context}) {
   return Row(
     // crossAxisAlignment: CrossAxisAlignment.start,
     // mainAxisAlignment: MainAxisAlignment.start,
     children: [
       Text(
         "${label} : ",
-        style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+        style:  TextStyle(fontSize: 12, color: Theme.of(context).primaryColor,fontWeight: FontWeight.bold),
       ),
       SizedBox(width: 2.w),
       Text(
         value,
         maxLines: isMultiline ? 3 : 1,
         overflow: TextOverflow.ellipsis,
-        style: const TextStyle(fontSize: 14),
+        style: TextStyle(fontSize: 14,color: Theme.of(context).primaryColor),
       ),
     ],
   );

@@ -7,16 +7,16 @@ import '../color_manager.dart';
 ThemeData lightTheme = ThemeData(
     scaffoldBackgroundColor: Colors.transparent,
     primaryColor: ColorManager.black,
-    drawerTheme: DrawerThemeData(backgroundColor: Colors.white),
+    drawerTheme: const DrawerThemeData(backgroundColor: Colors.white),
     appBarTheme: AppBarTheme(
         centerTitle: true,
         backgroundColor: Colors.white,
         elevation: 0,
-        titleTextStyle:
-            getRegularStyle(fontSize: FontSize.s16, color: ColorManager.white)),
+        titleTextStyle: getRegularStyle(fontSize: FontSize.s16, color: ColorManager.white)
+    ),
     primaryColorLight: const Color(0XFF6A6969),
     primaryColorDark: Colors.white,
-    canvasColor: Color(0XffF8F6F6));
+    canvasColor: const Color(0XffF8F6F6));
 
 ThemeData darkTheme = ThemeData(
   scaffoldBackgroundColor: Colors.transparent,
@@ -24,7 +24,7 @@ ThemeData darkTheme = ThemeData(
   primaryColorLight: Colors.white,
   primaryColorDark: Colors.black,
   canvasColor: Colors.black,
-  drawerTheme: DrawerThemeData(backgroundColor: Colors.black),
+  drawerTheme: const DrawerThemeData(backgroundColor: Colors.black),
   appBarTheme: AppBarTheme(
       centerTitle: true,
       backgroundColor: Colors.black,

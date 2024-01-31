@@ -20,15 +20,15 @@ class DailyInvoices extends StatelessWidget {
       child: BlocConsumer<ReportsCubit, ReportsState>(
         listener: (context, state) {},
         builder: (context, state) {
-          return  Container(
-            color: Theme.of(context).primaryColor,
+          return Container(
+            color: Theme.of(context).primaryColorDark,
             child: Stack(
               children: [
                 imageBackground(context),
                 Scaffold(
-                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                    appBar:defaultAppbar(title:"الفواتير اليومية" ,
-                    context: context),
+                    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                    appBar: defaultAppbar(
+                        title: "الفواتير اليومية", context: context),
                     body: state is GetDailyInvoicesSuccessState &&
                             ReportsCubit.get(context)
                                 .dailyInvoiceBeneficary
@@ -42,7 +42,8 @@ class DailyInvoices extends StatelessWidget {
                                 .length,
                             itemBuilder: (BuildContext context, int index) {
                               final InvoiceBeneficary item =
-                                  ReportsCubit.get(context).dailyInvoiceBeneficary;
+                                  ReportsCubit.get(context)
+                                      .dailyInvoiceBeneficary;
                               return Padding(
                                 padding: const EdgeInsets.only(bottom: 15),
                                 child: GestureDetector(
@@ -55,9 +56,9 @@ class DailyInvoices extends StatelessWidget {
                                     );
                                   },
                                   child: buildInvoiceCard(
-                                    invoice: item,
-                                    index: index,
-                                  ),
+                                      invoice: item,
+                                      index: index,
+                                      context: context),
                                 ),
                               );
                             },

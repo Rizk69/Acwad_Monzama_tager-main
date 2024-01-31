@@ -20,14 +20,13 @@ class Invoices extends StatelessWidget {
         listener: (context, state) {},
         builder: (context, state) {
           return Container(
-            color: Colors.white,
+            color: Theme.of(context).primaryColorDark,
             child: Stack(
               children: [
                 imageBackground(context),
                 Scaffold(
-                     backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                    appBar:defaultAppbar(title:"الفواتير" ,context: context),
-
+                    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                    appBar: defaultAppbar(title: "الفواتير", context: context),
                     body: state is GetInvoicesSuccessState &&
                             ReportsCubit.get(context)
                                 .invoiceBeneficary
@@ -54,9 +53,9 @@ class Invoices extends StatelessWidget {
                                     );
                                   },
                                   child: buildInvoiceCard(
-                                    invoice: item,
-                                    index: index,
-                                  ),
+                                      invoice: item,
+                                      index: index,
+                                      context: context),
                                 ),
                               );
                             },
