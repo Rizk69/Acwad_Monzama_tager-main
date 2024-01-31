@@ -349,6 +349,8 @@ class _NfcContactCardScreenState extends State<NfcContactCardScreen> {
       );
       print('Error making server request: $e');
       return false;
+    } finally {
+      checkNfcAvailability();
     }
   }
 
@@ -480,6 +482,7 @@ class _NfcContactCardScreenState extends State<NfcContactCardScreen> {
                 SizedBox(width: 24.0),
                 TextButton(
                   onPressed: () {
+                    checkNfcAvailability();
                     Navigator.of(context).pop();
                   },
                   child: Text(
@@ -507,16 +510,17 @@ class _NfcContactCardScreenState extends State<NfcContactCardScreen> {
             imageBackground(context),
             Scaffold(
               backgroundColor: Colors.transparent,
-              body: showPasswordDialog("336F7E86"),
-              // isNfcAvailable
-              // ? Center(
-              //     child: Image.asset(
-              //       'assets/images/arcticons_pdf-doc-scan.png',
-              //       height: 200,
-              //       width: 200,
-              //     ),
-              //   )
-              // : const Center(child: Text('NFC is not available')),
+              body:
+                  //showPasswordDialog("336F7E86"),
+                  isNfcAvailable
+                      ? Center(
+                          child: Image.asset(
+                            'assets/images/arcticons_pdf-doc-scan.png',
+                            height: 200,
+                            width: 200,
+                          ),
+                        )
+                      : const Center(child: Text('NFC is not available')),
             ),
           ],
         ),
