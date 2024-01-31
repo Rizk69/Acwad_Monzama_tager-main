@@ -420,7 +420,7 @@ class _NfcContactCardScreenState extends State<NfcContactCardScreen> {
         width: MediaQuery.of(context).size.width,
         padding: EdgeInsets.all(20),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Theme.of(context).primaryColorDark,
           borderRadius: BorderRadius.circular(15),
           boxShadow: [
             BoxShadow(
@@ -440,7 +440,7 @@ class _NfcContactCardScreenState extends State<NfcContactCardScreen> {
               style: TextStyle(
                 fontSize: 18.0,
                 fontWeight: FontWeight.bold,
-                color: Colors.black, // Adjust text color
+                color: Theme.of(context).primaryColor,
               ),
             ),
             SizedBox(height: 23),
@@ -452,14 +452,22 @@ class _NfcContactCardScreenState extends State<NfcContactCardScreen> {
               decoration: InputDecoration(
                 enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(13),
-                    borderSide: BorderSide(color: Colors.grey)),
+                    borderSide: BorderSide(
+                      color: Theme.of(context).primaryColorLight,
+                    )),
                 focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(13),
-                    borderSide: BorderSide(color: Colors.grey)),
-                fillColor: Colors.white,
+                    borderSide: BorderSide(
+                      color: Theme.of(context).primaryColorLight,
+                    )),
+                fillColor: Theme.of(context).primaryColorLight,
                 labelText: 'كلمة المرور',
+                labelStyle: TextStyle(
+                  color: Theme.of(context).primaryColorLight,
+                ),
                 border: OutlineInputBorder(
-                  borderSide: const BorderSide(color: Colors.grey, width: 1),
+                  borderSide: BorderSide(
+                      color: Theme.of(context).primaryColorLight, width: 1),
                   borderRadius: BorderRadius.circular(8.0),
                 ),
               ),
@@ -475,7 +483,7 @@ class _NfcContactCardScreenState extends State<NfcContactCardScreen> {
                   child: Text(
                     'موافق',
                     style: TextStyle(
-                      color: Colors.grey,
+                      color: Theme.of(context).primaryColorLight,
                     ),
                   ),
                 ),
@@ -488,7 +496,7 @@ class _NfcContactCardScreenState extends State<NfcContactCardScreen> {
                   child: Text(
                     'إلغاء',
                     style: TextStyle(
-                      color: Colors.grey,
+                      color: Theme.of(context).primaryColorLight,
                     ),
                   ),
                 ),
@@ -504,23 +512,22 @@ class _NfcContactCardScreenState extends State<NfcContactCardScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Container(
-        color: Colors.white,
+        color: Theme.of(context).primaryColorDark,
         child: Stack(
           children: [
             imageBackground(context),
             Scaffold(
-               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-              body:
-                  showPasswordDialog("336F7E86"),
-                  // isNfcAvailable
-                  //     ? Center(
-                  //         child: Image.asset(
-                  //           'assets/images/arcticons_pdf-doc-scan.png',
-                  //           height: 200,
-                  //           width: 200,
-                  //         ),
-                  //       )
-                  //     : const Center(child: Text('NFC is not available')),
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+              body: showPasswordDialog("336F7E86"),
+              // isNfcAvailable
+              //     ? Center(
+              //         child: Image.asset(
+              //           'assets/images/arcticons_pdf-doc-scan.png',
+              //           height: 200,
+              //           width: 200,
+              //         ),
+              //       )
+              //     : const Center(child: Text('NFC is not available')),
             ),
           ],
         ),

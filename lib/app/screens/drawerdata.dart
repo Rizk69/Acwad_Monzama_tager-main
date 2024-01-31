@@ -43,7 +43,7 @@ class DrawerData extends StatelessWidget {
     return SingleChildScrollView(
       child: Container(
         height: MediaQuery.of(context).size.height,
-        color: Colors.white,
+        color: Theme.of(context).drawerTheme.backgroundColor,
         child: Padding(
           padding: const EdgeInsets.fromLTRB(24, 48, 24, 12),
           child: Column(
@@ -54,11 +54,11 @@ class DrawerData extends StatelessWidget {
                 height: 5.h,
               ),
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 7.pt),
-                child: Image.asset("assets/images/icon.png",
-                width: 20.w,
-                )
-              ),
+                  padding: EdgeInsets.symmetric(horizontal: 7.pt),
+                  child: Image.asset(
+                    "assets/images/icon.png",
+                    width: 20.w,
+                  )),
               const SizedBox(
                 height: 30,
               ),
@@ -73,7 +73,7 @@ class DrawerData extends StatelessWidget {
                     padding: const EdgeInsets.only(bottom: 20, right: 12),
                     child: InkWell(
                       onTap: drawer[index].onTap,
-                      child: Container(
+                      child: SizedBox(
                         height: 40,
                         width: double.infinity,
                         child: Row(
@@ -91,9 +91,9 @@ class DrawerData extends StatelessWidget {
                               padding: const EdgeInsets.all(0.0),
                               child: Text(
                                 drawer[index].name,
-                                style: const TextStyle(
+                                style: TextStyle(
                                   fontSize: 16,
-                                  color: Color(0XFF6A6969),
+                                  color: Theme.of(context).primaryColorLight,
                                 ),
                               ),
                             ),
@@ -132,11 +132,11 @@ class DrawerData extends StatelessWidget {
                       (Route<dynamic> route) => false,
                     );
                   },
-                  child: const Text(
+                  child: Text(
                     'تسجيل الخروج',
                     style: TextStyle(
                       fontSize: 16,
-                      color: Colors.black,
+                      color: Theme.of(context).primaryColor,
                     ),
                   ),
                 ),

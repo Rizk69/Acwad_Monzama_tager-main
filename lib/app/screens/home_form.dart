@@ -81,85 +81,88 @@ class _HomeFormState extends State<HomeForm>
   @override
   Widget build(BuildContext context) {
     final rightSlide = MediaQuery.of(context).size.width * -0.55;
-    return BlocProvider(
-      create: (context) => ThemeCubit(),
-      child: PopScope(
-        onPopInvoked: _onWillPop,
-        child: AnimatedBuilder(
-            animation: _animationController,
-            builder: (context, child) {
-              double slide = rightSlide * _animationController.value;
-              double scale = 1 - (_animationController.value * 0.3);
+    return PopScope(
+      onPopInvoked: _onWillPop,
+      child: AnimatedBuilder(
+          animation: _animationController,
+          builder: (context, child) {
+            double slide = rightSlide * _animationController.value;
+            double scale = 1 - (_animationController.value * 0.3);
 
-              return Stack(children: [
-                MyConnectivityStatefulWidget(),
-                const Scaffold(
-                  backgroundColor: Colors.white,
-                  body: DrawerData(),
-                ),
-                Transform(
-                  transform: Matrix4.identity()
-                    ..translate(slide)
-                    ..scale(scale),
-                  alignment: Alignment.center,
-                  child: BlocBuilder<ThemeCubit, ThemeState>(
-                    builder: (context, state) {
-                      return Container(
-                        color: Theme.of(context).colorScheme.primary,
-                        child: Stack(
-                          children: [
-                            imageBackground(context),
-                            Scaffold(
-                                 backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                                appBar: AppBar(
-                                   backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
-                                  leading: IconButton(
-                                    onPressed: () => _toggleAnimation(),
-                                    icon: AnimatedIcon(
-                                      color: ColorManager.black,
-                                      icon: AnimatedIcons.menu_close,
-                                      progress: _animationController,
-                                    ),
+            return Stack(children: [
+              MyConnectivityStatefulWidget(),
+              const Scaffold(
+                backgroundColor: Colors.white,
+                body: DrawerData(),
+              ),
+              Transform(
+                transform: Matrix4.identity()
+                  ..translate(slide)
+                  ..scale(scale),
+                alignment: Alignment.center,
+                child: BlocBuilder<ThemeCubit, ThemeState>(
+                  builder: (context, state) {
+                    return Container(
+                      color: Theme.of(context).primaryColor,
+                      child: Stack(
+                        children: [
+                          imageBackground(context),
+                          Scaffold(
+                              backgroundColor:
+                                  Theme.of(context).scaffoldBackgroundColor,
+                              appBar: AppBar(
+                                backgroundColor: Theme.of(context)
+                                    .appBarTheme
+                                    .backgroundColor,
+                                leading: IconButton(
+                                  onPressed: () => _toggleAnimation(),
+                                  icon: AnimatedIcon(
+                                    color: Theme.of(context).primaryColor,
+                                    icon: AnimatedIcons.menu_close,
+                                    progress: _animationController,
                                   ),
-                                  actions: [
-                                    IconButton(
-                                      onPressed: () {
-                                        ThemeCubit.get(context).changeAppMode();
-                                      },
-                                      icon: Icon(Icons.brightness_4_outlined),
-                                    ),
-                                  ],
                                 ),
-                                body: Container(
-                                  color: Colors.transparent,
-                                  child: Center(
-                                    child: SingleChildScrollView(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          SizedBox(
-                                              height: MediaQuery.of(context)
-                                                  .size
-                                                  .height,
-                                              child:
-                                                  const NfcContactCardScreen()),
-                                        ],
-                                      ),
+                                actions: [
+                                  IconButton(
+                                    onPressed: () {
+                                      ThemeCubit.get(context).changeAppMode();
+                                    },
+                                    icon: Icon(
+                                      Icons.brightness_4_outlined,
+                                      color: Theme.of(context).primaryColor,
                                     ),
                                   ),
-                                )),
-                          ],
-                        ),
-                      );
-                    },
-                  ),
-                )
-              ]);
-            }),
-      ),
+                                ],
+                              ),
+                              body: Container(
+                                color: Colors.transparent,
+                                child: Center(
+                                  child: SingleChildScrollView(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        SizedBox(
+                                            height: MediaQuery.of(context)
+                                                .size
+                                                .height,
+                                            child:
+                                                const NfcContactCardScreen()),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              )),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              )
+            ]);
+          }),
     );
   }
 }

@@ -46,24 +46,24 @@ class _ProfileState extends State<Profile> {
     return SafeArea(
         child: Container(
       height: MediaQuery.of(context).size.height,
-      decoration: const BoxDecoration(
-        color: Color(0XffF8F6F6),
+      decoration: BoxDecoration(
+        color: Theme.of(context).canvasColor,
       ),
       child: Scaffold(
-         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         appBar: AppBar(
           title: Text(
             "حسابي",
             style: TextStyle(
               fontSize: 24,
-              color: Colors.black,
+              color: Theme.of(context).primaryColor,
               fontWeight: FontWeight.bold,
             ),
           ),
           leading: BackButton(
-            color: Colors.black,
+            color: Theme.of(context).primaryColor,
           ),
-           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
         ),
         body: SingleChildScrollView(
           child: Padding(
@@ -79,9 +79,12 @@ class _ProfileState extends State<Profile> {
                 ),
                 SizedBox(height: 2.h),
                 const SizedBox(height: 20),
-                buildTableRow("اسم المسؤول :", appStore.name, Colors.white),
-                buildTableRow("الهاتف :", appStore.phone, Color(0XffF8F6F6)),
-                buildTableRow("العنوان :", appStore.address, Colors.white),
+                buildTableRow("اسم المسؤول :", appStore.name,
+                    Theme.of(context).primaryColorDark, context),
+                buildTableRow("الهاتف :", appStore.phone,
+                    Theme.of(context).canvasColor, context),
+                buildTableRow("العنوان :", appStore.address,
+                    Theme.of(context).primaryColorDark, context),
                 const SizedBox(height: 20),
                 Padding(
                     padding: EdgeInsets.all(5.pt),
@@ -101,11 +104,11 @@ class _ProfileState extends State<Profile> {
                         elevation: MaterialStateProperty.all<double>(0),
                       ),
                       onPressed: () {},
-                      child: const Text(
+                      child: Text(
                         'تغيير كلمة السر',
                         style: TextStyle(
                           fontSize: 16,
-                          color: Colors.black,
+                          color: Theme.of(context).primaryColor,
                         ),
                       ),
                     )),
@@ -118,7 +121,8 @@ class _ProfileState extends State<Profile> {
   }
 }
 
-Widget buildTableRow(String label, String value, Color color) {
+Widget buildTableRow(
+    String label, String value, Color color, BuildContext context) {
   return Row(
     children: [
       Expanded(
@@ -134,7 +138,8 @@ Widget buildTableRow(String label, String value, Color color) {
                 style: TextStyle(
                   fontSize: 18.sp,
                   fontWeight: FontWeight.bold,
-                  color: Colors.black, // لون النص في خلفية العنصر
+                  color: Theme.of(context)
+                      .primaryColor, // لون النص في خلفية العنصر
                 ),
               ),
               SizedBox(
@@ -144,7 +149,8 @@ Widget buildTableRow(String label, String value, Color color) {
                 value,
                 style: TextStyle(
                   fontSize: 18.sp,
-                  color: Colors.grey, // لون النص في خلفية العنصر
+                  color: Theme.of(context)
+                      .primaryColorLight, // لون النص في خلفية العنصر
                 ),
               )
             ],
