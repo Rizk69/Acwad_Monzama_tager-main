@@ -20,7 +20,7 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
     appStore.setToken(getStringAsync(TOKEN));
     Timer(const Duration(seconds: 2), () {
-      (TOKEN.isNotEmpty && FIRSTLOGIN == 1)
+      (TOKEN.isNotEmpty)
           ? Navigator.of(context).popAndPushNamed(Routes.homeFormRoute)
           : Navigator.of(context).popAndPushNamed(Routes.loginFormRoute);
     });

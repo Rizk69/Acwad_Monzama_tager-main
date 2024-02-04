@@ -119,12 +119,13 @@ class DrawerData extends StatelessWidget {
                     elevation: MaterialStateProperty.all<double>(0),
                   ),
                   onPressed: () async {
-                    await logout(context);
-                    Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(builder: (context) => SignInScreen()),
-                      (Route<dynamic> route) => false,
-                    );
+                    await logout(context).then((value){
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(builder: (context) => SignInScreen()),
+                            (Route<dynamic> route) => false,
+                      );
+                    });
                   },
                   child: Text(
                     'تسجيل الخروج',
