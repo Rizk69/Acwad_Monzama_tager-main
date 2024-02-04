@@ -31,33 +31,58 @@ class Invoices extends StatelessWidget {
                                 .invoiceBeneficary
                                 .data!
                                 .isNotEmpty
-                        ? ListView.builder(
-                            padding: const EdgeInsets.all(16),
-                            itemCount: ReportsCubit.get(context)
-                                .invoiceBeneficary
-                                .data!
-                                .length,
-                            itemBuilder: (BuildContext context, int index) {
-                              final InvoiceBeneficary item =
-                                  ReportsCubit.get(context).invoiceBeneficary;
-                              return Padding(
-                                padding: const EdgeInsets.only(bottom: 15),
-                                child: GestureDetector(
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => InvoiceDetails(
-                                              item: item.data![index])),
+                        ? Column(
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.all(10),
+                                child: TextFormField(
+                                  decoration: InputDecoration(
+                                    labelText: 'Search',
+                                    hintText: 'Search for ',
+                                    prefixIcon: Icon(Icons.search),
+                                    border: OutlineInputBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(23)),
+                                  ),
+                                  onChanged: (value) {},
+                                ),
+                              ),
+                              Expanded(
+                                child: ListView.builder(
+                                  padding: const EdgeInsets.all(16),
+                                  itemCount: ReportsCubit.get(context)
+                                      .invoiceBeneficary
+                                      .data!
+                                      .length,
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    final InvoiceBeneficary item =
+                                        ReportsCubit.get(context)
+                                            .invoiceBeneficary;
+                                    return Padding(
+                                      padding:
+                                          const EdgeInsets.only(bottom: 15),
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    InvoiceDetails(
+                                                        item:
+                                                            item.data![index])),
+                                          );
+                                        },
+                                        child: buildInvoiceCard(
+                                            invoice: item,
+                                            index: index,
+                                            context: context),
+                                      ),
                                     );
                                   },
-                                  child: buildInvoiceCard(
-                                      invoice: item,
-                                      index: index,
-                                      context: context),
                                 ),
-                              );
-                            },
+                              ),
+                            ],
                           )
                         : Center(
                             child: Lottie.asset(

@@ -96,22 +96,23 @@ class SignInScreenState extends State<SignInScreen> {
           }
         },
         builder: (context, state) {
-          return  Container(
+          return Container(
             color: Colors.white,
             child: Stack(
               children: [
                 imageBackground(context),
                 Scaffold(
-                   backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                     resizeToAvoidBottomInset: false,
                     body: SafeArea(
                       child: Animate(
                         effects: const [FadeEffect(), ScaleEffect()],
                         child: SingleChildScrollView(
                           child: SizedBox(
-                            height: MediaQuery.of(context).size.height/1.2,
+                            height: MediaQuery.of(context).size.height / 1.1,
                             child: Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 10.0),
                               child: Form(
                                 key: formKey,
                                 child: Column(
@@ -119,23 +120,27 @@ class SignInScreenState extends State<SignInScreen> {
                                   children: [
                                     SizedBox(height: 10.h),
                                     Padding(
-                                      padding: EdgeInsets.symmetric(horizontal: 5.pt),
-                                      child:
-                                          Center(child: Image.asset("assets/images/icon.png",width: 40.w,)),
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 5.pt),
+                                      child: Center(
+                                          child: Image.asset(
+                                        "assets/images/icon.png",
+                                        width: 40.w,
+                                      )),
                                     ),
                                     SizedBox(height: 10.h),
                                     Text(
                                       'الاميل',
-                                      style: Styles.textStyleTitle18.copyWith(
-                                        color: Colors.black
-                                      ),
+                                      style: Styles.textStyleTitle18
+                                          .copyWith(color: Colors.black),
                                     ),
                                     SizedBox(height: 1.h),
                                     CustomTextFormField(
                                         hintText: 'acwad@gmail.com',
                                         prefix: const Icon(Icons.email_outlined,
                                             color: Colors.black),
-                                        textInputType: TextInputType.emailAddress,
+                                        textInputType:
+                                            TextInputType.emailAddress,
                                         controller: emailController,
                                         validator: (value) {
                                           if (value!.isEmpty) {
@@ -147,9 +152,8 @@ class SignInScreenState extends State<SignInScreen> {
                                     SizedBox(height: 3.h),
                                     Text(
                                       'كلمة المرور',
-                                      style: Styles.textStyleTitle18.copyWith(
-                                          color: Colors.black
-                                      ),
+                                      style: Styles.textStyleTitle18
+                                          .copyWith(color: Colors.black),
                                     ),
                                     SizedBox(height: 1.h),
                                     TextFormField(
@@ -160,36 +164,43 @@ class SignInScreenState extends State<SignInScreen> {
                                             return null;
                                           }
                                         },
-                                        keyboardType: TextInputType.emailAddress,
+                                        keyboardType:
+                                            TextInputType.emailAddress,
                                         controller: passwordController,
-                                        style: const TextStyle(color: Colors.black),
+                                        style: const TextStyle(
+                                            color: Colors.black),
                                         decoration: InputDecoration(
                                           focusColor: Colors.black,
                                           border: OutlineInputBorder(
-                                            borderRadius: BorderRadius.circular(12.0),
+                                            borderRadius:
+                                                BorderRadius.circular(12.0),
                                           ),
                                           hintText: '********',
                                           hintStyle: Styles.textStyleTitle16
                                               .copyWith(color: Colors.black),
                                           focusedBorder: OutlineInputBorder(
-                                            borderRadius: BorderRadius.circular(12.0),
+                                            borderRadius:
+                                                BorderRadius.circular(12.0),
                                             borderSide: const BorderSide(
                                               color: Color(0xffEEBB49),
                                               width: 2.0,
                                             ),
                                           ),
                                           enabledBorder: OutlineInputBorder(
-                                            borderRadius: BorderRadius.circular(12.0),
+                                            borderRadius:
+                                                BorderRadius.circular(12.0),
                                             borderSide: const BorderSide(
                                               color: Color(0xffC19843),
                                               width: 2.0,
                                             ),
                                           ),
-                                          prefixIcon: const Icon(Icons.lock_outline,
+                                          prefixIcon: const Icon(
+                                              Icons.lock_outline,
                                               color: Colors.black),
                                           suffixIcon: IconButton(
                                             icon: Icon(
-                                              LoginCubit.get(context).suffixIcon,
+                                              LoginCubit.get(context)
+                                                  .suffixIcon,
                                               color: ColorManager.black,
                                             ),
                                             onPressed: () {
@@ -206,13 +217,15 @@ class SignInScreenState extends State<SignInScreen> {
                                       child: AppButton(
                                         width: context.width(),
                                         text: "تسجيل دخول",
-                                        textStyle: boldTextStyle(color: ColorManager.white),
+                                        textStyle: boldTextStyle(
+                                            color: ColorManager.white),
                                         color: ColorManager.baseYellow,
                                         enableScaleAnimation: false,
                                         onTap: () async {
                                           LoginCubit.get(context).login(
                                               email: emailController.text,
-                                              password: passwordController.text);
+                                              password:
+                                                  passwordController.text);
                                           // loginApi(context);
                                         },
                                       ),
