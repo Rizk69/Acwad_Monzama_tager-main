@@ -13,83 +13,79 @@ class Invoices extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) =>
-          ReportsCubit()..getInvoiceBeneficary(vendorId: appStore.userId),
+      create: (context) => ReportsCubit()..getInvoiceBeneficary(vendorId: appStore.userId),
       child: BlocConsumer<ReportsCubit, ReportsState>(
         listener: (context, state) {},
         builder: (context, state) {
+          InvoiceBeneficary? currentData;
+
+          if (state is GetInvoicesSuccessState) {
+            currentData = state.invoiceBeneficary;
+          }
+          if (state is SearchInvoicesSuccessState) {
+            currentData = state.invoiceBeneficary;
+          }
+
+          bool hasData = currentData != null && currentData.data != null && currentData.data!.isNotEmpty;
+
           return Container(
             color: Theme.of(context).primaryColorDark,
             child: Stack(
               children: [
                 imageBackground(context),
                 Scaffold(
-                    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                    appBar: defaultAppbar(title: "الفواتير", context: context),
-                    body: state is GetInvoicesSuccessState &&
-                            ReportsCubit.get(context)
-                                .invoiceBeneficary
-                                .data!
-                                .isNotEmpty
-                        ? Column(
-                            children: [
-                              Padding(
-                                padding: EdgeInsets.all(10),
-                                child: TextFormField(
-                                  decoration: InputDecoration(
-                                    labelText: 'Search',
-                                    hintText: 'Search for ',
-                                    prefixIcon: Icon(Icons.search),
-                                    border: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(23)),
-                                  ),
-                                  onChanged: (value) {},
-                                ),
+                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                  appBar: defaultAppbar(title: "الفواتير", context: context),
+                  body: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: TextFormField(
+                          decoration: InputDecoration(
+                            labelText: 'Search',
+                            hintText: 'Search for ',
+                            prefixIcon: const Icon(Icons.search),
+                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(23)),
+                          ),
+                          onChanged: (value) {
+                            ReportsCubit.get(context).searchInvoiceNumber(value);
+                          },
+                        ),
+                      ),
+                      state is GetInvoicesLoadingState
+                          ? const Center(child: CircularProgressIndicator())
+                          : hasData
+                          ? Expanded(
+                        child: ListView.builder(
+                          padding: const EdgeInsets.all(16),
+                          itemCount: currentData.data!.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            final item = currentData!.data![index];
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 15),
+                              child: GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => InvoiceDetails(item: item)),
+                                  );
+                                },
+                                child: buildInvoiceCard(
+                                    invoice: currentData, index: index, context: context), // تأكد من أن لديك هذه الوظيفة معرفة بشكل صحيح
                               ),
-                              Expanded(
-                                child: ListView.builder(
-                                  padding: const EdgeInsets.all(16),
-                                  itemCount: ReportsCubit.get(context)
-                                      .invoiceBeneficary
-                                      .data!
-                                      .length,
-                                  itemBuilder:
-                                      (BuildContext context, int index) {
-                                    final InvoiceBeneficary item =
-                                        ReportsCubit.get(context)
-                                            .invoiceBeneficary;
-                                    return Padding(
-                                      padding:
-                                          const EdgeInsets.only(bottom: 15),
-                                      child: GestureDetector(
-                                        onTap: () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    InvoiceDetails(
-                                                        item:
-                                                            item.data![index])),
-                                          );
-                                        },
-                                        child: buildInvoiceCard(
-                                            invoice: item,
-                                            index: index,
-                                            context: context),
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ),
-                            ],
-                          )
-                        : Center(
-                            child: Lottie.asset(
-                              'assets/images/empty_invoice.json',
-                              fit: BoxFit.fill,
-                            ),
-                          )),
+                            );
+                          },
+                        ),
+                      )
+                          : Center(
+                        child: Lottie.asset(
+                          'assets/images/empty_invoice.json',
+                          fit: BoxFit.fill,
+                        ),
+                      ),
+                    ],
+                  ),
+                )
               ],
             ),
           );

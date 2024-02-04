@@ -1,39 +1,47 @@
 part of 'reports_cubit.dart';
 
-abstract class ReportsState extends Equatable {
-  const ReportsState();
-
-  @override
-  List<Object> get props => [];
-}
+abstract class ReportsState {}
 
 class InvoicesInitial extends ReportsState {}
 
 
-class ReceiptsDataLoaded extends ReportsState {
-  final List<ReceiptData>? receipts;
-
-  const ReceiptsDataLoaded(this.receipts);
-
-  @override
-  List<Object> get props => [receipts ?? []];
-}
 
 class GetInvoicesLoadingState extends ReportsState {}
 
-class GetInvoicesSuccessState extends ReportsState {}
+class GetInvoicesSuccessState extends ReportsState {
+  final InvoiceBeneficary invoiceBeneficary;
+   GetInvoicesSuccessState(this.invoiceBeneficary);
+}
 
 class GetInvoicesErrorState extends ReportsState {
   final String error;
-
-  const GetInvoicesErrorState(this.error);
+   GetInvoicesErrorState(this.error);
 }
+
+
+
+class SearchInvoicesLoadingState extends ReportsState {}
+
+class SearchInvoicesSuccessState extends ReportsState {
+  final InvoiceBeneficary invoiceBeneficary;
+   SearchInvoicesSuccessState(this.invoiceBeneficary);
+}
+
+class SearchInvoicesErrorState extends ReportsState {
+  final String error;
+   SearchInvoicesErrorState(this.error);
+}
+
+
 
 class GetAllInvoicesLoadingState extends ReportsState {}
 
 class GetAllInvoicesSuccessState extends ReportsState {}
 
 class GetAllInvoicesErrorState extends ReportsState {}
+
+
+
 
 class GetDailyInvoicesLoadingState extends ReportsState {}
 
