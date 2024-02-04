@@ -18,6 +18,7 @@ class NfcContactCardScreen extends StatefulWidget {
 class _NfcContactCardScreenState extends State<NfcContactCardScreen> {
   ValueNotifier<dynamic> result = ValueNotifier(null);
   bool isNfcAvailable = false;
+  bool _isObscure = true;
 
   @override
   void initState() {
@@ -207,7 +208,8 @@ class _NfcContactCardScreenState extends State<NfcContactCardScreen> {
             ),
             SizedBox(height: 23),
             TextFormField(
-              obscureText: true,
+              keyboardType: TextInputType.number,
+              obscureText: _isObscure,
               onChanged: (value) {
                 password = value;
               },
@@ -237,6 +239,17 @@ class _NfcContactCardScreenState extends State<NfcContactCardScreen> {
                   borderSide: BorderSide(
                       color: Theme.of(context).primaryColorLight, width: 1),
                   borderRadius: BorderRadius.circular(8.0),
+                ),
+                suffixIcon: IconButton(
+                  icon: Icon(
+                    _isObscure ? Icons.visibility_off : Icons.visibility,
+                    color: Theme.of(context).primaryColorLight,
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      _isObscure = !_isObscure; // Toggle the visibility
+                    });
+                  },
                 ),
               ),
             ),
@@ -286,24 +299,23 @@ class _NfcContactCardScreenState extends State<NfcContactCardScreen> {
             imageBackground(context),
             Scaffold(
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-              body:
-                  //showPasswordDialog("336F7E86"),
-                  isNfcAvailable
-                      ? Center(
-                          child: Image.asset(
-                            'assets/images/arcticons_pdf-doc-scan.png',
-                            color: Theme.of(context).primaryColorDark,
-                            height: 200,
-                            width: 200,
-                          ),
-                        )
-                      : Center(
-                          child: Text(
-                          'NFC is not available',
-                          style: TextStyle(
-                            color: Theme.of(context).primaryColorLight,
-                          ),
-                        )),
+              body: showPasswordDialog("336F7E86"),
+              // isNfcAvailable
+              //     ? Center(
+              //         child: Image.asset(
+              //           'assets/images/arcticons_pdf-doc-scan.png',
+              //           color: Theme.of(context).primaryColorDark,
+              //           height: 200,
+              //           width: 200,
+              //         ),
+              //       )
+              //     : Center(
+              //         child: Text(
+              //         'NFC is not available',
+              //         style: TextStyle(
+              //           color: Theme.of(context).primaryColorLight,
+              //         ),
+              //       )),
             ),
           ],
         ),

@@ -276,6 +276,7 @@ class PaidBeneficaryScreen extends StatelessWidget {
                     style: TextStyle(color: Theme.of(context).primaryColor)),
                 SizedBox(height: 2.h),
                 TextField(
+                  keyboardType: TextInputType.number,
                   style: TextStyle(
                     color: Theme.of(context).primaryColorLight,
                   ),
