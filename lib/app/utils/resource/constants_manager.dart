@@ -1,4 +1,5 @@
-import 'package:smartcard/app/utils/cache_helper.dart';
+
+import '../helper/cache_helper.dart';
 
 const int splashDelay = 3;
 const String baseUrl = "https://monazama.acwad-it.com/api/";

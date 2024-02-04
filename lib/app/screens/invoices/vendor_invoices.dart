@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lottie/lottie.dart';
-import 'package:smartcard/app/cubits/Reports/reports_cubit.dart';
 import 'package:smartcard/app/models/invoice_beneficary.dart';
+import 'package:smartcard/app/screens/invoices/cubit/reports_cubit.dart';
 import 'package:smartcard/app/widgets/backgrond_image.dart';
 import 'package:smartcard/app/widgets/build_invoice_card.dart';
 import 'package:smartcard/app/widgets/default_appbar.dart';
 import 'package:smartcard/main.dart';
-import '../utils/color_manager.dart';
 import 'invoicedetails.dart';
 
 class Invoices extends StatelessWidget {

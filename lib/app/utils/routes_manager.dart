@@ -1,39 +1,35 @@
 import 'package:smartcard/app/models/invoice_beneficary.dart';
-import 'package:smartcard/app/screens/all_invoices.dart';
-import 'package:smartcard/app/screens/login.dart';
+import 'package:smartcard/app/screens/beneficary/contactcard.dart';
+import 'package:smartcard/app/screens/invoices/all_project_invoices.dart';
+import 'package:smartcard/app/screens/auth/login.dart';
 import '../../app/screens/home_form.dart';
-import '../screens/Recipts.dart';
-import '../screens/contactcard.dart';
-import '../screens/daily_invoices.dart';
-import '../screens/invoicedetails.dart';
-import '../screens/invoices.dart';
-import '../screens/profile.dart';
-import '/app/utils/strings_manager.dart';
+import '../screens/invoices/daily_invoices.dart';
+import '../screens/invoices/invoicedetails.dart';
+import '../screens/invoices/vendor_invoices.dart';
+import '../screens/auth/profile.dart';
+import 'resource/strings_manager.dart';
 import 'package:flutter/material.dart';
 
 class Routes {
   static const String splashRoute = "/";
-  static const String homeFormRoute = "/homeForm"; //
-  static const String loginFormRoute = "/loginForm"; //
-  static const String addInvoiceRoute = "/addInvoice"; //
+  static const String homeFormRoute = "/homeForm";
+  static const String loginFormRoute = "/loginForm";
+  static const String addInvoiceRoute = "/addInvoice";
   static const String balanceWithdrawalRoute = "/balanceWithdrawal";
-  static const String invoicesRoute = "/invoices"; //
-  static const String allInvoiceRoute = "/allInvoices"; //
-  static const String invoiceDetailsRoute = "/InvoiceDetails"; //
-  static const String profileRoute = "/Profile"; //
-  static const String contactCardRoute = "/contactCard"; //
-  static const String invoicePrintContactRoute = "/invoicePrint_contact"; //
-  static const String invoicePrintEmployeeRoute = "/invoicePrint_employee"; //
-  static const String employeeCardRoute = "/employeeCard"; //
-  static const String receiptsRoute = "/receipts"; //
-  static const String dailySalesRoute = "/dailySales"; //
+  static const String invoicesRoute = "/invoices";
+  static const String allInvoiceRoute = "/allInvoices";
+  static const String invoiceDetailsRoute = "/InvoiceDetails";
+  static const String profileRoute = "/Profile";
+  static const String contactCardRoute = "/contactCard";
+  static const String invoicePrintContactRoute = "/invoicePrint_contact";
+  static const String invoicePrintEmployeeRoute = "/invoicePrint_employee";
+  static const String employeeCardRoute = "/employeeCard";
+  static const String dailySalesRoute = "/dailySales";
 }
 
 class RouteGenerator {
   static Route<dynamic> getRoute(RouteSettings settings) {
     switch (settings.name) {
-      case Routes.receiptsRoute:
-        return MaterialPageRoute(builder: (_) => Receipts());
       case Routes.dailySalesRoute:
         return MaterialPageRoute(builder: (_) => DailyInvoices());
       case Routes.homeFormRoute:

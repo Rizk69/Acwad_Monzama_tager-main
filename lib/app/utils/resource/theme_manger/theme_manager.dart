@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-
-import 'package:smartcard/app/utils/font_manager.dart';
-import 'package:smartcard/app/utils/styles_manager.dart';
+import 'package:smartcard/app/utils/resource/font_manager.dart';
+import 'package:smartcard/app/utils/resource/styles_manager.dart';
 import '../color_manager.dart';
 
 ThemeData lightTheme = ThemeData(

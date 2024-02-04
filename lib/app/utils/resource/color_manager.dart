@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:smartcard/app/utils/theme_manger/cubit/theme_cubit.dart';
 
 class ColorManager {
   static Color primary = const Color(0xFF69B6C7);

@@ -9,18 +9,6 @@ abstract class ReportsState extends Equatable {
 
 class InvoicesInitial extends ReportsState {}
 
-class InvoicesLoading extends ReportsState {}
-
-class InvoicesError extends ReportsState {}
-
-class InvoicesDataLoaded extends ReportsState {
-  final List<InvoiceData>? invoices;
-
-  const InvoicesDataLoaded(this.invoices);
-
-  @override
-  List<Object> get props => [invoices ?? []];
-}
 
 class ReceiptsDataLoaded extends ReportsState {
   final List<ReceiptData>? receipts;

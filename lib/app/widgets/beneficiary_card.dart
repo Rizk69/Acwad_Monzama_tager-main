@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:smartcard/app/models/beneficary_model.dart';
-import 'package:smartcard/app/utils/color_manager.dart';
+import 'package:smartcard/app/utils/resource/color_manager.dart';
 
 class BeneficiaryCard extends StatelessWidget {
   final BeneficaryData data;

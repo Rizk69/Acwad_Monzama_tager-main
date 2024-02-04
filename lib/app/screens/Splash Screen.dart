@@ -3,9 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
-
+import 'package:smartcard/app/utils/resource/constants_manager.dart';
 import '../../main.dart';
-import '../utils/constants_manager.dart';
 import '../utils/routes_manager.dart';
 
 class SplashScreen extends StatefulWidget {

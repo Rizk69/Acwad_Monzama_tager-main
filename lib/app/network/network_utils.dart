@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:http/http.dart';
 import 'package:http/http.dart' as http;
 import 'package:nb_utils/nb_utils.dart';
-import 'package:smartcard/app/utils/constants_manager.dart';
+import 'package:smartcard/app/utils/resource/constants_manager.dart';
 
 import '../../main.dart';
 import '../utils/common.dart';

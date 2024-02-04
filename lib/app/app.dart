@@ -4,12 +4,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:smartcard/app/screens/Splash%20Screen.dart';
-import 'package:smartcard/app/utils/theme_manger/cubit/theme_cubit.dart';
+import 'package:smartcard/app/screens/beneficary/nfc_contact_cubit/nfc_contact_cubit.dart';
+import 'package:smartcard/app/utils/resource/constants_manager.dart';
+import 'package:smartcard/app/utils/resource/theme_manger/theme_manager.dart';
 import '../main.dart';
-import '/app/utils/constants_manager.dart';
-import 'cubits/nfc_contact/nfc_contact_cubit.dart';
+import 'utils/resource/theme_manger/cubit/theme_cubit.dart';
 import 'utils/routes_manager.dart';
-import 'utils/theme_manger/theme_manager.dart';
 
 class MyApp extends StatefulWidget {
   MyApp._internal();

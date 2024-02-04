@@ -3,14 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:smartcard/app/models/invoice_beneficary.dart';
 import 'package:smartcard/app/utils/common.dart';
+import 'package:smartcard/app/utils/resource/color_manager.dart';
 import 'package:smartcard/app/widgets/backgrond_image.dart';
 import 'package:smartcard/app/widgets/default_appbar.dart';
+import '../../widgets/printInvoice.dart';
 
-import '../models/model_keys.dart';
-import '../utils/color_manager.dart';
-import '../widgets/printInvoice.dart';
-import '../widgets/printRecipt.dart';
-import '../widgets/print_contact.dart';
 
 class InvoiceDetails extends StatefulWidget {
   final InvoiceBeneficaryData? item;

@@ -1,9 +1,6 @@
-import 'package:flutter/material.dart';
-
 import 'package:mobx/mobx.dart';
-
-import '../utils/constants_manager.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:smartcard/app/utils/resource/constants_manager.dart';
 
 part 'app_store.g.dart';
 

@@ -1,18 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:nb_utils/nb_utils.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
-import 'package:smartcard/app/cubits/login/login_cubit.dart';
-import 'package:smartcard/app/utils/constants_manager.dart';
-import 'package:smartcard/app/widgets/default_button_widget.dart';
-import '../../app/utils/color_manager.dart';
-import '../../main.dart';
-import '../app.dart';
-import '../models/model_keys.dart';
-import '../network/app_api.dart';
-import '../store/app_store.dart';
-import '../utils/common.dart';
+import '../../../main.dart';
+
 
 class Profile extends StatefulWidget {
   const Profile({Key? key}) : super(key: key);

@@ -3,7 +3,7 @@ import 'package:smartcard/app/models/vendor.dart';
 
 import '../../main.dart';
 import '../models/model_keys.dart';
-import '../utils/database_helper.dart';
+import '../utils/helper/database_helper.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import 'network_utils.dart';

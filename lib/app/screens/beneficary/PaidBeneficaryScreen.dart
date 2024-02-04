@@ -1,16 +1,14 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lottie/lottie.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
-import 'package:smartcard/app/cubits/nfc_contact/nfc_contact_cubit.dart';
-import 'package:smartcard/app/screens/addinvoice.dart';
-import 'package:smartcard/app/utils/color_manager.dart';
+import 'package:smartcard/app/screens/beneficary/addinvoice.dart';
+import 'package:smartcard/app/utils/resource/color_manager.dart';
 import 'package:smartcard/app/widgets/backgrond_image.dart';
 import 'package:smartcard/main.dart';
 
-import '../models/benficary_data_model.dart';
+import 'nfc_contact_cubit/nfc_contact_cubit.dart';
 
 class PaidBeneficaryScreen extends StatelessWidget {
   int paidBeneficaryId;

@@ -7,7 +7,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:smartcard/app/models/model_keys.dart';
 import 'package:sqflite/sqflite.dart';
 
-import '../network/app_api.dart';
+import '../../network/app_api.dart';
 
 class DatabaseHelper {
   static final DatabaseHelper _instance = DatabaseHelper.internal();

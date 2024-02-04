@@ -1,15 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:smartcard/app/network/app_api.dart';
-import 'package:smartcard/app/screens/login.dart';
-
-import '../../main.dart';
-import '../app.dart';
-import '../store/app_store.dart';
-import '../utils/color_manager.dart';
-import '../utils/database_helper.dart';
-import '../utils/routes_manager.dart';
+import 'package:smartcard/app/screens/auth/login.dart';
+import 'package:smartcard/app/utils/resource/color_manager.dart';
+import 'routes_manager.dart';
 
 class DrawerData extends StatelessWidget {
   const DrawerData({super.key});

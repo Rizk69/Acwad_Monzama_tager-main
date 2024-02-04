@@ -4,14 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lottie/lottie.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
-import 'package:smartcard/app/utils/color_manager.dart';
 import 'package:smartcard/app/utils/default_snake_bar.dart';
+import 'package:smartcard/app/utils/resource/color_manager.dart';
 import 'package:smartcard/app/widgets/backgrond_image.dart';
 import 'package:smartcard/app/widgets/default_appbar.dart';
 import 'package:smartcard/main.dart';
-import '../cubits/nfc_contact/nfc_contact_cubit.dart';
-import '../models/ProductModel.dart';
-import '../models/benficary_data_model.dart';
+import '../../models/ProductModel.dart';
+import '../../models/benficary_data_model.dart';
+import 'nfc_contact_cubit/nfc_contact_cubit.dart';
 
 class AddInvoice extends StatelessWidget {
   PaidBeneficaryModel paidBeneficaryModel;

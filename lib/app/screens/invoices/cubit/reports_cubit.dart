@@ -4,65 +4,21 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
+import 'package:smartcard/app/models/invoice.dart';
 import 'package:smartcard/app/models/invoice_beneficary.dart';
+import 'package:smartcard/app/models/model_keys.dart';
 import 'package:smartcard/app/network/api_end_points.dart';
-
-import '../../../main.dart';
-import '../../app.dart';
-import '../../models/model_keys.dart';
-import '../../network/app_api.dart';
-
+import 'package:smartcard/app/network/app_api.dart';
+import 'package:smartcard/main.dart';
 part 'reports_state.dart';
 
 class ReportsCubit extends Cubit<ReportsState> {
   static ReportsCubit get(context) => BlocProvider.of(context);
 
-  late List<InvoiceData>? listData;
-  late List<ReceiptData>? listReceiptData;
+
 
   ReportsCubit() : super(InvoicesInitial());
 
-  Future<void> getInvoices() async {
-    try {
-      emit(
-          InvoicesLoading()); // Emit a loading state before making the API call
-
-      final response = await listInvoice();
-
-      if (response.data != null) {
-        listData = response.data;
-        print(listData);
-        emit(InvoicesDataLoaded(listData));
-        appStore.setLoading(false);
-      } else {
-        emit(
-            InvoicesError()); // Emit an error state if the data is null or empty
-      }
-    } catch (e) {
-      print(e);
-      emit(InvoicesError()); // Emit an error state with the error message
-    }
-  }
-
-  Future<void> getReceipts() async {
-    try {
-      emit(
-          InvoicesLoading()); // Emit a loading state before making the API call
-
-      final response = await listReceipts();
-
-      if (response.data != null) {
-        listReceiptData = response.data;
-        emit(ReceiptsDataLoaded(listReceiptData));
-        appStore.setLoading(false);
-      } else {
-        emit(
-            InvoicesError()); // Emit an error state if the data is null or empty
-      }
-    } catch (e) {
-      emit(InvoicesError()); // Emit an error state with the error message
-    }
-  }
 
   late InvoiceBeneficary invoiceBeneficary;
 

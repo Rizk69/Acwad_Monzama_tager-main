@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:smartcard/app/utils/color_manager.dart';
+import 'package:smartcard/app/utils/resource/color_manager.dart';
 
 Widget defaultButton(
         {double width = double.infinity,

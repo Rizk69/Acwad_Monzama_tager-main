@@ -2,10 +2,10 @@ import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
-import 'package:smartcard/app/cubits/login/login_cubit.dart';
+import 'package:smartcard/app/screens/auth/cubit/login_cubit.dart';
 import 'package:smartcard/app/screens/home_form.dart';
-import 'package:smartcard/app/utils/color_manager.dart';
 import 'package:smartcard/app/utils/default_snake_bar.dart';
+import 'package:smartcard/app/utils/resource/color_manager.dart';
 
 class ChangePasswordDialog extends StatefulWidget {
   @override

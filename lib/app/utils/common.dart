@@ -1,13 +1,9 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-
 import 'package:html/parser.dart';
 import 'package:intl/intl.dart';
 import 'package:nb_utils/nb_utils.dart';
-import 'package:smartcard/app/utils/color_manager.dart';
+import 'package:smartcard/app/utils/resource/color_manager.dart';
 
-import 'constants_manager.dart';
 
 InputDecoration inputDecoration(BuildContext context,
     {Widget? prefixIcon,

@@ -2,30 +2,16 @@ import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-
 import 'package:nb_utils/nb_utils.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
-import 'package:simple_gradient_text/simple_gradient_text.dart';
-import 'package:smartcard/app/cubits/login/login_cubit.dart';
-import 'package:smartcard/app/utils/Styles.dart';
+import 'package:smartcard/app/screens/auth/cubit/login_cubit.dart';
+import 'package:smartcard/app/utils/helper/Styles.dart';
 import 'package:smartcard/app/utils/default_snake_bar.dart';
+import 'package:smartcard/app/utils/resource/color_manager.dart';
 import 'package:smartcard/app/widgets/backgrond_image.dart';
 import 'package:smartcard/app/widgets/custom_text_form_field.dart';
-
-import '../app.dart';
-import '../models/model_keys.dart';
-import '../network/app_api.dart';
-import '../store/app_store.dart';
-import '../utils/color_manager.dart';
-import '../utils/common.dart';
-import '../utils/constants_manager.dart';
-import '../utils/database_helper.dart';
-import '../widgets/app_loader_widget.dart';
-import '../widgets/change_password_dialog.dart';
-import 'home_form.dart';
-import '../../main.dart';
+import '../../widgets/change_password_dialog.dart';
+import '../home_form.dart';
 
 class SignInScreen extends StatefulWidget {
   static String tag = '/SignInScreen';

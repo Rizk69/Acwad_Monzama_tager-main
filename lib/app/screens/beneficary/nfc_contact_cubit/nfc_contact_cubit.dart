@@ -1,14 +1,14 @@
 import 'dart:convert';
 
 import 'package:equatable/equatable.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smartcard/app/models/ProductModel.dart';
 import 'package:smartcard/app/models/benficary_data_model.dart';
 import 'package:smartcard/app/models/invoice.dart';
 import 'package:smartcard/app/widgets/print_beneficary_Invoice.dart';
-import '../../network/api_end_points.dart';
 import 'package:http/http.dart' as http;
+
+import '../../../network/api_end_points.dart';
 
 part 'nfc_contact_state.dart';
 

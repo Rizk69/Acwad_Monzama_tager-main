@@ -3,7 +3,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 
 import '../../main.dart';
-import '../utils/database_helper.dart';
+import '../utils/helper/database_helper.dart';
 
 class MyConnectivityStatefulWidget extends StatefulWidget {
   @override
