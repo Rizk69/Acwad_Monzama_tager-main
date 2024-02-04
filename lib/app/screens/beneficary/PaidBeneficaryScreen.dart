@@ -116,7 +116,8 @@ class PaidBeneficaryScreen extends StatelessWidget {
                                                               .type ==
                                                           0) {
                                                         _showConfirmationDialog(
-                                                          context: context,
+                                                          contextScreen:
+                                                              context,
                                                           index: index,
                                                           vendorId:
                                                               appStore.userId,
@@ -251,7 +252,7 @@ class PaidBeneficaryScreen extends StatelessWidget {
   }
 
   void _showConfirmationDialog({
-    required BuildContext context,
+    required BuildContext contextScreen,
     required int index,
     required int paidBeneficaryId,
     required int vendorId,
@@ -263,7 +264,7 @@ class PaidBeneficaryScreen extends StatelessWidget {
         TextEditingController(); // تمرير Controller كمعامل إضافي
 
     showDialog(
-      context: context,
+      context: contextScreen,
       builder: (BuildContext context) {
         return AlertDialog(
           backgroundColor: Theme.of(context).primaryColorDark,
@@ -309,6 +310,7 @@ class PaidBeneficaryScreen extends StatelessWidget {
                   style: TextStyle(color: Theme.of(context).primaryColorDark)),
               onPressed: () {
                 NfcDataCubit.get(context).makeCashPayment(
+                  context: contextScreen,
                   paidBeneficaryId: paidBeneficaryId,
                   vendorId: vendorId,
                   beneficaryId: beneficaryId,

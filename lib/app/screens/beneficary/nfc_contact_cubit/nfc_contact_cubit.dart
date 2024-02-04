@@ -1,10 +1,12 @@
 import 'dart:convert';
 
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smartcard/app/models/ProductModel.dart';
 import 'package:smartcard/app/models/benficary_data_model.dart';
 import 'package:smartcard/app/models/invoice.dart';
+import 'package:smartcard/app/utils/SignatureScreen.dart';
 import 'package:smartcard/app/widgets/print_beneficary_Invoice.dart';
 import 'package:http/http.dart' as http;
 
@@ -19,7 +21,6 @@ class NfcDataCubit extends Cubit<NfcDataState> {
 
   static NfcDataCubit get(context) => BlocProvider.of(context);
 
-
   List<Product?> scannedItems = [];
   void addProduct(Product product) {
     emit(AddProductLoading());
@@ -33,22 +34,22 @@ class NfcDataCubit extends Cubit<NfcDataState> {
     }
     emit(AddProductSuccess());
   }
+
   removeProduct(int index) {
     emit(RemoveProductLoading());
     scannedItems.removeAt(index);
     emit(RemoveProductSuccess());
   }
+
   double calculateTotalPrice() {
     double totalPrice = 0.0;
     for (Product? product in scannedItems) {
       if (product != null && product.price != null) {
-        totalPrice += product.price! *  product.count!;
+        totalPrice += product.price! * product.count!;
       }
     }
     return totalPrice;
   }
-
-
 
   List<ProductBody> productsBody = [];
   void convertScannedItemsToProductsBody({
@@ -98,7 +99,8 @@ class NfcDataCubit extends Cubit<NfcDataState> {
           emit(NfcDataLoaded());
           return true;
         } else {
-          emit(NfcDataError('Failed to load data: ${productModel.message ?? 'Not Found'}'));
+          emit(NfcDataError(
+              'Failed to load data: ${productModel.message ?? 'Not Found'}'));
           return false;
         }
       } else {
@@ -112,8 +114,6 @@ class NfcDataCubit extends Cubit<NfcDataState> {
       return false;
     }
   }
-
-
 
   Invoice? beneficaryInvoice;
 
@@ -140,7 +140,8 @@ class NfcDataCubit extends Cubit<NfcDataState> {
         }).toList(),
       };
 
-      var response = await http.post(paidBeneficaryUrl, body: jsonEncode(requestBody), headers: headers);
+      var response = await http.post(paidBeneficaryUrl,
+          body: jsonEncode(requestBody), headers: headers);
       var body = jsonDecode(response.body);
 
       if (response.statusCode == 200) {
@@ -149,7 +150,8 @@ class NfcDataCubit extends Cubit<NfcDataState> {
         printInvoice(beneficaryInvoice);
         emit(BuyProductsSuccessState());
       } else {
-        emit(BuyProductsErrorState("Statues code is ${response.statusCode}: and message is  ${body["message"]}"));
+        emit(BuyProductsErrorState(
+            "Statues code is ${response.statusCode}: and message is  ${body["message"]}"));
       }
     } catch (e) {
       emit(BuyProductsErrorState(e.toString()));
@@ -157,27 +159,36 @@ class NfcDataCubit extends Cubit<NfcDataState> {
     }
   }
 
-
   Invoice? cashInvoice;
-  makeCashPayment({
-    required int paidBeneficaryId,
-    required int vendorId,
-    required int beneficaryId,
-    required String date,
-    required double paidMoney,
-  }) async {
+
+  makeCashPayment(
+      {required int paidBeneficaryId,
+      required int vendorId,
+      required int beneficaryId,
+      required String date,
+      required double paidMoney,
+      required BuildContext context}) async {
     emit(MakeCashLoadingState());
 
-    var cashURL = Uri.parse("${ApiHelper.setInvoiceBeneficary}?PaidBeneficaryId=$paidBeneficaryId&vendorId=$vendorId&beneficaryId=$beneficaryId&date=$date&paidmoney=$paidMoney");
+    var cashURL = Uri.parse(
+        "${ApiHelper.setInvoiceBeneficary}?PaidBeneficaryId=$paidBeneficaryId&vendorId=$vendorId&beneficaryId=$beneficaryId&date=$date&paidmoney=$paidMoney");
 
     Map<String, String> headers = {'Accept': 'application/json'};
 
     await http.post(cashURL, headers: headers).then((value) {
       var body = jsonDecode(value.body);
       cashInvoice = Invoice.fromJson(body);
-      printInvoice(cashInvoice);
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => SignatureScreen(cashInvoice: cashInvoice!)),
+      );
       emit(MakeCashSuccessState(cashInvoice!));
+
+      // printInvoice(cashInvoice);
     }).catchError((onError) {
+      print(onError);
       emit(MakeCashErrorState(onError.toString()));
     });
   }
@@ -202,7 +213,6 @@ class NfcDataCubit extends Cubit<NfcDataState> {
           emit(GetPaidBeneficarySuccessState());
         } else {
           emit(GetPaidBeneficaryErrorState(paidBeneficary.message.toString()));
-
         }
       } else {
         emit(GetPaidBeneficaryErrorState('Failed to load data'));
