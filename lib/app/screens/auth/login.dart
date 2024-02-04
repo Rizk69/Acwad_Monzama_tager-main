@@ -206,9 +206,9 @@ class SignInScreenState extends State<SignInScreen> {
                                       ),
                                       obscureText:
                                           LoginCubit.get(context).isPassword),
-                                  const Spacer(),
+                                  SizedBox(height: 10.h),
                                   Padding(
-                                    padding: EdgeInsets.all(3.pt),
+                                    padding: EdgeInsets.all(2.pt),
                                     child: AppButton(
                                       width: context.width(),
                                       text: "تسجيل دخول",

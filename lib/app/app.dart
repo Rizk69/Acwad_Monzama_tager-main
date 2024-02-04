@@ -72,10 +72,6 @@ class _MyAppState extends State<MyApp> {
                 debugShowCheckedModeBanner: false,
                 onGenerateRoute: RouteGenerator.getRoute,
                 home: SplashScreen(),
-                initialRoute:
-                (TOKEN.isNotEmpty)
-                    ? Routes.homeFormRoute
-                    : Routes.loginFormRoute,
                 themeMode: ThemeCubit
                     .get(context)
                     .isDark ? ThemeMode.dark : ThemeMode.light,
