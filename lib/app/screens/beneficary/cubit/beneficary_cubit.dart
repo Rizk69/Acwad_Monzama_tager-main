@@ -17,11 +17,12 @@ class BeneficaryCubit extends Cubit<BeneficaryState> {
 
   Future<void> sendSignature({required String invoiceNumber, required File file , required Invoice beneficaryInvoice}) async {
 
-    var signatureUrl = Uri.parse("${ApiHelper.getAllBeneficary}$invoiceNumber");
+    var signatureUrl =
+        Uri.parse("${ApiHelper.setBeneficarySignature}$invoiceNumber");
 
     var request = http.MultipartRequest('POST', signatureUrl)
       ..headers.addAll({'Accept': 'application/json'})
-      ..files.add(await http.MultipartFile.fromPath('signature', file.path));
+      ..files.add(await http.MultipartFile.fromPath('image', file.path));
 
     var response = await request.send();
 
@@ -32,7 +33,6 @@ class BeneficaryCubit extends Cubit<BeneficaryState> {
     } else {
       print('Failed to upload signature');
       emit(SendSignatureBeneficaryErrorState('Error uploading signature'));
-
     }
   }
 
