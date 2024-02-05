@@ -1,12 +1,12 @@
-import 'dart:convert';
-
+import 'dart:io';
 import 'package:bloc/bloc.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
-import 'package:smartcard/app/models/beneficary_model.dart';
+import 'package:smartcard/app/models/invoice.dart';
 import 'package:smartcard/app/network/api_end_points.dart';
 import 'package:http/http.dart' as http;
-
+import 'package:smartcard/app/widgets/print_beneficary_Invoice.dart';
 part 'beneficary_state.dart';
 
 class BeneficaryCubit extends Cubit<BeneficaryState> {
@@ -14,26 +14,27 @@ class BeneficaryCubit extends Cubit<BeneficaryState> {
 
   static BeneficaryCubit get(context) => BlocProvider.of(context);
 
-  BeneficaryModel? beneficary;
 
-  void getAllBeneficary() async {
-    emit(GetAllBeneficaryLoadingState());
+  Future<void> sendSignature({required String invoiceNumber, required File file , required Invoice beneficaryInvoice}) async {
 
-    var loginURL = Uri.parse(ApiHelper.getAllBeneficary);
+    var signatureUrl = Uri.parse("${ApiHelper.getAllBeneficary}$invoiceNumber");
 
-    Map<String, String> headers = {'Accept': 'application/json'};
+    var request = http.MultipartRequest('POST', signatureUrl)
+      ..headers.addAll({'Accept': 'application/json'})
+      ..files.add(await http.MultipartFile.fromPath('signature', file.path));
 
-    await http.get(loginURL, headers: headers).then((value) {
-      var body = jsonDecode(value.body);
-      if (value.statusCode == 401) {
-        emit(GetAllBeneficaryErrorState(body['error'].toString()));
-      }
-      beneficary = BeneficaryModel.fromJson(body);
-      print(body);
-      emit(GetAllBeneficarySuccessState());
-    }).catchError((onError) {
-      print(onError);
-      emit(GetAllBeneficaryErrorState(onError.toString()));
-    });
+    var response = await request.send();
+
+    if (response.statusCode == 200) {
+      print('Signature uploaded successfully');
+      emit(SendSignatureBeneficarySuccessState());
+      printInvoice(beneficaryInvoice);
+    } else {
+      print('Failed to upload signature');
+      emit(SendSignatureBeneficaryErrorState('Error uploading signature'));
+
+    }
   }
+
+
 }

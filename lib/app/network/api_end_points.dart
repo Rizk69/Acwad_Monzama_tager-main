@@ -12,4 +12,5 @@ class ApiHelper {
   static const getPaidBeneficary = "${baseUrl}api/PaidBeneficary/";
   static const getProductBeneficary = "${baseUrl}api/invoiceshow/";
   static const setInvoiceBeneficary = "${baseUrl}api/invoiceBeneficary";
+  static const setBeneficarySignature = "${baseUrl}api/saveImage/";
 }

@@ -48,6 +48,7 @@ dependencies:
   flutter_svg:
   flutter_dialogs:
   flutter_svg_provider:
+  path_provider:
 
 dev_dependencies:
   flutter_test:

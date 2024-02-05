@@ -14,3 +14,14 @@ class GetAllBeneficaryErrorState extends BeneficaryState {
 
   GetAllBeneficaryErrorState(this.error);
 }
+
+
+class SendSignatureBeneficaryLoadingState extends BeneficaryState {}
+
+class SendSignatureBeneficarySuccessState extends BeneficaryState {}
+
+class SendSignatureBeneficaryErrorState extends BeneficaryState {
+  final String error;
+
+  SendSignatureBeneficaryErrorState(this.error);
+}
