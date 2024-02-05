@@ -2,6 +2,8 @@ import 'package:smartcard/app/models/invoice_beneficary.dart';
 import 'package:smartcard/app/screens/beneficary/contactcard.dart';
 import 'package:smartcard/app/screens/invoices/all_project_invoices.dart';
 import 'package:smartcard/app/screens/auth/login.dart';
+import 'package:smartcard/app/screens/invoices/cash_categroy.dart';
+import 'package:smartcard/app/screens/invoices/cashdailyscreen.dart';
 import '../../app/screens/home_form.dart';
 import '../screens/invoices/daily_invoices.dart';
 import '../screens/invoices/invoicedetails.dart';
@@ -25,6 +27,8 @@ class Routes {
   static const String invoicePrintEmployeeRoute = "/invoicePrint_employee";
   static const String employeeCardRoute = "/employeeCard";
   static const String dailySalesRoute = "/dailySales";
+  static const String cashCategory = "/cashCategory";
+  static const String cashDailyScreen = "/cashDailyScreen";
 }
 
 class RouteGenerator {
@@ -32,6 +36,10 @@ class RouteGenerator {
     switch (settings.name) {
       case Routes.dailySalesRoute:
         return MaterialPageRoute(builder: (_) => DailyInvoices());
+      case Routes.cashCategory:
+        return MaterialPageRoute(builder: (_) => CashCategory());
+      case Routes.cashDailyScreen:
+        return MaterialPageRoute(builder: (_) => CashDailyScreen());
       case Routes.homeFormRoute:
         return MaterialPageRoute(builder: (_) => const HomeForm());
       case Routes.loginFormRoute:
