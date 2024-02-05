@@ -18,7 +18,7 @@ class DrawerData extends StatelessWidget {
         Navigator.pushNamed(context, Routes.invoicesRoute);
       }),
       DrawerItem('الفواتير اليومية', Icons.notes, () {
-        Navigator.pushNamed(context, Routes.dailySalesRoute);
+        Navigator.pushNamed(context, Routes.cashCategory);
       }),
       DrawerItem('التقارير', Icons.notes, () {
         Navigator.pushNamed(context, Routes.allInvoiceRoute);
