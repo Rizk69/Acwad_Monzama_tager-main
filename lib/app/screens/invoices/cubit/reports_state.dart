@@ -4,44 +4,59 @@ abstract class ReportsState {}
 
 class InvoicesInitial extends ReportsState {}
 
-
-
 class GetInvoicesLoadingState extends ReportsState {}
 
 class GetInvoicesSuccessState extends ReportsState {
   final InvoiceBeneficary invoiceBeneficary;
-   GetInvoicesSuccessState(this.invoiceBeneficary);
+
+  GetInvoicesSuccessState(this.invoiceBeneficary);
 }
 
 class GetInvoicesErrorState extends ReportsState {
   final String error;
-   GetInvoicesErrorState(this.error);
+
+  GetInvoicesErrorState(this.error);
 }
-
-
 
 class SearchInvoicesLoadingState extends ReportsState {}
 
+class SearchInvoiceBeneficaryLoadingState extends ReportsState {}
+
 class SearchInvoicesSuccessState extends ReportsState {
   final InvoiceBeneficary invoiceBeneficary;
-   SearchInvoicesSuccessState(this.invoiceBeneficary);
+
+  SearchInvoicesSuccessState(this.invoiceBeneficary);
+}
+
+class SearchAllInvoiceBeneficarySuccessState extends ReportsState {
+  late InvoiceBeneficary allInvoiceBeneficary;
+
+  SearchAllInvoiceBeneficarySuccessState(this.allInvoiceBeneficary);
 }
 
 class SearchInvoicesErrorState extends ReportsState {
   final String error;
-   SearchInvoicesErrorState(this.error);
+
+  SearchInvoicesErrorState(this.error);
 }
 
+class SearchAllInvoiceBeneficaryErrorState extends ReportsState {
+  final String error;
 
+  SearchAllInvoiceBeneficaryErrorState(this.error);
+}
 
 class GetAllInvoicesLoadingState extends ReportsState {}
 
-class GetAllInvoicesSuccessState extends ReportsState {}
+class GetAllInvoiceBeneficaryLoadingState extends ReportsState {}
+
+class GetAllInvoicesSuccessState extends ReportsState {
+  late InvoiceBeneficary allInvoiceBeneficary;
+
+  GetAllInvoicesSuccessState(this.allInvoiceBeneficary);
+}
 
 class GetAllInvoicesErrorState extends ReportsState {}
-
-
-
 
 class GetDailyInvoicesLoadingState extends ReportsState {}
 

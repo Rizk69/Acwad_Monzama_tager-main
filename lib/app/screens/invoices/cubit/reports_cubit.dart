@@ -77,7 +77,7 @@ class ReportsCubit extends Cubit<ReportsState> {
 
   Future<void> getAllInvoiceBeneficary() async {
     try {
-      emit(GetAllInvoicesLoadingState());
+      emit(GetAllInvoiceBeneficaryLoadingState());
 
       var allBeneficarySystemUrl = Uri.parse(ApiHelper.getAllBeneficary);
 
@@ -89,12 +89,44 @@ class ReportsCubit extends Cubit<ReportsState> {
       if (response.statusCode == 200) {
         var body = jsonDecode(response.body);
         allInvoiceBeneficary = InvoiceBeneficary.fromJson(body);
-        emit(GetAllInvoicesSuccessState());
+        emit(GetAllInvoicesSuccessState(allInvoiceBeneficary));
       } else {
         emit(GetAllInvoicesErrorState());
       }
     } catch (e) {
       emit(GetAllInvoicesErrorState());
+    }
+  }
+
+  void searchInvoiceBeneficaryNumber(String query) async {
+    emit(SearchInvoiceBeneficaryLoadingState());
+    try {
+      InvoiceBeneficary originalData = invoiceBeneficary;
+
+      if (query.isEmpty) {
+        emit(SearchAllInvoiceBeneficarySuccessState(originalData));
+        return;
+      }
+
+      final filteredData = originalData.data?.where((invoice) {
+            return invoice.invoiceNo
+                    ?.toLowerCase()
+                    .contains(query.toLowerCase()) ??
+                false;
+          }).toList() ??
+          [];
+
+      if (filteredData.isNotEmpty) {
+        final resultModel =
+            InvoiceBeneficary(message: "نتائج البحث", data: filteredData);
+        emit(SearchAllInvoiceBeneficarySuccessState(resultModel));
+      } else {
+        emit(SearchAllInvoiceBeneficaryErrorState(
+            "لم يتم العثور على فواتير مطابقة"));
+      }
+    } catch (e) {
+      print(e.toString());
+      emit(SearchAllInvoiceBeneficaryErrorState(e.toString()));
     }
   }
 

@@ -67,22 +67,30 @@ class Invoices extends StatelessWidget {
                                 onTap: () {
                                   Navigator.push(
                                     context,
-                                    MaterialPageRoute(builder: (context) => InvoiceDetails(item: item)),
-                                  );
-                                },
-                                child: buildInvoiceCard(
-                                    invoice: currentData, index: index, context: context), // تأكد من أن لديك هذه الوظيفة معرفة بشكل صحيح
-                              ),
-                            );
-                          },
-                        ),
-                      )
-                          : Center(
-                        child: Lottie.asset(
-                          'assets/images/empty_invoice.json',
-                          fit: BoxFit.fill,
-                        ),
-                      ),
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      InvoiceDetails(
+                                                          item: item)),
+                                            );
+                                          },
+                                          child: buildInvoiceCard(
+                                              invoice: currentData,
+                                              index: index,
+                                              context:
+                                                  context), // تأكد من أن لديك هذه الوظيفة معرفة بشكل صحيح
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                )
+                              : Expanded(
+                                  child: Center(
+                                    child: Lottie.asset(
+                                      'assets/images/empty_invoice.json',
+                                      fit: BoxFit.fill,
+                                    ),
+                                  ),
+                                ),
                     ],
                   ),
                 )
