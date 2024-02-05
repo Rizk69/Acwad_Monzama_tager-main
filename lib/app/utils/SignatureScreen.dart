@@ -28,7 +28,6 @@ class _SignatureScreenState extends State<SignatureScreen> {
       create: (context) => BeneficaryCubit(),
       child: BlocConsumer<BeneficaryCubit, BeneficaryState>(
         listener: (context, state) {
-          // TODO: implement listener
         },
         builder: (context, state) {
           return Container(

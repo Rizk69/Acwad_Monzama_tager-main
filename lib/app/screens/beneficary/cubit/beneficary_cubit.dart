@@ -14,9 +14,10 @@ class BeneficaryCubit extends Cubit<BeneficaryState> {
 
   static BeneficaryCubit get(context) => BlocProvider.of(context);
 
-
-  Future<void> sendSignature({required String invoiceNumber, required File file , required Invoice beneficaryInvoice}) async {
-
+  Future<void> sendSignature(
+      {required String invoiceNumber,
+      required File file,
+      required Invoice beneficaryInvoice}) async {
     var signatureUrl =
         Uri.parse("${ApiHelper.setBeneficarySignature}$invoiceNumber");
 
@@ -35,6 +36,4 @@ class BeneficaryCubit extends Cubit<BeneficaryState> {
       emit(SendSignatureBeneficaryErrorState('Error uploading signature'));
     }
   }
-
-
 }

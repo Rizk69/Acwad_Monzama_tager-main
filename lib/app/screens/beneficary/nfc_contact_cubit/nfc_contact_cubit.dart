@@ -58,7 +58,7 @@ class NfcDataCubit extends Cubit<NfcDataState> {
     required int beneficaryId,
     required int paidmoney,
     required String date,
-  }) {
+    required BuildContext context}) {
     productsBody = scannedItems.map((Product? product) {
       if (product != null) {
         return ProductBody(
@@ -70,6 +70,7 @@ class NfcDataCubit extends Cubit<NfcDataState> {
       }
     }).toList();
     invoiceBeneficaryCategory(
+      context: context,
       date: date,
       paidBeneficaryId: paidBeneficaryId,
       beneficaryId: beneficaryId,
@@ -123,7 +124,7 @@ class NfcDataCubit extends Cubit<NfcDataState> {
     required int beneficaryId,
     required int paidmoney,
     required String date,
-  }) async {
+    required BuildContext context}) async {
     emit(MakeCashLoadingState());
     try {
       var paidBeneficaryUrl = Uri.parse(
@@ -147,7 +148,14 @@ class NfcDataCubit extends Cubit<NfcDataState> {
       if (response.statusCode == 200) {
         print(body);
         beneficaryInvoice = Invoice.fromJson(body);
-        printInvoice(beneficaryInvoice);
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  SignatureScreen(cashInvoice: beneficaryInvoice!)),
+        );
+
+        // printInvoice(beneficaryInvoice);
         emit(BuyProductsSuccessState());
       } else {
         emit(BuyProductsErrorState(

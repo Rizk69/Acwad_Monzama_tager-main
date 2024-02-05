@@ -328,6 +328,7 @@ class AddInvoice extends StatelessWidget {
                                                   .format(now);
                                           NfcDataCubit.get(context)
                                               .convertScannedItemsToProductsBody(
+                                              context: context,
                                                   paidmoney: int.parse(
                                                       NfcDataCubit.get(context)
                                                           .calculateTotalPrice()
@@ -339,9 +340,9 @@ class AddInvoice extends StatelessWidget {
                                                           .date![index]
                                                           .id!,
                                                   beneficaryId:
-                                                      paidBeneficaryModel
-                                                          .beneficary!.id!,
-                                                  date: formattedDate);
+                                              paidBeneficaryModel
+                                                  .beneficary!.id!,
+                                              date: formattedDate);
                                         },
                                         child: const Text(
                                           'شراء',
