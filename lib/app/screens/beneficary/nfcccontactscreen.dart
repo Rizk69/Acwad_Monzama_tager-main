@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:nfc_manager/nfc_manager.dart';
 import 'dart:typed_data';
 import 'package:http/http.dart' as http;
@@ -299,23 +300,24 @@ class _NfcContactCardScreenState extends State<NfcContactCardScreen> {
             imageBackground(context),
             Scaffold(
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-              body: showPasswordDialog("336F7E86"),
-              // isNfcAvailable
-              //     ? Center(
-              //         child: Image.asset(
-              //           'assets/images/arcticons_pdf-doc-scan.png',
-              //           color: Theme.of(context).primaryColorDark,
-              //           height: 200,
-              //           width: 200,
-              //         ),
-              //       )
-              //     : Center(
-              //         child: Text(
-              //         'NFC is not available',
-              //         style: TextStyle(
-              //           color: Theme.of(context).primaryColorLight,
-              //         ),
-              //       )),
+              body:
+                  //showPasswordDialog("336F7E86"),
+                  isNfcAvailable
+                      ? Center(
+                          child: SvgPicture.asset(
+                            'assets/images/nfc_icon.svg',
+                            color: Theme.of(context).primaryColorDark,
+                            height: 200,
+                            width: 200,
+                          ),
+                        )
+                      : Center(
+                          child: Text(
+                          'NFC is not available',
+                          style: TextStyle(
+                            color: Theme.of(context).primaryColorLight,
+                          ),
+                        )),
             ),
           ],
         ),
