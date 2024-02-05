@@ -11,6 +11,10 @@ import 'package:smartcard/main.dart';
 import 'invoicedetails.dart';
 
 class DailyInvoices extends StatelessWidget {
+  String type ;
+
+  DailyInvoices({required this.type});
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -40,10 +44,9 @@ class DailyInvoices extends StatelessWidget {
                                 .data!
                                 .length,
                             itemBuilder: (BuildContext context, int index) {
-                              final InvoiceBeneficary item =
-                                  ReportsCubit.get(context)
-                                      .dailyInvoiceBeneficary;
-                              return Padding(
+                              final InvoiceBeneficary item = ReportsCubit.get(context).dailyInvoiceBeneficary;
+
+                              return item.data![index].cashOrCategory=="cash"? Padding(
                                 padding: const EdgeInsets.only(bottom: 15),
                                 child: GestureDetector(
                                   onTap: () {
@@ -54,12 +57,12 @@ class DailyInvoices extends StatelessWidget {
                                               item: item.data![index])),
                                     );
                                   },
-                                  child: buildInvoiceCard(
+                                  child:buildInvoiceCard(
                                       invoice: item,
                                       index: index,
                                       context: context),
                                 ),
-                              );
+                              ):Container();
                             },
                           )
                         : Center(

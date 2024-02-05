@@ -95,6 +95,24 @@ Widget buildInvoiceCard({required InvoiceBeneficary invoice, index , required co
                       ],
                     ),
                     SizedBox(height: 2.h,),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              buildInvoiceInfo(
+                                label: 'نوع الصرف',
+                                value: invoice.data![index].cashOrCategory.toString(),
+                                context: context,
+                              ),
+
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 2.h,),
                     Center(
                         child: Text(
                           "المجموع ${invoice.data![index].totalPrice}",

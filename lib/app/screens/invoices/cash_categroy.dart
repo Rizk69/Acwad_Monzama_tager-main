@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:smartcard/app/screens/invoices/daily_invoices.dart';
 
 import '../../utils/routes_manager.dart';
 import '../../widgets/backgrond_image.dart';
@@ -27,13 +28,21 @@ class CashCategory extends StatelessWidget {
                     children: [
                       InkWell(
                           onTap: () {
-                            Navigator.pushNamed(
-                                context, Routes.cashDailyScreen);
+
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => DailyInvoices(type: "cash"),
+                                ));
+
                           },
                           child: cardWidget(
                               img: 'assets/images/Group.svg', title: 'Cash')),
                       InkWell(
-                          onTap: () {},
+                          onTap: () {
+                            Navigator.pushNamed(
+                                context, Routes.cashDailyScreen);
+                          },
                           child: cardWidget(
                               img: 'assets/images/Vector.svg', title: 'مواد')),
                     ],

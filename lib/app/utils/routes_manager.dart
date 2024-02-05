@@ -26,7 +26,6 @@ class Routes {
   static const String invoicePrintContactRoute = "/invoicePrint_contact";
   static const String invoicePrintEmployeeRoute = "/invoicePrint_employee";
   static const String employeeCardRoute = "/employeeCard";
-  static const String dailySalesRoute = "/dailySales";
   static const String cashCategory = "/cashCategory";
   static const String cashDailyScreen = "/cashDailyScreen";
 }
@@ -34,8 +33,6 @@ class Routes {
 class RouteGenerator {
   static Route<dynamic> getRoute(RouteSettings settings) {
     switch (settings.name) {
-      case Routes.dailySalesRoute:
-        return MaterialPageRoute(builder: (_) => DailyInvoices());
       case Routes.cashCategory:
         return MaterialPageRoute(builder: (_) => CashCategory());
       case Routes.cashDailyScreen:
