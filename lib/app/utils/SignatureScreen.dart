@@ -21,14 +21,14 @@ class SignatureScreen extends StatefulWidget {
 
 class _SignatureScreenState extends State<SignatureScreen> {
   final GlobalKey<SignatureState> _signatureKey = GlobalKey<SignatureState>();
+  bool _isSignatureDone = false;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => BeneficaryCubit(),
       child: BlocConsumer<BeneficaryCubit, BeneficaryState>(
-        listener: (context, state) {
-        },
+        listener: (context, state) {},
         builder: (context, state) {
           return Container(
             color: Theme.of(context).canvasColor,
@@ -47,7 +47,7 @@ class _SignatureScreenState extends State<SignatureScreen> {
                           color: Theme.of(context).primaryColor,
                         )),
                     backgroundColor:
-                    Theme.of(context).appBarTheme.backgroundColor,
+                        Theme.of(context).appBarTheme.backgroundColor,
                     title: Text(
                       'Signature Pad',
                       style: TextStyle(
@@ -70,6 +70,11 @@ class _SignatureScreenState extends State<SignatureScreen> {
                           color: Colors.black,
                           key: _signatureKey,
                           strokeWidth: 5.0,
+                          onSign: () {
+                            setState(() {
+                              _isSignatureDone = true;
+                            });
+                          },
                         ),
                       ),
                       Spacer(),
@@ -78,14 +83,29 @@ class _SignatureScreenState extends State<SignatureScreen> {
                         width: MediaQuery.of(context).size.width,
                         child: ElevatedButton(
                           style: ButtonStyle(
-                              backgroundColor: MaterialStatePropertyAll<Color>(
-                                  Theme.of(context).primaryColor)),
-                          onPressed: () {
-                            _signatureKey.currentState!.clear();
-                          },
-                          child: Text('Clear',
-                              style: TextStyle(
-                                  color: Theme.of(context).primaryColorDark)),
+                            backgroundColor: MaterialStatePropertyAll<Color>(
+                              Theme.of(context).primaryColor,
+                            ),
+                            textStyle: MaterialStatePropertyAll<TextStyle>(
+                              TextStyle(
+                                color: Theme.of(context).primaryColorDark,
+                              ),
+                            ),
+                          ),
+                          onPressed: _isSignatureDone
+                              ? () {
+                                  _signatureKey.currentState!.clear();
+                                  setState(() {
+                                    _isSignatureDone = false;
+                                  });
+                                }
+                              : null,
+                          child: Text(
+                            'Clear',
+                            style: TextStyle(
+                                fontSize: 17,
+                                color: Theme.of(context).primaryColorDark),
+                          ),
                         ),
                       ),
                       SizedBox(
@@ -96,23 +116,87 @@ class _SignatureScreenState extends State<SignatureScreen> {
                         width: MediaQuery.of(context).size.width,
                         child: ElevatedButton(
                           style: ButtonStyle(
-                              backgroundColor: MaterialStatePropertyAll<Color>(
-                                  Theme.of(context).primaryColor)),
-                          onPressed: () async {
-                            final Uint8List signatureBytes =
-                                await _signatureToImageBytes();
-                            final File signatureFile =
-                                await _writeSignatureToFile(signatureBytes);
-                            BeneficaryCubit.get(context).sendSignature(
-                              invoiceNumber:
-                                  '${widget.cashInvoice.data!.invoiceNo}',
-                              file: signatureFile,
-                              beneficaryInvoice: widget.cashInvoice,
-                            );
-                          },
-                          child: Text('Save',
-                              style: TextStyle(
-                                  color: Theme.of(context).primaryColorDark)),
+                            backgroundColor: MaterialStatePropertyAll<Color>(
+                              Theme.of(context).primaryColor,
+                            ),
+                            textStyle: MaterialStatePropertyAll<TextStyle>(
+                              TextStyle(
+                                color: Theme.of(context).primaryColorDark,
+                              ),
+                            ),
+                          ),
+                          onPressed: _isSignatureDone
+                              ? () async {
+                                  try {
+                                    final Uint8List signatureBytes =
+                                        await _signatureToImageBytes();
+                                    final image = await _signatureKey
+                                        .currentState
+                                        ?.getData();
+                                    print("_${signatureBytes}__");
+                                    if (signatureBytes.isNotEmpty &&
+                                        image != null) {
+                                      final File signatureFile =
+                                          await _writeSignatureToFile(
+                                              signatureBytes);
+                                      BeneficaryCubit.get(context)
+                                          .sendSignature(
+                                        invoiceNumber:
+                                            '${widget.cashInvoice.data!.invoiceNo}',
+                                        file: signatureFile,
+                                        beneficaryInvoice: widget.cashInvoice,
+                                      );
+                                    } else {
+                                      showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return AlertDialog(
+                                            title: Text("Empty Signature"),
+                                            content: Text(
+                                                "Please provide a signature before saving."),
+                                            actions: [
+                                              TextButton(
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                },
+                                                child: Text("OK"),
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      );
+                                    }
+                                  } catch (e) {
+                                    print("Error processing signature: $e");
+                                    // Handle the error as needed
+                                  }
+                                }
+                              : () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        title: Text("Empty Signature"),
+                                        content: Text(
+                                            "Please provide a signature before saving."),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                            child: Text("OK"),
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
+                                },
+                          child: Text(
+                            'Save',
+                            style: TextStyle(
+                                fontSize: 17,
+                                color: Theme.of(context).primaryColorDark),
+                          ),
                         ),
                       ),
                     ],
@@ -127,15 +211,14 @@ class _SignatureScreenState extends State<SignatureScreen> {
   }
 
   Future<Uint8List> _signatureToImageBytes() async {
-    try {
-      final image = await _signatureKey.currentState!.getData();
-      final ByteData? byteData =
-          await image.toByteData(format: ui.ImageByteFormat.png);
-      final Uint8List pngBytes = byteData!.buffer.asUint8List();
+    final image = await _signatureKey.currentState!.getData();
+    final ByteData? byteData =
+        await image.toByteData(format: ui.ImageByteFormat.png);
+    if (byteData != null) {
+      Uint8List pngBytes = byteData.buffer.asUint8List();
       return pngBytes;
-    } catch (e) {
-      print("Error converting signature to bytes: $e");
-      return Uint8List(0);
+    } else {
+      throw Exception("Error converting signature to bytes: byteData is null");
     }
   }
 
