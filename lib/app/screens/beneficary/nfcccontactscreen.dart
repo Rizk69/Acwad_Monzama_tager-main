@@ -306,7 +306,7 @@ class _NfcContactCardScreenState extends State<NfcContactCardScreen> {
                       ? Center(
                           child: SvgPicture.asset(
                             'assets/images/nfc_icon.svg',
-                            color: Theme.of(context).primaryColorDark,
+                            color: Theme.of(context).primaryColor,
                             height: 200,
                             width: 200,
                           ),
