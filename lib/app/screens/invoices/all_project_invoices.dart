@@ -30,6 +30,7 @@ class AllInvoicesView extends StatelessWidget {
           bool hasData = currentData != null &&
               currentData.data != null &&
               currentData.data!.isNotEmpty;
+
           return Container(
             color: Theme.of(context).primaryColorDark,
             child: Stack(

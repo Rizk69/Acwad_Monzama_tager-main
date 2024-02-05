@@ -43,8 +43,6 @@ class ReportsCubit extends Cubit<ReportsState> {
     }
   }
 
-
-
   void searchInvoiceNumber(String query) async {
     emit(SearchInvoicesLoadingState());
     try {
@@ -97,11 +95,10 @@ class ReportsCubit extends Cubit<ReportsState> {
       emit(GetAllInvoicesErrorState());
     }
   }
-
   void searchInvoiceBeneficaryNumber(String query) async {
     emit(SearchInvoiceBeneficaryLoadingState());
     try {
-      InvoiceBeneficary originalData = invoiceBeneficary;
+      InvoiceBeneficary originalData = allInvoiceBeneficary;
 
       if (query.isEmpty) {
         emit(SearchAllInvoiceBeneficarySuccessState(originalData));
@@ -117,12 +114,11 @@ class ReportsCubit extends Cubit<ReportsState> {
           [];
 
       if (filteredData.isNotEmpty) {
-        final resultModel =
-            InvoiceBeneficary(message: "نتائج البحث", data: filteredData);
+        final resultModel = InvoiceBeneficary(message: "نتائج البحث", data: filteredData);
         emit(SearchAllInvoiceBeneficarySuccessState(resultModel));
       } else {
-        emit(SearchAllInvoiceBeneficaryErrorState(
-            "لم يتم العثور على فواتير مطابقة"));
+        print("لم يتم العثور على فواتير مطابقة");
+        emit(SearchAllInvoiceBeneficaryErrorState("لم يتم العثور على فواتير مطابقة"));
       }
     } catch (e) {
       print(e.toString());
@@ -131,6 +127,9 @@ class ReportsCubit extends Cubit<ReportsState> {
   }
 
   late InvoiceBeneficary dailyInvoiceBeneficary;
+
+
+
 
   Future<void> getDailyInvoiceBeneficary({required int vendorID}) async {
     try {
