@@ -154,114 +154,119 @@ class _InvoiceDetailsState extends State<InvoiceDetails> {
                                 SizedBox(
                                   height: 20,
                                 ),
-                                Align(
-                                  alignment: Alignment.centerRight,
-                                  child: Text(
-                                    'المنتجات ',
-                                    style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                        color: Theme.of(context).primaryColor),
-                                  ),
-                                ),
-                                Container(
-                                  decoration: BoxDecoration(
-                                      color: Colors.grey.shade300,
-                                      borderRadius: BorderRadius.circular(15)),
-                                  child: Padding(
-                                    padding: EdgeInsets.all(12),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.stretch,
-                                      children: [
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
+                                if(widget.item?.cashOrCategory=="Category")
+                                Column(
+                                  children: [
+                                    Text(
+                                      'المنتجات ',
+                                      style: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                          color: Theme.of(context).primaryColor),
+                                    ),
+                                    SizedBox(
+                                      height: 1.h,
+                                    ),
+                                    Container(
+                                      decoration: BoxDecoration(
+                                          color: Colors.grey.shade300,
+                                          borderRadius: BorderRadius.circular(15)),
+                                      child: Padding(
+                                        padding: EdgeInsets.all(12),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.stretch,
                                           children: [
-                                            Text(
-                                              'منتج',
-                                              style: TextStyle(
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Theme.of(context)
-                                                      .primaryColor),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceBetween,
+                                              children: [
+                                                Text(
+                                                  'منتج',
+                                                  style: TextStyle(
+                                                      fontSize: 14,
+                                                      fontWeight: FontWeight.bold,
+                                                      color: Theme.of(context)
+                                                          .primaryColor),
+                                                ),
+                                                Text(
+                                                  'كمية',
+                                                  style: TextStyle(
+                                                      fontSize: 14,
+                                                      fontWeight: FontWeight.bold,
+                                                      color: Theme.of(context)
+                                                          .primaryColor),
+                                                ),
+                                                Text(
+                                                  'سعر ',
+                                                  style: TextStyle(
+                                                      fontSize: 14,
+                                                      fontWeight: FontWeight.bold,
+                                                      color: Theme.of(context)
+                                                          .primaryColor),
+                                                ),
+                                              ],
                                             ),
-                                            Text(
-                                              'كمية',
-                                              style: TextStyle(
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Theme.of(context)
-                                                      .primaryColor),
-                                            ),
-                                            Text(
-                                              'سعر ',
-                                              style: TextStyle(
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Theme.of(context)
-                                                      .primaryColor),
-                                            ),
-                                          ],
-                                        ),
-                                        lineGray(),
-                                        SizedBox(
-                                          height: 100,
-                                          child: ListView.builder(
-                                              itemBuilder: (context, index) =>
-                                                  Column(
-                                                    children: [
-                                                      Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .spaceBetween,
+                                            lineGray(),
+                                            SizedBox(
+                                              height: 100,
+                                              child: ListView.builder(
+                                                  itemBuilder: (context, index) =>
+                                                      Column(
                                                         children: [
-                                                          Text(
-                                                            'منتج',
-                                                            style: TextStyle(
-                                                                fontSize: 14,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                                color: Theme.of(
-                                                                        context)
-                                                                    .primaryColor),
+                                                          Row(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .spaceBetween,
+                                                            children: [
+                                                              Text(
+                                                                'منتج',
+                                                                style: TextStyle(
+                                                                    fontSize: 14,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold,
+                                                                    color: Theme.of(
+                                                                            context)
+                                                                        .primaryColor),
+                                                              ),
+                                                              Text(
+                                                                'كمية',
+                                                                style: TextStyle(
+                                                                    fontSize: 14,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold,
+                                                                    color: Theme.of(
+                                                                            context)
+                                                                        .primaryColor),
+                                                              ),
+                                                              Text(
+                                                                'سعر ',
+                                                                style: TextStyle(
+                                                                    fontSize: 14,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold,
+                                                                    color: Theme.of(
+                                                                            context)
+                                                                        .primaryColor),
+                                                              ),
+                                                            ],
                                                           ),
-                                                          Text(
-                                                            'كمية',
-                                                            style: TextStyle(
-                                                                fontSize: 14,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                                color: Theme.of(
-                                                                        context)
-                                                                    .primaryColor),
-                                                          ),
-                                                          Text(
-                                                            'سعر ',
-                                                            style: TextStyle(
-                                                                fontSize: 14,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                                color: Theme.of(
-                                                                        context)
-                                                                    .primaryColor),
-                                                          ),
+                                                          lineGray()
                                                         ],
                                                       ),
-                                                      lineGray()
-                                                    ],
-                                                  ),
-                                              itemCount: 8),
-                                        )
-                                      ],
+                                                  itemCount: 8),
+                                            )
+                                          ],
+                                        ),
+                                      ),
                                     ),
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: 4.h,
+                                    SizedBox(
+                                      height: 4.h,
+                                    ),
+                                  ],
                                 ),
                                 Text(
                                   "مجموع الفاتورة  :   ${widget.item?.totalPrice ?? 0}",
