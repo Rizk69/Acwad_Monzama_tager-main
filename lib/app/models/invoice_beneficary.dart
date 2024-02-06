@@ -1,11 +1,15 @@
 class InvoiceBeneficary {
   String? message;
+  num? sumCashPaid;
+  num? sumCategoryPaid;
   List<InvoiceBeneficaryData>? data;
 
   InvoiceBeneficary({this.message, this.data});
 
   InvoiceBeneficary.fromJson(Map<String, dynamic> json) {
     message = json['message'];
+    sumCashPaid = json['sumCashPaid'];
+    sumCategoryPaid = json['sumCategoryPaid'];
     if (json['data'] != null) {
       data = <InvoiceBeneficaryData>[];
       json['data'].forEach((v) {

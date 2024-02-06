@@ -35,9 +35,9 @@ class _HomeFormState extends State<HomeForm>
   }
 
   Future<void> _getInvoiceCount() async {
-    final count = await dbHelper.getAllInvoicesNote();
+    // final count = await dbHelper.getAllInvoicesNote();
     setState(() {
-      invoiceCount = count;
+      // invoiceCount = count;
     });
   }
 
