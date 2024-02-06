@@ -17,7 +17,7 @@ class CashCategory extends StatelessWidget {
           imageBackground(context),
           Scaffold(
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-              appBar: defaultAppbar(title: "المبيعات", context: context),
+              appBar: defaultAppbar(title: "تقارير يومية", context: context),
               body: Column(
                 children: [
                   SizedBox(
