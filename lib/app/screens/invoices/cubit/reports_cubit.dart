@@ -1,9 +1,11 @@
 import 'dart:convert';
-import 'package:bloc/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
 import 'package:smartcard/app/models/invoice_beneficary.dart';
 import 'package:smartcard/app/network/api_end_points.dart';
+
+import '../../../models/CategoriesModel.dart';
+
 part 'reports_state.dart';
 
 class ReportsCubit extends Cubit<ReportsState> {
@@ -37,6 +39,34 @@ class ReportsCubit extends Cubit<ReportsState> {
     } catch (e) {
       print(e.toString());
       emit(GetInvoicesErrorState(e.toString()));
+    }
+  }
+
+  late CategoriesModel categoriesModel;
+
+  Future<void> getCategory({required int vendorId}) async {
+    try {
+      emit(GetCategoryLoadingState());
+
+      print(vendorId);
+
+      var loginURL = Uri.parse("${ApiHelper.getCategory}$vendorId");
+
+      Map<String, String> headers = {'Accept': 'application/json'};
+
+      var response = await http.get(loginURL, headers: headers);
+
+      var body = jsonDecode(response.body);
+
+      if (body["message"] == 'Success') {
+        categoriesModel = CategoriesModel.fromJson(body);
+        emit(GetCategorySuccessState(categoriesModel));
+      } else {
+        emit(GetCategoryErrorState("لا توجد فواتير متاحة"));
+      }
+    } catch (e) {
+      print(e.toString());
+      emit(GetCategoryErrorState(e.toString()));
     }
   }
 

@@ -34,16 +34,30 @@ class SearchAllInvoiceBeneficaryErrorState extends ReportsState {
 
 class GetInvoicesLoadingState extends ReportsState {}
 
+class GetCategoryLoadingState extends ReportsState {}
+
 class GetInvoicesSuccessState extends ReportsState {
   final InvoiceBeneficary invoiceBeneficary;
 
   GetInvoicesSuccessState(this.invoiceBeneficary);
 }
 
+class GetCategorySuccessState extends ReportsState {
+  final CategoriesModel categoriesModel;
+
+  GetCategorySuccessState(this.categoriesModel);
+}
+
 class GetInvoicesErrorState extends ReportsState {
   final String error;
 
   GetInvoicesErrorState(this.error);
+}
+
+class GetCategoryErrorState extends ReportsState {
+  final String error;
+
+  GetCategoryErrorState(this.error);
 }
 
 class GetAllInvoicesLoadingState extends ReportsState {}

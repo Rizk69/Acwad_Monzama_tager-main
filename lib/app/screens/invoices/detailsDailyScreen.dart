@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:smartcard/app/models/CategoriesModel.dart';
 
-import '../../utils/routes_manager.dart';
 import '../../widgets/backgrond_image.dart';
 import '../../widgets/default_appbar.dart';
 
 class DetailsDailyScreen extends StatelessWidget {
-  const DetailsDailyScreen({Key? key}) : super(key: key);
+  CategoriesModel categoriesModel;
+  int index;
+
+  DetailsDailyScreen(
+      {super.key, required this.categoriesModel, required this.index});
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +19,9 @@ class DetailsDailyScreen extends StatelessWidget {
           imageBackground(context),
           Scaffold(
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-              appBar: defaultAppbar(title: "الملابس", context: context),
+              appBar: defaultAppbar(
+                  title: categoriesModel.categories?[index].name ?? '',
+                  context: context),
               body: Column(
                 children: [
                   const SizedBox(

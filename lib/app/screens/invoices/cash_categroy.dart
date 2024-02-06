@@ -28,13 +28,12 @@ class CashCategory extends StatelessWidget {
                     children: [
                       InkWell(
                           onTap: () {
-
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => DailyInvoices(type: "cash"),
+                                  builder: (context) =>
+                                      DailyInvoices(type: "cash"),
                                 ));
-
                           },
                           child: cardWidget(
                               img: 'assets/images/Group.svg', title: 'Cash')),
@@ -51,27 +50,27 @@ class CashCategory extends StatelessWidget {
               ))
         ]));
   }
+}
 
-  Widget cardWidget({required String img, required String title}) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 51),
-      decoration: BoxDecoration(
-          color: const Color(0XFFEFBB4A),
-          borderRadius: BorderRadius.circular(15)),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          SizedBox(height: 35, child: SvgPicture.asset(img)),
-          const SizedBox(
-            height: 8,
-          ),
-          Text(
-            title,
-            style: TextStyle(
-                color: Colors.white, fontSize: 19, fontWeight: FontWeight.bold),
-          )
-        ],
-      ),
-    );
-  }
+Widget cardWidget({required String img, required String title}) {
+  return Container(
+    padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 51),
+    decoration: BoxDecoration(
+        color: const Color(0XFFEFBB4A),
+        borderRadius: BorderRadius.circular(15)),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        SizedBox(height: 35, child: SvgPicture.asset(img)),
+        const SizedBox(
+          height: 8,
+        ),
+        Text(
+          title,
+          style: TextStyle(
+              color: Colors.white, fontSize: 19, fontWeight: FontWeight.bold),
+        )
+      ],
+    ),
+  );
 }

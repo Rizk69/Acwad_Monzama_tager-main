@@ -37,8 +37,7 @@ class RouteGenerator {
     switch (settings.name) {
       case Routes.cashCategory:
         return MaterialPageRoute(builder: (_) => CashCategory());
-      case Routes.detailsDailyScreen:
-        return MaterialPageRoute(builder: (_) => DetailsDailyScreen());
+
       case Routes.cashDailyScreen:
         return MaterialPageRoute(builder: (_) => CashDailyScreen());
 
