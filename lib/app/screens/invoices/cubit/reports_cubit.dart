@@ -9,10 +9,7 @@ part 'reports_state.dart';
 class ReportsCubit extends Cubit<ReportsState> {
   static ReportsCubit get(context) => BlocProvider.of(context);
 
-
-
   ReportsCubit() : super(InvoicesInitial());
-
 
   late InvoiceBeneficary invoiceBeneficary;
 
@@ -46,30 +43,51 @@ class ReportsCubit extends Cubit<ReportsState> {
   void searchInvoiceNumber(String query) async {
     emit(SearchInvoicesLoadingState());
     try {
-        InvoiceBeneficary originalData = invoiceBeneficary;
+      InvoiceBeneficary originalData = invoiceBeneficary;
 
-        if (query.isEmpty) {
-          emit(SearchInvoicesSuccessState(originalData));
-          return;
-        }
+      if (query.isEmpty) {
+        emit(SearchInvoicesSuccessState(originalData));
+        return;
+      }
 
-        final filteredData = originalData.data?.where((invoice) {
-          return invoice.invoiceNo?.toLowerCase().contains(query.toLowerCase()) ?? false;
-        }).toList() ?? [];
+      final filteredData = originalData.data?.where((invoice) {
+            final invoiceNo = invoice.invoiceNo;
+            final name = invoice.fullName;
+            final cash_Category = invoice.cashOrCategory;
+            final vendor = invoice.vendorName;
 
-        if (filteredData.isNotEmpty) {
-          final resultModel = InvoiceBeneficary(message: "نتائج البحث", data: filteredData);
-          emit(SearchInvoicesSuccessState(resultModel));
-        } else {
-          emit(SearchInvoicesErrorState("لم يتم العثور على فواتير مطابقة"));
-        }
+            if (invoiceNo != null &&
+                invoiceNo.toLowerCase().contains(query.toLowerCase())) {
+              return true;
+            }
 
+            if (name != null &&
+                name.toLowerCase().contains(query.toLowerCase())) {
+              return true;
+            }
+            if (cash_Category != null &&
+                cash_Category.toLowerCase().contains(query.toLowerCase())) {
+              return true;
+            }
+            if (vendor != null &&
+                vendor.toLowerCase().contains(query.toLowerCase())) {
+              return true;
+            }
+            return false;
+          }).toList() ??
+          [];
+
+      if (filteredData.isNotEmpty) {
+        final resultModel =
+            InvoiceBeneficary(message: "نتائج البحث", data: filteredData);
+        emit(SearchInvoicesSuccessState(resultModel));
+      } else {
+        emit(SearchInvoicesErrorState("لم يتم العثور على فواتير مطابقة"));
+      }
     } catch (e) {
       emit(SearchInvoicesErrorState(e.toString()));
     }
   }
-
-
 
   late InvoiceBeneficary allInvoiceBeneficary;
 
@@ -92,9 +110,11 @@ class ReportsCubit extends Cubit<ReportsState> {
         emit(GetAllInvoicesErrorState());
       }
     } catch (e) {
+      print(e.toString());
       emit(GetAllInvoicesErrorState());
     }
   }
+
   void searchInvoiceBeneficaryNumber(String query) async {
     emit(SearchInvoiceBeneficaryLoadingState());
     try {
@@ -106,19 +126,40 @@ class ReportsCubit extends Cubit<ReportsState> {
       }
 
       final filteredData = originalData.data?.where((invoice) {
-            return invoice.invoiceNo
-                    ?.toLowerCase()
-                    .contains(query.toLowerCase()) ??
-                false;
+            final invoiceNo = invoice.invoiceNo;
+            final name = invoice.fullName;
+            final cash_Category = invoice.cashOrCategory;
+            final vendor = invoice.vendorName;
+
+            if (invoiceNo != null &&
+                invoiceNo.toLowerCase().contains(query.toLowerCase())) {
+              return true;
+            }
+
+            if (name != null &&
+                name.toLowerCase().contains(query.toLowerCase())) {
+              return true;
+            }
+            if (cash_Category != null &&
+                cash_Category.toLowerCase().contains(query.toLowerCase())) {
+              return true;
+            }
+            if (vendor != null &&
+                vendor.toLowerCase().contains(query.toLowerCase())) {
+              return true;
+            }
+            return false;
           }).toList() ??
           [];
 
       if (filteredData.isNotEmpty) {
-        final resultModel = InvoiceBeneficary(message: "نتائج البحث", data: filteredData);
+        final resultModel =
+            InvoiceBeneficary(message: "نتائج البحث", data: filteredData);
         emit(SearchAllInvoiceBeneficarySuccessState(resultModel));
       } else {
         print("لم يتم العثور على فواتير مطابقة");
-        emit(SearchAllInvoiceBeneficaryErrorState("لم يتم العثور على فواتير مطابقة"));
+        emit(SearchAllInvoiceBeneficaryErrorState(
+            "لم يتم العثور على فواتير مطابقة"));
       }
     } catch (e) {
       print(e.toString());
@@ -127,9 +168,6 @@ class ReportsCubit extends Cubit<ReportsState> {
   }
 
   late InvoiceBeneficary dailyInvoiceBeneficary;
-
-
-
 
   Future<void> getDailyInvoiceBeneficary({required int vendorID}) async {
     try {
