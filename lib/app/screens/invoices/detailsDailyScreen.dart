@@ -4,8 +4,8 @@ import '../../utils/routes_manager.dart';
 import '../../widgets/backgrond_image.dart';
 import '../../widgets/default_appbar.dart';
 
-class CashDailyScreen extends StatelessWidget {
-  const CashDailyScreen({super.key});
+class DetailsDailyScreen extends StatelessWidget {
+  const DetailsDailyScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +15,7 @@ class CashDailyScreen extends StatelessWidget {
           imageBackground(context),
           Scaffold(
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-              appBar: defaultAppbar(title: "المبيعات", context: context),
+              appBar: defaultAppbar(title: "الملابس", context: context),
               body: Column(
                 children: [
                   const SizedBox(
@@ -24,10 +24,7 @@ class CashDailyScreen extends StatelessWidget {
                   Expanded(
                     child: ListView.builder(
                       itemBuilder: (context, index) => InkWell(
-                        onTap: () {
-                          Navigator.pushNamed(
-                              context, Routes.detailsDailyScreen);
-                        },
+                        onTap: () {},
                         child: Container(
                           padding: EdgeInsets.all(10),
                           margin: EdgeInsets.all(10),
@@ -35,29 +32,33 @@ class CashDailyScreen extends StatelessWidget {
                               borderRadius: BorderRadius.circular(15),
                               border: Border.all(
                                   color: Color(0XFFF0CF87), width: 1)),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
+                          child: Column(
                             children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.end,
+                              Row(
                                 children: [
-                                  Text('Suger',
+                                  Text('اسم المستفيد:  ',
                                       style: TextStyle(
                                           color: Theme.of(context).primaryColor,
                                           fontWeight: FontWeight.bold,
                                           fontSize: 17)),
-                                  Text('150  L.E',
+                                  Text('احمد',
                                       style: TextStyle(
                                           color: Theme.of(context)
                                               .primaryColorLight)),
                                 ],
                               ),
-                              SizedBox(
-                                width: 20,
-                              ),
-                              Image.asset(
-                                'assets/images/Rectangle 3343.png',
-                                height: 60,
+                              Row(
+                                children: [
+                                  Text('قيمة المبيعات : ',
+                                      style: TextStyle(
+                                          color: Theme.of(context).primaryColor,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 17)),
+                                  Text('300',
+                                      style: TextStyle(
+                                          color: Theme.of(context)
+                                              .primaryColorLight)),
+                                ],
                               ),
                             ],
                           ),

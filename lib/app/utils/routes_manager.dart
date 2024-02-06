@@ -6,6 +6,7 @@ import 'package:smartcard/app/screens/invoices/cash_categroy.dart';
 import 'package:smartcard/app/screens/invoices/cashdailyscreen.dart';
 import '../../app/screens/home_form.dart';
 import '../screens/invoices/daily_invoices.dart';
+import '../screens/invoices/detailsDailyScreen.dart';
 import '../screens/invoices/invoicedetails.dart';
 import '../screens/invoices/vendor_invoices.dart';
 import '../screens/auth/profile.dart';
@@ -28,6 +29,7 @@ class Routes {
   static const String employeeCardRoute = "/employeeCard";
   static const String cashCategory = "/cashCategory";
   static const String cashDailyScreen = "/cashDailyScreen";
+  static const String detailsDailyScreen = "/detailsDailyScreen";
 }
 
 class RouteGenerator {
@@ -35,8 +37,11 @@ class RouteGenerator {
     switch (settings.name) {
       case Routes.cashCategory:
         return MaterialPageRoute(builder: (_) => CashCategory());
+      case Routes.detailsDailyScreen:
+        return MaterialPageRoute(builder: (_) => DetailsDailyScreen());
       case Routes.cashDailyScreen:
         return MaterialPageRoute(builder: (_) => CashDailyScreen());
+
       case Routes.homeFormRoute:
         return MaterialPageRoute(builder: (_) => const HomeForm());
       case Routes.loginFormRoute:
