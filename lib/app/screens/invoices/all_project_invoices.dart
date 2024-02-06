@@ -44,10 +44,16 @@ class AllInvoicesView extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.all(10),
                           child: TextFormField(
+                            style: TextStyle(
+                              color: Theme.of(context).primaryColorLight,
+                            ),
                             decoration: InputDecoration(
                               labelText: 'Search',
                               hintText: 'Search for ',
-                              prefixIcon: const Icon(Icons.search),
+                              labelStyle: TextStyle(
+                                color: Theme.of(context).primaryColorLight,
+                              ),
+                              prefixIcon: Icon(Icons.search , color: Theme.of(context).primaryColorLight),
                               border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(23)),
                             ),
