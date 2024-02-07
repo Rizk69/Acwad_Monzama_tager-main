@@ -11,7 +11,7 @@ class ApiHelper {
 
   static const getAllBeneficary = "${baseUrl}api/AllReports";
   static const getAllPaidProject = "${baseUrl}api/AllPaidProject/";
-  static const getPaidBenficaryId = "${baseUrl}api/PaidProjectDetails/";
+  static const getPaidProjectDetails = "${baseUrl}api/PaidProjectDetails/";
   static const getCategory = "${baseUrl}api/categoryDetails/";
   static const getDetailsCategory = "${baseUrl}api/WhoTakeCategory/";
 

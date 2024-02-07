@@ -108,7 +108,7 @@ class BeneficaryCubit extends Cubit<BeneficaryState> {
       print(paidBenficaryId);
 
       var loginURL =
-          Uri.parse("${ApiHelper.getPaidBenficaryId}$paidBenficaryId");
+          Uri.parse("${ApiHelper.getPaidProjectDetails}$paidBenficaryId");
 
       Map<String, String> headers = {'Accept': 'application/json'};
 
