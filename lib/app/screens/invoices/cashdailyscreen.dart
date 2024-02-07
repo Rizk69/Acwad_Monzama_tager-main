@@ -26,89 +26,107 @@ class CashDailyScreen extends StatelessWidget {
               if (state is GetCategorySuccessState) {
                 currentData = state.categoriesModel;
               }
-              return state is! GetCategoryLoadingState
-                  ? Container(
-                      color: Theme.of(context).canvasColor,
-                      child: Stack(children: [
-                        imageBackground(context),
-                        Scaffold(
-                            backgroundColor:
-                                Theme.of(context).scaffoldBackgroundColor,
-                            appBar: defaultAppbar(
-                                title: "المبيعات", context: context),
-                            body: Column(
-                              children: [
-                                const SizedBox(
-                                  height: 20,
-                                ),
-                                Expanded(
-                                  child: ListView.builder(
-                                    itemBuilder: (context, index) => InkWell(
-                                      onTap: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) =>
-                                                DetailsDailyScreen(
-                                              categoriesModel: currentData!,
-                                              index: index,
+              return Container(
+                  color: Theme.of(context).canvasColor,
+                  child: Stack(children: [
+                    imageBackground(context),
+                    Scaffold(
+                        backgroundColor:
+                            Theme.of(context).scaffoldBackgroundColor,
+                        appBar:
+                            defaultAppbar(title: "المبيعات", context: context),
+                        body: Column(
+                          children: [
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            state is! GetCategoryLoadingState
+                                ? Expanded(
+                                    child: ListView.builder(
+                                      itemBuilder: (context, index) => InkWell(
+                                        onTap: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  DetailsDailyScreen(
+                                                categoriesModel: currentData!,
+                                                index: index,
+                                              ),
                                             ),
+                                          );
+                                        },
+                                        child: Container(
+                                          padding: EdgeInsets.all(10),
+                                          margin: EdgeInsets.all(10),
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(15),
+                                              border: Border.all(
+                                                  color: Color(0XFFF0CF87),
+                                                  width: 1)),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.end,
+                                            children: [
+                                              Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.end,
+                                                children: [
+                                                  Text(
+                                                      currentData
+                                                              ?.categories?[
+                                                                  index]
+                                                              .name ??
+                                                          '',
+                                                      style: TextStyle(
+                                                          color:
+                                                              Theme.of(context)
+                                                                  .primaryColor,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          fontSize: 17)),
+                                                  Text(
+                                                      "${currentData?.categories?[index].price ?? ''}",
+                                                      style: TextStyle(
+                                                          color: Theme.of(
+                                                                  context)
+                                                              .primaryColorLight)),
+                                                ],
+                                              ),
+                                              SizedBox(
+                                                width: 20,
+                                              ),
+                                              Image.asset(
+                                                'assets/images/Rectangle 3343.png',
+                                                height: 60,
+                                              ),
+                                            ],
                                           ),
-                                        );
-                                      },
-                                      child: Container(
-                                        padding: EdgeInsets.all(10),
-                                        margin: EdgeInsets.all(10),
-                                        decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(15),
-                                            border: Border.all(
-                                                color: Color(0XFFF0CF87),
-                                                width: 1)),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.end,
-                                          children: [
-                                            Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.end,
-                                              children: [
-                                                Text(
-                                                    currentData
-                                                            ?.categories?[index]
-                                                            .name ??
-                                                        '',
-                                                    style: TextStyle(
-                                                        color: Theme.of(context)
-                                                            .primaryColor,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        fontSize: 17)),
-                                                Text(
-                                                    "${currentData?.categories?[index].price ?? ''}",
-                                                    style: TextStyle(
-                                                        color: Theme.of(context)
-                                                            .primaryColorLight)),
-                                              ],
-                                            ),
-                                            SizedBox(
-                                              width: 20,
-                                            ),
-                                            Image.asset(
-                                              'assets/images/Rectangle 3343.png',
-                                              height: 60,
-                                            ),
-                                          ],
                                         ),
                                       ),
+                                      itemCount:
+                                          currentData?.categories?.length,
                                     ),
-                                    itemCount: currentData?.categories?.length,
-                                  ),
-                                )
-                              ],
-                            ))
-                      ]))
-                  : const Center(child: CircularProgressIndicator());
+                                  )
+                                : Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      SizedBox(
+                                        height:
+                                            MediaQuery.of(context).size.height /
+                                                3,
+                                      ),
+                                      Align(
+                                          alignment: Alignment.center,
+                                          child: CircularProgressIndicator())
+                                    ],
+                                  )
+                          ],
+                        ))
+                  ]));
             }));
   }
 }
