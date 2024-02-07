@@ -36,7 +36,7 @@ class CashCategory extends StatelessWidget {
                                 ));
                           },
                           child: cardWidget(
-                              img: 'assets/images/Group.svg', title: 'Cash')),
+                              img: 'assets/images/Group.svg', title: 'نقدى')),
                       InkWell(
                           onTap: () {
                             Navigator.pushNamed(
