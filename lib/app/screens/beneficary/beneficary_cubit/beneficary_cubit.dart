@@ -100,13 +100,10 @@ class BeneficaryCubit extends Cubit<BeneficaryState> {
 
   ///////////////////
   late PaidProjectDetails paidProjectDetails;
-
   Future<void> getPaidProjectDetails({required int paidBenficaryId}) async {
     try {
       emit(GetPaidProjectDetailsLoadingState());
-
       print(paidBenficaryId);
-
       var loginURL =
           Uri.parse("${ApiHelper.getPaidProjectDetails}$paidBenficaryId");
 
