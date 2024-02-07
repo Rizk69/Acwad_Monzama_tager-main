@@ -141,7 +141,7 @@ Future<void> printInvoice(InvoiceBeneficaryData? data) async {
             pw.Directionality(
                 textDirection: pw.TextDirection.rtl,
                 child: pw.Center(
-                    child: pw.Text("${data?.totalPrice??0}",
+                    child: pw.Text("${data?.totalPrice ?? 0}",
                         style: pw.TextStyle(
                           fontSize: 13,
                         )))),
@@ -156,6 +156,91 @@ Future<void> printInvoice(InvoiceBeneficaryData? data) async {
           pw.Directionality(
               textDirection: pw.TextDirection.rtl,
               child: pw.Text('المشتريات', style: pw.TextStyle(fontSize: 13))),
+          pw.Row(
+            mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+            children: [
+              pw.Directionality(
+                textDirection: pw.TextDirection.rtl,
+                child: pw.Text(
+                  'سعر ',
+                  style: pw.TextStyle(
+                    fontSize: 14,
+                  ),
+                ),
+              ),
+              pw.Directionality(
+                textDirection: pw.TextDirection.rtl,
+                child: pw.Text(
+                  'كمية',
+                  style: pw.TextStyle(
+                    fontSize: 14,
+                  ),
+                ),
+              ),
+              pw.Directionality(
+                textDirection: pw.TextDirection.rtl,
+                child: pw.Text(
+                  'منتج',
+                  style: pw.TextStyle(
+                    fontSize: 14,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          pw.Container(
+            margin: pw.EdgeInsets.all(5),
+            decoration: pw.BoxDecoration(border: pw.Border.all(width: 0.8)),
+          ),
+          pw.SizedBox(
+            child: pw.ListView.builder(
+                itemBuilder: (context, index) => pw.Column(
+                      children: [
+                        pw.Padding(
+                          padding: const pw.EdgeInsets.symmetric(horizontal: 4),
+                          child: pw.Row(
+                            mainAxisAlignment:
+                                pw.MainAxisAlignment.spaceBetween,
+                            children: [
+                              pw.Directionality(
+                                textDirection: pw.TextDirection.rtl,
+                                child: pw.Text(
+                                  "${data?.product?[index].price}",
+                                  style: pw.TextStyle(
+                                    fontSize: 14,
+                                  ),
+                                ),
+                              ),
+                              pw.Directionality(
+                                textDirection: pw.TextDirection.rtl,
+                                child: pw.Text(
+                                  "${data?.product?[index].count}",
+                                  style: pw.TextStyle(
+                                    fontSize: 14,
+                                  ),
+                                ),
+                              ),
+                              pw.Directionality(
+                                textDirection: pw.TextDirection.rtl,
+                                child: pw.Text(
+                                  "${data?.product?[index].name}",
+                                  style: pw.TextStyle(
+                                    fontSize: 14,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        pw.Container(
+                          margin: pw.EdgeInsets.all(5),
+                          decoration: pw.BoxDecoration(
+                              border: pw.Border.all(width: 0.8)),
+                        )
+                      ],
+                    ),
+                itemCount: data?.product?.length ?? 0),
+          )
           // pw.Container(
           //   margin: pw.EdgeInsets.fromLTRB(0, 10, 0, 10),
           //   child: pw.Directionality(

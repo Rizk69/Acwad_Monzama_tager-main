@@ -28,8 +28,6 @@ class InvoiceBeneficary {
   }
 }
 
-
-
 class AllInvoiceBeneficaryModel {
   String? message;
   List<InvoiceBeneficaryData>? invoice;
@@ -45,12 +43,9 @@ class AllInvoiceBeneficaryModel {
       });
     }
   }
-
 }
 
-
 class InvoiceBeneficaryData {
-
   String? invoiceNo;
   String? date;
   int? totalPrice;
@@ -58,14 +53,18 @@ class InvoiceBeneficaryData {
   String? fullName;
   String? cashOrCategory;
   String? vendorName;
+  List<Product>? product;
 
-  InvoiceBeneficaryData(
-      {this.invoiceNo,
-      this.date,
-      this.totalPrice,
-      this.accountId,
-      this.vendorName,
-      this.fullName});
+  InvoiceBeneficaryData({
+    this.invoiceNo,
+    this.date,
+    this.totalPrice,
+    this.accountId,
+    this.fullName,
+    this.vendorName,
+    this.cashOrCategory,
+    this.product,
+  });
 
   InvoiceBeneficaryData.fromJson(Map<String, dynamic> json) {
     invoiceNo = json['invoiceNo'];
@@ -75,17 +74,54 @@ class InvoiceBeneficaryData {
     fullName = json['fullName'];
     vendorName = json['vendorName'];
     cashOrCategory = json['cashOrCategory'];
+    if (json['product'] != null) {
+      product = <Product>[];
+      json['product'].forEach((v) {
+        product!.add(Product.fromJson(v));
+      });
+    }
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['invoiceNo'] = invoiceNo;
+    data['date'] = date;
+    data['total_price'] = totalPrice;
+    data['accountId'] = accountId;
+    data['fullName'] = fullName;
+    data['vendorName'] = vendorName;
+    data['cashOrCategory'] = cashOrCategory;
+    if (product != null) {
+      data['product'] = product!.map((v) => v.toJson()).toList();
+    }
+    return data;
+  }
+}
+
+class Product {
+  String? name;
+  int? price;
+  String? barcode;
+  int? count;
+  String? category;
+
+  Product({this.name, this.price, this.barcode, this.count, this.category});
+
+  Product.fromJson(Map<String, dynamic> json) {
+    name = json['name'];
+    price = json['price'];
+    barcode = json['barcode'];
+    count = json['count'];
+    category = json['category'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['invoiceNo'] = this.invoiceNo;
-    data['date'] = this.date;
-    data['total_price'] = this.totalPrice;
-    data['accountId'] = this.accountId;
-    data['fullName'] = this.fullName;
-    data['vendorName'] = this.vendorName;
-    data['cashOrCategory'] = this.cashOrCategory;
+    data['name'] = this.name;
+    data['price'] = this.price;
+    data['barcode'] = this.barcode;
+    data['count'] = this.count;
+    data['category'] = this.category;
     return data;
   }
 }
