@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smartcard/app/models/CategoriesModel.dart';
+import 'package:smartcard/app/screens/invoices/beneficary_ivoices.dart';
 import 'package:smartcard/main.dart';
 
 import '../../widgets/backgrond_image.dart';
@@ -47,7 +48,12 @@ class DetailsDailyScreen extends StatelessWidget {
                             ? Expanded(
                                 child: ListView.builder(
                                   itemBuilder: (context, index) => InkWell(
-                                    onTap: () {},
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(builder: (context) => BeneficaryInvoices(beneficary: currentData!.beneficary![index],)),
+                                      );
+                                    },
                                     child: Container(
                                       padding: EdgeInsets.all(10),
                                       margin: EdgeInsets.all(10),

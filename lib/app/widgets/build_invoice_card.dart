@@ -158,6 +158,142 @@ Widget buildInvoiceCard({required InvoiceBeneficary invoice, index , required co
 //   );
 // }
 
+
+
+Widget buildAllBeneficaryInvoiceCard({required AllInvoiceBeneficaryModel invoice, index , required context}) {
+  return Column(
+    children: [
+      ClipRRect(
+        borderRadius: BorderRadius.circular(5.w),
+        child: Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            border: Border(
+              bottom: BorderSide(
+                color: invoice.message == "Success" ? Colors.green : Colors.orange,
+                width: 5,
+              ),
+            ),
+            color: Colors.grey[200]?.withOpacity(0.5),
+          ),
+          child: Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 1),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              buildInvoiceInfo(
+                                  label: 'اسم التاجر',
+                                  value: invoice.invoice![index].vendorName.toString(),
+                                  isMultiline: true,
+                                  context: context
+
+                              ),
+                              SizedBox(height: 2.h,),
+                              buildInvoiceInfo(
+                                  label: 'اسم المستفيد',
+                                  value: invoice.invoice![index].fullName.toString(),
+                                  isMultiline: true,
+                                  context: context
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: 2.h,),
+                        Column(
+                          children: [
+                            Center(
+                                child: Text(
+                                  "رقم الفاتورة",
+                                  style: TextStyle(
+                                    color: Theme.of(context).primaryColor,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 11,
+                                  ),
+                                )),
+                            Center(
+                                child: Text(
+                                  "${invoice.invoice![index].invoiceNo}",
+                                  style:  TextStyle(
+                                    color: Theme.of(context).primaryColor,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14,
+                                  ),
+                                )),
+                          ],
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 2.h,),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              buildInvoiceInfo(
+                                label: 'التاريخ',
+                                value: invoice.invoice![index].date.toString(),
+                                context: context,
+                              ),
+
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 2.h,),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              buildInvoiceInfo(
+                                label: 'نوع الصرف',
+                                value: invoice.invoice![index].cashOrCategory.toString(),
+                                context: context,
+                              ),
+
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 2.h,),
+                    Center(
+                        child: Text(
+                          "المجموع ${invoice.invoice![index].totalPrice}",
+                          style:  TextStyle(
+                            color: Theme.of(context).primaryColor,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15,
+                          ),
+                        )),
+                    SizedBox(height: 2.h,),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    ],
+  );
+}
+
+
+
+
 Widget buildInvoiceInfo(
     {required String label, required String value, bool isMultiline = false , required BuildContext context}) {
   return Row(

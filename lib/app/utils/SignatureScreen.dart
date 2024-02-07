@@ -5,8 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_signature_pad/flutter_signature_pad.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:smartcard/app/screens/beneficary/cubit/beneficary_cubit.dart';
-
+import 'package:smartcard/app/screens/beneficary/beneficary_cubit/beneficary_cubit.dart';
 import '../models/invoice.dart';
 import '../widgets/backgrond_image.dart';
 

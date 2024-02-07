@@ -32,16 +32,24 @@ class SearchAllInvoiceBeneficaryErrorState extends ReportsState {
   SearchAllInvoiceBeneficaryErrorState(this.error);
 }
 
-class GetInvoicesLoadingState extends ReportsState {}
 
 class GetCategoryLoadingState extends ReportsState {}
 
 class GetCategoryDetailsLoadingState extends ReportsState {}
 
+
+class GetInvoicesLoadingState extends ReportsState {}
+
 class GetInvoicesSuccessState extends ReportsState {
   final InvoiceBeneficary invoiceBeneficary;
 
   GetInvoicesSuccessState(this.invoiceBeneficary);
+}
+
+class GetInvoicesErrorState extends ReportsState {
+  final String error;
+
+  GetInvoicesErrorState(this.error);
 }
 
 class GetCategorySuccessState extends ReportsState {
@@ -56,11 +64,7 @@ class GetCategoryDetailsSuccessState extends ReportsState {
   GetCategoryDetailsSuccessState(this.categoriesDetailsModel);
 }
 
-class GetInvoicesErrorState extends ReportsState {
-  final String error;
 
-  GetInvoicesErrorState(this.error);
-}
 
 class GetCategoryErrorState extends ReportsState {
   final String error;
@@ -91,3 +95,34 @@ class GetDailyInvoicesLoadingState extends ReportsState {}
 class GetDailyInvoicesSuccessState extends ReportsState {}
 
 class GetDailyInvoicesErrorState extends ReportsState {}
+
+
+class GetAllBeneficaryInvoicesLoadingState extends ReportsState {}
+
+class GetAllBeneficaryInvoicesSuccessState extends ReportsState {
+  final AllInvoiceBeneficaryModel invoiceBeneficary;
+
+  GetAllBeneficaryInvoicesSuccessState(this.invoiceBeneficary);
+}
+
+class GetAllBeneficaryInvoicesErrorState extends ReportsState {
+  final String error;
+
+  GetAllBeneficaryInvoicesErrorState(this.error);
+}
+
+
+class SearchBeneficaryAllInvoiceLoadingState extends ReportsState {}
+
+
+class SearchBeneficaryAllInvoiceSuccessState extends ReportsState {
+  final AllInvoiceBeneficaryModel invoiceBeneficary;
+
+  SearchBeneficaryAllInvoiceSuccessState(this.invoiceBeneficary);
+}
+
+class SearchBeneficaryAllInvoiceErrorState extends ReportsState {
+  final String error;
+
+  SearchBeneficaryAllInvoiceErrorState(this.error);
+}

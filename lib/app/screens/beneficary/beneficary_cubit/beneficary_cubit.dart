@@ -3,6 +3,7 @@ import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
+import 'package:smartcard/app/models/benficary_data_model.dart';
 import 'package:smartcard/app/models/invoice.dart';
 import 'package:smartcard/app/network/api_end_points.dart';
 import 'package:http/http.dart' as http;
@@ -36,4 +37,37 @@ class BeneficaryCubit extends Cubit<BeneficaryState> {
       emit(SendSignatureBeneficaryErrorState('Error uploading signature'));
     }
   }
+
+
+  late PaidBeneficaryModel paidBeneficary;
+
+  // Future<void> getPaidBeneficary({required int beneficaryId}) async {
+  //   try {
+  //     emit(GetPaidBeneficaryLoadingState());
+  //
+  //     var paidBeneficaryId =
+  //     Uri.parse("${ApiHelper.getPaidBeneficary}$beneficaryId");
+  //
+  //     Map<String, String> headers = {'Accept': 'application/json'};
+  //
+  //     var response = await http.get(paidBeneficaryId, headers: headers);
+  //     if (response.statusCode == 200) {
+  //       var body = jsonDecode(response.body);
+  //       paidBeneficary = PaidBeneficaryModel.fromJson(body);
+  //       print(paidBeneficary.beneficary?.fullName ?? 'No name available');
+  //       if (paidBeneficary.message == 'Success') {
+  //         emit(GetPaidBeneficarySuccessState());
+  //       } else {
+  //         emit(GetPaidBeneficaryErrorState(paidBeneficary.message.toString()));
+  //       }
+  //     } else {
+  //       emit(GetPaidBeneficaryErrorState('Failed to load data'));
+  //     }
+  //   } catch (e) {
+  //     print(e.toString());
+  //     emit(GetPaidBeneficaryErrorState(e.toString()));
+  //   }
+  // }
+
+
 }

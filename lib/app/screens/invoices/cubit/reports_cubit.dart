@@ -249,4 +249,83 @@ class ReportsCubit extends Cubit<ReportsState> {
       emit(GetDailyInvoicesErrorState());
     }
   }
+
+
+  late AllInvoiceBeneficaryModel allBeneficaryInvoices;
+
+  Future<void> getAllBeneficaryInvoices({required int beneficaryId}) async {
+    try {
+      emit(GetAllBeneficaryInvoicesLoadingState()); // Emit a loading state before making the API call
+
+      print(beneficaryId);
+
+      var loginURL = Uri.parse("${ApiHelper.invoiceBeneficaryDetails}$beneficaryId");
+
+      Map<String, String> headers = {'Accept': 'application/json'};
+
+      var response = await http.get(loginURL, headers: headers);
+
+      var body = jsonDecode(response.body);
+      print(body);
+
+      if (body["invoice"] != null) {
+        allBeneficaryInvoices = AllInvoiceBeneficaryModel.fromJson(body);
+        emit(GetAllBeneficaryInvoicesSuccessState(allBeneficaryInvoices));
+      } else {
+        print("لا توجد فواتير متاحة".toString());
+        emit(GetAllBeneficaryInvoicesErrorState("لا توجد فواتير متاحة"));
+      }
+    } catch (e) {
+      print(e.toString());
+      emit(GetAllBeneficaryInvoicesErrorState(e.toString()));
+    }
+  }
+
+  void searchAllInvoiceBeneficaryInvoiceNumber(String query) async {
+    emit(SearchBeneficaryAllInvoiceLoadingState());
+    try {
+      AllInvoiceBeneficaryModel originalData = allBeneficaryInvoices;
+
+      if (query.isEmpty) {
+        emit(SearchBeneficaryAllInvoiceSuccessState(originalData));
+        return;
+      }
+
+      final filteredData = originalData.invoice?.where((invoice) {
+        final invoiceNo = invoice.invoiceNo;
+        final name = invoice.fullName;
+        final cash_Category = invoice.cashOrCategory;
+        final vendor = invoice.vendorName;
+
+        if (invoiceNo != null &&
+            invoiceNo.toLowerCase().contains(query.toLowerCase())) {
+          return true;
+        }
+
+        if (name != null &&
+            name.toLowerCase().contains(query.toLowerCase())) {
+          return true;
+        }
+        if (cash_Category != null &&
+            cash_Category.toLowerCase().contains(query.toLowerCase())) {
+          return true;
+        }
+        if (vendor != null &&
+            vendor.toLowerCase().contains(query.toLowerCase())) {
+          return true;
+        }
+        return false;
+      }).toList() ??
+          [];
+
+      if (filteredData.isNotEmpty) {
+        final resultModel = AllInvoiceBeneficaryModel(message: "نتائج البحث",invoice: filteredData);
+        emit(SearchBeneficaryAllInvoiceSuccessState(resultModel));
+      } else {
+        emit(SearchBeneficaryAllInvoiceErrorState("لم يتم العثور على فواتير مطابقة"));
+      }
+    } catch (e) {
+      emit(SearchBeneficaryAllInvoiceErrorState(e.toString()));
+    }
+  }
 }

@@ -5,6 +5,9 @@ class ApiHelper {
   static const changePasswordUrl = "${baseUrl}api/vendor/changePassword";
 
   static const invoiceBeneficary = "${baseUrl}api/invoice_beneficary/";
+
+  static const invoiceBeneficaryDetails = "${baseUrl}api/invoice_BeneficaryReport/";
+
   static const getAllBeneficary = "${baseUrl}api/AllReports";
   static const getCategory = "${baseUrl}api/categoryDetails/";
   static const getDetailsCategory = "${baseUrl}api/WhoTakeCategory/";

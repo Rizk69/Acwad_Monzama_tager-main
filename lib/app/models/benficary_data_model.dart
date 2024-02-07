@@ -105,9 +105,9 @@ class Date {
     cashOrCategory = json['cashOrCategory'];
     uprove = json['uprove'];
     paidMoney = json['paid_money'];
+    type = json['type'];
     residualMoney = json['residual_money'];
     paidDone = json['paidDone'];
-    type = json['type'];
   }
 
   Map<String, dynamic> toJson() {
