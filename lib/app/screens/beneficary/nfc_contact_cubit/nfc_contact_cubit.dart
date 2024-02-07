@@ -125,7 +125,7 @@ class NfcDataCubit extends Cubit<NfcDataState> {
     required int paidmoney,
     required String date,
     required BuildContext context}) async {
-    emit(MakeCashLoadingState());
+    emit(BuyProductsLoadingState());
     try {
       var paidBeneficaryUrl = Uri.parse(
           "${ApiHelper.setInvoiceBeneficary}?PaidBeneficaryId=$paidBeneficaryId&vendorId=$vendorId&beneficaryId=$beneficaryId&date=$date&paidmoney=$paidmoney");
