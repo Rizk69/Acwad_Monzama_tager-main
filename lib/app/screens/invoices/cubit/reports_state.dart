@@ -36,6 +36,8 @@ class GetInvoicesLoadingState extends ReportsState {}
 
 class GetCategoryLoadingState extends ReportsState {}
 
+class GetCategoryDetailsLoadingState extends ReportsState {}
+
 class GetInvoicesSuccessState extends ReportsState {
   final InvoiceBeneficary invoiceBeneficary;
 
@@ -48,6 +50,12 @@ class GetCategorySuccessState extends ReportsState {
   GetCategorySuccessState(this.categoriesModel);
 }
 
+class GetCategoryDetailsSuccessState extends ReportsState {
+  final CategoriesDetailsModel categoriesDetailsModel;
+
+  GetCategoryDetailsSuccessState(this.categoriesDetailsModel);
+}
+
 class GetInvoicesErrorState extends ReportsState {
   final String error;
 
@@ -58,6 +66,12 @@ class GetCategoryErrorState extends ReportsState {
   final String error;
 
   GetCategoryErrorState(this.error);
+}
+
+class GetCategoryDetailsErrorState extends ReportsState {
+  final String error;
+
+  GetCategoryDetailsErrorState(this.error);
 }
 
 class GetAllInvoicesLoadingState extends ReportsState {}

@@ -7,6 +7,7 @@ class ApiHelper {
   static const invoiceBeneficary = "${baseUrl}api/invoice_beneficary/";
   static const getAllBeneficary = "${baseUrl}api/AllReports";
   static const getCategory = "${baseUrl}api/categoryDetails/";
+  static const getDetailsCategory = "${baseUrl}api/WhoTakeCategory/";
 
   static const getDailyBeneficary = "${baseUrl}api/DailyReports/";
 

@@ -70,6 +70,33 @@ class ReportsCubit extends Cubit<ReportsState> {
     }
   }
 
+  late CategoriesDetailsModel categoriesDetailsModel;
+
+  Future<void> getDetailsCategory(
+      {required int vendorId, required int id}) async {
+    try {
+      emit(GetCategoryDetailsLoadingState());
+
+      var loginURL = Uri.parse("${ApiHelper.getDetailsCategory}$id/$vendorId");
+
+      Map<String, String> headers = {'Accept': 'application/json'};
+
+      var response = await http.get(loginURL, headers: headers);
+
+      var body = jsonDecode(response.body);
+
+      if (body["message"] == 'Success') {
+        categoriesDetailsModel = CategoriesDetailsModel.fromJson(body);
+        emit(GetCategoryDetailsSuccessState(categoriesDetailsModel));
+      } else {
+        emit(GetCategoryDetailsErrorState("لا توجد فواتير متاحة"));
+      }
+    } catch (e) {
+      print(e.toString());
+      emit(GetCategoryDetailsErrorState(e.toString()));
+    }
+  }
+
   void searchInvoiceNumber(String query) async {
     emit(SearchInvoicesLoadingState());
     try {
