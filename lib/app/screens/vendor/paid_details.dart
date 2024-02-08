@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lottie/lottie.dart';
+import 'package:smartcard/app/models/CategoriesModel.dart';
 import 'package:smartcard/app/screens/beneficary/addinvoice.dart';
 import 'package:smartcard/app/screens/beneficary/beneficary_cubit/beneficary_cubit.dart';
+import 'package:smartcard/app/screens/invoices/beneficary_ivoices.dart';
 import 'package:smartcard/app/utils/resource/color_manager.dart';
 import 'package:smartcard/app/widgets/backgrond_image.dart';
 import 'package:smartcard/main.dart';
@@ -93,21 +95,36 @@ class PaidDetailsScreen extends StatelessWidget {
                                             padding: const EdgeInsets.all(11),
                                             margin: const EdgeInsets.all(11),
                                             child: InkWell(
-                                              onTap: paidProjectDetailsModel
-                                                          .data![index]
-                                                          .uprove ==
-                                                      1
-                                                  ? () async {
-                                                      if (paidProjectDetailsModel
-                                                              .data![index]
-                                                              .type ==
-                                                          0) {}
-                                                      if (paidProjectDetailsModel
-                                                              .data![index]
-                                                              .type ==
-                                                          1) {}
-                                                    }
-                                                  : null,
+                                              onTap: () {
+                                          print("Welcome");
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          BeneficaryInvoices(
+                                                              beneficary:
+                                                                  Beneficary(
+                                                            id: paidProjectDetailsModel
+                                                                .data![index]
+                                                                .id,
+                                                            date:
+                                                                paidProjectDetailsModel
+                                                                    .data![
+                                                                        index]
+                                                                    .date,
+                                                            beneficaryName:
+                                                                paidProjectDetailsModel
+                                                                    .data![
+                                                                        index]
+                                                                    .beneficaryName,
+                                                            tprice:
+                                                                paidProjectDetailsModel
+                                                                    .data![
+                                                                        index]
+                                                                    .paidMoney,
+                                                          ))),
+                                                );
+                                              },
                                               child: Column(
                                                 crossAxisAlignment:
                                                     CrossAxisAlignment.start,
