@@ -21,21 +21,24 @@ class NfcDataCubit extends Cubit<NfcDataState> {
 
   static NfcDataCubit get(context) => BlocProvider.of(context);
 
+  Map<int, Product?> scannedItemsMap = {};
   List<Product?> scannedItems = [];
+
   void addProduct(Product product) {
     emit(AddProductLoading());
 
-    int index = scannedItems.indexWhere((p) => p?.id == product.id);
-    if (index != -1) {
-      scannedItems[index]?.count = (scannedItems[index]?.count ?? 0) + 1;
-    } else {
-      product.count = 1;
-      scannedItems.add(product);
+    final existingProduct = scannedItemsMap[product.id];
+    if (existingProduct != null && existingProduct.count == 0) {
+      existingProduct.count = 1;
+    } else if (existingProduct == null) {
+      scannedItemsMap[product.id!] = product.copyWith(count: 1);
     }
+
+    scannedItems = scannedItemsMap.values.toList();
     emit(AddProductSuccess());
   }
 
-  removeProduct(int index) {
+  void removeProduct(int index) {
     emit(RemoveProductLoading());
     scannedItems.removeAt(index);
     emit(RemoveProductSuccess());
@@ -52,13 +55,14 @@ class NfcDataCubit extends Cubit<NfcDataState> {
   }
 
   List<ProductBody> productsBody = [];
-  void convertScannedItemsToProductsBody({
-    required int paidBeneficaryId,
-    required int vendorId,
-    required int beneficaryId,
-    required int paidmoney,
-    required String date,
-    required BuildContext context}) {
+
+  void convertScannedItemsToProductsBody(
+      {required int paidBeneficaryId,
+      required int vendorId,
+      required int beneficaryId,
+      required int paidmoney,
+      required String date,
+      required BuildContext context}) {
     productsBody = scannedItems.map((Product? product) {
       if (product != null) {
         return ProductBody(
@@ -118,13 +122,13 @@ class NfcDataCubit extends Cubit<NfcDataState> {
 
   Invoice? beneficaryInvoice;
 
-  Future<void> invoiceBeneficaryCategory({
-    required int paidBeneficaryId,
-    required int vendorId,
-    required int beneficaryId,
-    required int paidmoney,
-    required String date,
-    required BuildContext context}) async {
+  Future<void> invoiceBeneficaryCategory(
+      {required int paidBeneficaryId,
+      required int vendorId,
+      required int beneficaryId,
+      required int paidmoney,
+      required String date,
+      required BuildContext context}) async {
     emit(BuyProductsLoadingState());
     try {
       var paidBeneficaryUrl = Uri.parse(
@@ -186,13 +190,15 @@ class NfcDataCubit extends Cubit<NfcDataState> {
     await http.post(cashURL, headers: headers).then((value) {
       var body = jsonDecode(value.body);
       cashInvoice = Invoice.fromJson(body);
-
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => SignatureScreen(cashInvoice: cashInvoice!)),
-      );
-      emit(MakeCashSuccessState(cashInvoice!));
+      print(cashInvoice?.message);
+      if (cashInvoice?.message == 'Success') {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => SignatureScreen(cashInvoice: cashInvoice!)),
+        );
+        emit(MakeCashSuccessState(cashInvoice!));
+      }
 
       // printInvoice(cashInvoice);
     }).catchError((onError) {

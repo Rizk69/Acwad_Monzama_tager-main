@@ -283,14 +283,36 @@ class AddInvoice extends StatelessWidget {
                                                           color: Theme.of(
                                                                   context)
                                                               .primaryColor))),
-                                                  DataCell(Text(
-                                                      product?.count
+                                                  DataCell(
+                                                    TextFormField(
+                                                      initialValue: product
+                                                              ?.count
                                                               .toString() ??
                                                           '0',
                                                       style: TextStyle(
-                                                          color: Theme.of(
-                                                                  context)
-                                                              .primaryColor))),
+                                                        color: Theme.of(context)
+                                                            .primaryColor,
+                                                      ),
+                                                      onChanged: (newValue) {
+                                                        int newCount =
+                                                            int.tryParse(
+                                                                    newValue) ??
+                                                                0;
+
+                                                        // if (product != null) {
+                                                        product?.count =
+                                                            newCount;
+                                                        // }
+                                                      },
+                                                      decoration:
+                                                          InputDecoration(
+                                                        border:
+                                                            OutlineInputBorder(),
+                                                        labelText:
+                                                            'Enter Count',
+                                                      ),
+                                                    ),
+                                                  ),
                                                   DataCell(IconButton(
                                                     color: ColorManager.error,
                                                     onPressed: () {
@@ -340,9 +362,9 @@ class AddInvoice extends StatelessWidget {
                                                           .date![index]
                                                           .id!,
                                                   beneficaryId:
-                                              paidBeneficaryModel
-                                                  .beneficary!.id!,
-                                              date: formattedDate);
+                                                      paidBeneficaryModel
+                                                          .beneficary!.id!,
+                                                  date: formattedDate);
                                         },
                                         child: const Text(
                                           'شراء',

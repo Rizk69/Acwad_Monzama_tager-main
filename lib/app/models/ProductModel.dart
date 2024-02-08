@@ -13,14 +13,13 @@ class ProductModel {
       });
     }
   }
-
 }
 
 class Product {
   int? id;
   String? name;
   int? price;
-  int? count = 0;
+  int? count = 1;
 
   Product({this.id, this.name, this.price, this.count});
 
@@ -30,4 +29,22 @@ class Product {
     price = json['price'];
   }
 
+  Product copyWith({
+    int? id,
+    String? name,
+    int? price,
+    int? count,
+  }) {
+    int? convertedPrice;
+    if (price != null) {
+      convertedPrice = price.toInt();
+    }
+
+    return Product(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      price: convertedPrice ?? this.price,
+      count: count ?? this.count,
+    );
+  }
 }
