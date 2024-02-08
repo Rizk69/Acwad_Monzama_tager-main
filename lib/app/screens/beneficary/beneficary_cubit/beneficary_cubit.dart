@@ -70,7 +70,7 @@ class BeneficaryCubit extends Cubit<BeneficaryState> {
   //   }
   // }
 
-  late PaidReportis paidReportis;
+  late PaidReportis paidReports;
 
   Future<void> getAllPaidProject({required int vendorId}) async {
     try {
@@ -87,8 +87,8 @@ class BeneficaryCubit extends Cubit<BeneficaryState> {
       var body = jsonDecode(response.body);
 
       if (body["message"] == 'Success') {
-        paidReportis = PaidReportis.fromJson(body);
-        emit(GetAllPaidProjectSuccessState(paidReportis));
+        paidReports = PaidReportis.fromJson(body);
+        emit(GetAllPaidProjectSuccessState(paidReports));
       } else {
         emit(GetAllPaidProjectErrorState("لا توجد فواتير متاحة"));
       }

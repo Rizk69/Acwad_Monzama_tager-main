@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:smartcard/app/network/app_api.dart';
 import 'package:smartcard/app/screens/auth/login.dart';
+import 'package:smartcard/app/screens/vendor/all_paid_vendor.dart';
 import 'package:smartcard/app/utils/resource/color_manager.dart';
 import 'routes_manager.dart';
 
@@ -17,11 +18,20 @@ class DrawerData extends StatelessWidget {
       DrawerItem('الفواتير', Icons.message, () {
         Navigator.pushNamed(context, Routes.invoicesRoute);
       }),
-      DrawerItem('تقارير الدفعات', Icons.notes, () {
+      DrawerItem('تقارير اليومية', Icons.notes, () {
         Navigator.pushNamed(context, Routes.cashCategory);
       }),
       DrawerItem('التقارير', Icons.notes, () {
         Navigator.pushNamed(context, Routes.allInvoiceRoute);
+      }),
+
+      DrawerItem('تقارير الدفعات ', Icons.loop, () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => PaidProjectsScreen(),
+          ),
+        );
       }),
 
       // DrawerItem('تسجيل خروج', Icons.exit_to_app, () async {
