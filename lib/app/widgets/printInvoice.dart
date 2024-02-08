@@ -44,18 +44,6 @@ Future<void> printInvoice(InvoiceBeneficaryData? data) async {
                           fontSize: 30,
                         )))),
           ]),
-          pw.Row(mainAxisAlignment: pw.MainAxisAlignment.center, children: [
-            pw.Directionality(
-                textDirection: pw.TextDirection.rtl,
-                child: pw.Center(
-                    child: pw.SizedBox(
-                        width: 170,
-                        child: pw.Text(
-                            'هذا النص هو مثال لنص يمكن أن يستبدل في نفس المساحة، لقد تم توليد هذا النص من مولد النص العربى، حيث يمكنك أن تولد مثل هذا النص أو العديد من النصوص الأخرى إضافة إلى زيادة عدد الحروف التى يولدها التطبيق.',
-                            style: pw.TextStyle(
-                              fontSize: 10,
-                            ))))),
-          ]),
           pw.Row(mainAxisAlignment: pw.MainAxisAlignment.end, children: [
             pw.Directionality(
                 textDirection: pw.TextDirection.rtl,
