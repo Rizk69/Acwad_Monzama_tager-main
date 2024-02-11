@@ -4,6 +4,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_signature_pad/flutter_signature_pad.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:smartcard/app/screens/beneficary/beneficary_cubit/beneficary_cubit.dart';
 import '../models/invoice.dart';
@@ -21,6 +22,16 @@ class SignatureScreen extends StatefulWidget {
 class _SignatureScreenState extends State<SignatureScreen> {
   final GlobalKey<SignatureState> _signatureKey = GlobalKey<SignatureState>();
   bool _isSignatureDone = false;
+  XFile? _imageFile;
+
+  Future<void> _takePicture() async {
+    final picker = ImagePicker();
+    final XFile? image = await picker.pickImage(source: ImageSource.camera);
+
+    setState(() {
+      _imageFile = image;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -124,6 +135,34 @@ class _SignatureScreenState extends State<SignatureScreen> {
                               ),
                             ),
                           ),
+                          onPressed: () {
+                            _takePicture();
+                          },
+                          child: Text(
+                            'Camera',
+                            style: TextStyle(
+                                fontSize: 17,
+                                color: Theme.of(context).primaryColorDark),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Container(
+                        margin: EdgeInsets.symmetric(horizontal: 15),
+                        width: MediaQuery.of(context).size.width,
+                        child: ElevatedButton(
+                          style: ButtonStyle(
+                            backgroundColor: MaterialStatePropertyAll<Color>(
+                              Theme.of(context).primaryColor,
+                            ),
+                            textStyle: MaterialStatePropertyAll<TextStyle>(
+                              TextStyle(
+                                color: Theme.of(context).primaryColorDark,
+                              ),
+                            ),
+                          ),
                           onPressed: _isSignatureDone
                               ? () async {
                                   try {
@@ -140,6 +179,7 @@ class _SignatureScreenState extends State<SignatureScreen> {
                                               signatureBytes);
                                       BeneficaryCubit.get(context)
                                           .sendSignature(
+                                        img: File(_imageFile?.path ?? ''),
                                         invoiceNumber:
                                             '${widget.cashInvoice.data!.invoiceNo}',
                                         file: signatureFile,

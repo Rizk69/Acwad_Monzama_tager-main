@@ -39,6 +39,7 @@ dependencies:
   equatable: ^2.0.5
   barcode_scan2: ^4.3.0
   jwt_decoder: ^2.0.1
+  image_picker: ^0.8.4+4
   connectivity_plus: ^5.0.2
   awesome_snackbar_content: ^0.1.3
   flutter_signature_pad: ^3.0.0

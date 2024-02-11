@@ -17,26 +17,34 @@ class BeneficaryCubit extends Cubit<BeneficaryState> {
 
   static BeneficaryCubit get(context) => BlocProvider.of(context);
 
-  Future<void> sendSignature(
-      {required String invoiceNumber,
-      required File file,
-      required Invoice beneficaryInvoice}) async {
+  Future<void> sendSignature({
+    required String invoiceNumber,
+    required File file,
+    required File img,
+    required Invoice beneficaryInvoice,
+  }) async {
     var signatureUrl =
-    Uri.parse("${ApiHelper.setBeneficarySignature}$invoiceNumber");
+        Uri.parse("${ApiHelper.setBeneficarySignature}$invoiceNumber");
 
-    var request = http.MultipartRequest('POST', signatureUrl)
-      ..headers.addAll({'Accept': 'application/json'})
-      ..files.add(await http.MultipartFile.fromPath('image', file.path));
+    try {
+      var request = http.MultipartRequest('POST', signatureUrl)
+        ..headers.addAll({'Accept': 'application/json'})
+        ..files.add(await http.MultipartFile.fromPath('signature', file.path))
+        ..files.add(await http.MultipartFile.fromPath('image', img.path));
 
-    var response = await request.send();
+      var response = await request.send();
 
-    if (response.statusCode == 200) {
-      print('Signature uploaded successfully');
-      emit(SendSignatureBeneficarySuccessState());
-      printInvoice(beneficaryInvoice);
-    } else {
-      print('Failed to upload signature');
-      emit(SendSignatureBeneficaryErrorState('Error uploading signature'));
+      if (response.statusCode == 200) {
+        print('Signature uploaded successfully');
+        emit(SendSignatureBeneficarySuccessState());
+        printInvoice(beneficaryInvoice);
+      } else {
+        print('Failed to upload signature');
+        emit(SendSignatureBeneficaryErrorState('Error uploading signature'));
+      }
+    } catch (e) {
+      print('Error sending signature: $e');
+      emit(SendSignatureBeneficaryErrorState('Error sending signature'));
     }
   }
 
