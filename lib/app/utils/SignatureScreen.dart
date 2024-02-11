@@ -46,6 +46,7 @@ class _SignatureScreenState extends State<SignatureScreen> {
               children: [
                 imageBackground(context),
                 Scaffold(
+                  // floatingActionButton: Icon(Icons.cleaning_services_rounded),
                   backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                   appBar: AppBar(
                     leading: IconButton(
@@ -57,188 +58,237 @@ class _SignatureScreenState extends State<SignatureScreen> {
                           color: Theme.of(context).primaryColor,
                         )),
                     backgroundColor:
-                        Theme.of(context).appBarTheme.backgroundColor,
+                    Theme
+                        .of(context)
+                        .appBarTheme
+                        .backgroundColor,
                     title: Text(
                       'Signature Pad',
                       style: TextStyle(
                         fontSize: 23,
-                        color: Theme.of(context).primaryColor,
+                        color: Theme
+                            .of(context)
+                            .primaryColor,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
-                  body: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Container(
-                        decoration: BoxDecoration(
-                            color: Colors.grey[200],
-                            borderRadius: BorderRadius.circular(15)),
-                        margin: EdgeInsets.all(20),
-                        height: 400,
-                        child: Signature(
-                          color: Colors.black,
-                          key: _signatureKey,
-                          strokeWidth: 5.0,
-                          onSign: () {
-                            setState(() {
-                              _isSignatureDone = true;
-                            });
-                          },
-                        ),
-                      ),
-                      Spacer(),
-                      Container(
-                        margin: EdgeInsets.symmetric(horizontal: 15),
-                        width: MediaQuery.of(context).size.width,
-                        child: ElevatedButton(
-                          style: ButtonStyle(
-                            backgroundColor: MaterialStatePropertyAll<Color>(
-                              Theme.of(context).primaryColor,
+                  body: SingleChildScrollView(
+                    child: SizedBox(
+                      height: MediaQuery
+                          .of(context)
+                          .size
+                          .height,
+                      width: MediaQuery
+                          .of(context)
+                          .size
+                          .width,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Container(
+                            decoration: BoxDecoration(
+                                color: Colors.grey[200],
+                                borderRadius: BorderRadius.circular(15)),
+                            margin: EdgeInsets.all(20),
+                            height: 400,
+                            child: Signature(
+                              color: Colors.black,
+                              key: _signatureKey,
+                              strokeWidth: 5.0,
+                              onSign: () {
+                                setState(() {
+                                  _isSignatureDone = true;
+                                });
+                              },
                             ),
-                            textStyle: MaterialStatePropertyAll<TextStyle>(
-                              TextStyle(
-                                color: Theme.of(context).primaryColorDark,
+                          ),
+                          Spacer(),
+                          Container(
+                            margin: EdgeInsets.symmetric(horizontal: 15),
+                            width: MediaQuery
+                                .of(context)
+                                .size
+                                .width,
+                            child: ElevatedButton(
+                              style: ButtonStyle(
+                                backgroundColor:
+                                MaterialStatePropertyAll<Color>(
+                                  Theme
+                                      .of(context)
+                                      .primaryColor,
+                                ),
+                                textStyle: MaterialStatePropertyAll<TextStyle>(
+                                  TextStyle(
+                                    color: Theme
+                                        .of(context)
+                                        .primaryColorDark,
+                                  ),
+                                ),
+                              ),
+                              onPressed: _isSignatureDone
+                                  ? () {
+                                _signatureKey.currentState!.clear();
+                                setState(() {
+                                  _isSignatureDone = false;
+                                });
+                              }
+                                  : null,
+                              child: Text(
+                                'Clear',
+                                style: TextStyle(
+                                    fontSize: 17,
+                                    color: Theme
+                                        .of(context)
+                                        .primaryColorDark),
                               ),
                             ),
                           ),
-                          onPressed: _isSignatureDone
-                              ? () {
-                                  _signatureKey.currentState!.clear();
-                                  setState(() {
-                                    _isSignatureDone = false;
-                                  });
-                                }
-                              : null,
-                          child: Text(
-                            'Clear',
-                            style: TextStyle(
-                                fontSize: 17,
-                                color: Theme.of(context).primaryColorDark),
+                          SizedBox(
+                            height: 10,
                           ),
-                        ),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Container(
-                        margin: EdgeInsets.symmetric(horizontal: 15),
-                        width: MediaQuery.of(context).size.width,
-                        child: ElevatedButton(
-                          style: ButtonStyle(
-                            backgroundColor: MaterialStatePropertyAll<Color>(
-                              Theme.of(context).primaryColor,
-                            ),
-                            textStyle: MaterialStatePropertyAll<TextStyle>(
-                              TextStyle(
-                                color: Theme.of(context).primaryColorDark,
+                          Container(
+                            margin: EdgeInsets.symmetric(horizontal: 15),
+                            width: MediaQuery
+                                .of(context)
+                                .size
+                                .width,
+                            child: ElevatedButton(
+                              style: ButtonStyle(
+                                backgroundColor:
+                                MaterialStatePropertyAll<Color>(
+                                  Theme
+                                      .of(context)
+                                      .primaryColor,
+                                ),
+                                textStyle: MaterialStatePropertyAll<TextStyle>(
+                                  TextStyle(
+                                    color: Theme
+                                        .of(context)
+                                        .primaryColorDark,
+                                  ),
+                                ),
+                              ),
+                              onPressed: () {
+                                _takePicture();
+                              },
+                              child: Text(
+                                'Camera',
+                                style: TextStyle(
+                                    fontSize: 17,
+                                    color: Theme
+                                        .of(context)
+                                        .primaryColorDark),
                               ),
                             ),
                           ),
-                          onPressed: () {
-                            _takePicture();
-                          },
-                          child: Text(
-                            'Camera',
-                            style: TextStyle(
-                                fontSize: 17,
-                                color: Theme.of(context).primaryColorDark),
+                          const SizedBox(
+                            height: 10,
                           ),
-                        ),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Container(
-                        margin: EdgeInsets.symmetric(horizontal: 15),
-                        width: MediaQuery.of(context).size.width,
-                        child: ElevatedButton(
-                          style: ButtonStyle(
-                            backgroundColor: MaterialStatePropertyAll<Color>(
-                              Theme.of(context).primaryColor,
-                            ),
-                            textStyle: MaterialStatePropertyAll<TextStyle>(
-                              TextStyle(
-                                color: Theme.of(context).primaryColorDark,
+                          Container(
+                            margin: const EdgeInsets.symmetric(horizontal: 15),
+                            width: MediaQuery
+                                .of(context)
+                                .size
+                                .width,
+                            child: ElevatedButton(
+                              style: ButtonStyle(
+                                backgroundColor:
+                                MaterialStatePropertyAll<Color>(
+                                  Theme
+                                      .of(context)
+                                      .primaryColor,
+                                ),
+                                textStyle: MaterialStatePropertyAll<TextStyle>(
+                                  TextStyle(
+                                    color: Theme
+                                        .of(context)
+                                        .primaryColorDark,
+                                  ),
+                                ),
                               ),
-                            ),
-                          ),
-                          onPressed: _isSignatureDone
-                              ? () async {
-                                  try {
-                                    final Uint8List signatureBytes =
-                                        await _signatureToImageBytes();
-                                    final image = await _signatureKey
-                                        .currentState
-                                        ?.getData();
-                                    print("_${signatureBytes}__");
-                                    if (signatureBytes.isNotEmpty &&
-                                        image != null) {
-                                      final File signatureFile =
-                                          await _writeSignatureToFile(
-                                              signatureBytes);
-                                      BeneficaryCubit.get(context)
-                                          .sendSignature(
-                                        img: File(_imageFile?.path ?? ''),
-                                        invoiceNumber:
-                                            '${widget.cashInvoice.data!.invoiceNo}',
-                                        file: signatureFile,
-                                        beneficaryInvoice: widget.cashInvoice,
-                                      );
-                                    } else {
-                                      showDialog(
-                                        context: context,
-                                        builder: (BuildContext context) {
-                                          return AlertDialog(
-                                            title: Text("Empty Signature"),
-                                            content: Text(
-                                                "Please provide a signature before saving."),
-                                            actions: [
-                                              TextButton(
-                                                onPressed: () {
-                                                  Navigator.of(context).pop();
-                                                },
-                                                child: Text("OK"),
-                                              ),
-                                            ],
-                                          );
-                                        },
-                                      );
-                                    }
-                                  } catch (e) {
-                                    print("Error processing signature: $e");
-                                    // Handle the error as needed
+                              onPressed: _isSignatureDone
+                                  ? () async {
+                                try {
+                                  final Uint8List signatureBytes =
+                                  await _signatureToImageBytes();
+                                  final image = await _signatureKey
+                                      .currentState
+                                      ?.getData();
+                                  print("_${signatureBytes}__");
+                                  if (signatureBytes.isNotEmpty &&
+                                      image != null) {
+                                    final File signatureFile =
+                                    await _writeSignatureToFile(
+                                        signatureBytes);
+                                    BeneficaryCubit.get(context)
+                                        .sendSignature(
+                                      img: File(_imageFile?.path ?? ''),
+                                      invoiceNumber:
+                                      '${widget.cashInvoice.data!.invoiceNo}',
+                                      file: signatureFile,
+                                      beneficaryInvoice:
+                                      widget.cashInvoice,
+                                    );
+                                  } else {
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                          title: Text("Empty Signature"),
+                                          content: Text(
+                                              "Please provide a signature before saving."),
+                                          actions: [
+                                            TextButton(
+                                              onPressed: () {
+                                                Navigator.of(context)
+                                                    .pop();
+                                              },
+                                              child: Text("OK"),
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    );
                                   }
+                                } catch (e) {
+                                  print("Error processing signature: $e");
+                                  // Handle the error as needed
                                 }
-                              : () {
-                                  showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return AlertDialog(
-                                        title: Text("Empty Signature"),
-                                        content: Text(
-                                            "Please provide a signature before saving."),
-                                        actions: [
-                                          TextButton(
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                            },
-                                            child: Text("OK"),
-                                          ),
-                                        ],
-                                      );
-                                    },
-                                  );
-                                },
-                          child: Text(
-                            'Save',
-                            style: TextStyle(
-                                fontSize: 17,
-                                color: Theme.of(context).primaryColorDark),
+                              }
+                                  : () {
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: Text("Empty Signature"),
+                                      content: Text(
+                                          "Please provide a signature before saving."),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                          child: Text("OK"),
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
+                              },
+                              child: Text(
+                                'Save',
+                                style: TextStyle(
+                                    fontSize: 17,
+                                    color: Theme
+                                        .of(context)
+                                        .primaryColorDark),
+                              ),
+                            ),
                           ),
-                        ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
                 ),
               ],

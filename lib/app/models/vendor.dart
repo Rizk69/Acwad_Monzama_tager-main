@@ -1,10 +1,13 @@
 class VendorModel {
   Data? data;
+  String? currency;
 
-  VendorModel({this.data});
+  // Constructor
+  VendorModel({this.data, this.currency});
 
   VendorModel.fromJson(Map<String, dynamic> json) {
-    data = json['data'] != null ? new Data.fromJson(json['data']) : null;
+    data = json['data'] != null ? Data.fromJson(json['data']) : null;
+    currency = json['currency'];
   }
 
   Map<String, dynamic> toJson() {
@@ -12,9 +15,11 @@ class VendorModel {
     if (this.data != null) {
       data['data'] = this.data!.toJson();
     }
+    data['currency'] = currency;
     return data;
   }
 }
+
 
 class Data {
   int? id;
