@@ -1,3 +1,5 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
+
 class ApiHelper {
   static const baseUrl = "https://monazama.acwad-it.com/";
   static const loginUrl = "${baseUrl}api/vendor/login";
@@ -21,4 +23,21 @@ class ApiHelper {
   static const getProductBeneficary = "${baseUrl}api/invoiceshow/";
   static const setInvoiceBeneficary = "${baseUrl}api/invoiceBeneficary";
   static const setBeneficarySignature = "${baseUrl}api/saveImage/";
+
+
+  static bool isInternet = false ;
+  Future<bool> connectedToInternet() async {
+    var connectivityResult = await Connectivity().checkConnectivity();
+
+    if (connectivityResult == ConnectivityResult.mobile ||
+        connectivityResult == ConnectivityResult.wifi) {
+      isInternet=true;
+      return true; // هنا يتم إعادة القيمة true إذا كان هناك اتصال بالإنترنت
+    } else {
+      isInternet=false;
+      return false; // هنا يتم إعادة القيمة false إذا لم يكن هناك اتصال بالإنترنت
+    }
+  }
 }
+
+

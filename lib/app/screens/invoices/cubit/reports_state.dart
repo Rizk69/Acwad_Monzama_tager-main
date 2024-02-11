@@ -88,19 +88,27 @@ class GetAllInvoicesSuccessState extends ReportsState {
   GetAllInvoicesSuccessState(this.allInvoiceBeneficary);
 }
 
-class GetAllInvoicesErrorState extends ReportsState {}
+class GetAllInvoicesErrorState extends ReportsState {
+  final String error;
+
+  GetAllInvoicesErrorState(this.error);
+}
 
 class GetDailyInvoicesLoadingState extends ReportsState {}
 
 class GetDailyInvoicesSuccessState extends ReportsState {}
 
-class GetDailyInvoicesErrorState extends ReportsState {}
+class GetDailyInvoicesErrorState extends ReportsState {
+  final String error;
+
+  GetDailyInvoicesErrorState(this.error);
+}
 
 
 class GetAllBeneficaryInvoicesLoadingState extends ReportsState {}
 
 class GetAllBeneficaryInvoicesSuccessState extends ReportsState {
-  final AllInvoiceBeneficaryModel invoiceBeneficary;
+  final InvoiceBeneficary invoiceBeneficary;
 
   GetAllBeneficaryInvoicesSuccessState(this.invoiceBeneficary);
 }
@@ -116,7 +124,7 @@ class SearchBeneficaryAllInvoiceLoadingState extends ReportsState {}
 
 
 class SearchBeneficaryAllInvoiceSuccessState extends ReportsState {
-  final AllInvoiceBeneficaryModel invoiceBeneficary;
+  final InvoiceBeneficary invoiceBeneficary;
 
   SearchBeneficaryAllInvoiceSuccessState(this.invoiceBeneficary);
 }

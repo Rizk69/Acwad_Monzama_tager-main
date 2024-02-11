@@ -160,7 +160,7 @@ Widget buildInvoiceCard({required InvoiceBeneficary invoice, index , required co
 
 
 
-Widget buildAllBeneficaryInvoiceCard({required AllInvoiceBeneficaryModel invoice, index , required context}) {
+Widget buildAllBeneficaryInvoiceCard({required InvoiceBeneficary invoice, index , required context}) {
   return Column(
     children: [
       ClipRRect(
@@ -193,7 +193,7 @@ Widget buildAllBeneficaryInvoiceCard({required AllInvoiceBeneficaryModel invoice
                             children: [
                               buildInvoiceInfo(
                                   label: 'اسم التاجر',
-                                  value: invoice.invoice![index].vendorName.toString(),
+                                  value: invoice.data![index].vendorName.toString(),
                                   isMultiline: true,
                                   context: context
 
@@ -201,7 +201,7 @@ Widget buildAllBeneficaryInvoiceCard({required AllInvoiceBeneficaryModel invoice
                               SizedBox(height: 2.h,),
                               buildInvoiceInfo(
                                   label: 'اسم المستفيد',
-                                  value: invoice.invoice![index].fullName.toString(),
+                                  value: invoice.data![index].fullName.toString(),
                                   isMultiline: true,
                                   context: context
                               ),
@@ -222,7 +222,7 @@ Widget buildAllBeneficaryInvoiceCard({required AllInvoiceBeneficaryModel invoice
                                 )),
                             Center(
                                 child: Text(
-                                  "${invoice.invoice![index].invoiceNo}",
+                                  "${invoice.data![index].invoiceNo}",
                                   style:  TextStyle(
                                     color: Theme.of(context).primaryColor,
                                     fontWeight: FontWeight.bold,
@@ -242,7 +242,7 @@ Widget buildAllBeneficaryInvoiceCard({required AllInvoiceBeneficaryModel invoice
                             children: [
                               buildInvoiceInfo(
                                 label: 'التاريخ',
-                                value: invoice.invoice![index].date.toString(),
+                                value: invoice.data![index].date.toString(),
                                 context: context,
                               ),
 
@@ -260,7 +260,7 @@ Widget buildAllBeneficaryInvoiceCard({required AllInvoiceBeneficaryModel invoice
                             children: [
                               buildInvoiceInfo(
                                 label: 'نوع الصرف',
-                                value: invoice.invoice![index].cashOrCategory.toString(),
+                                value: invoice.data![index].cashOrCategory.toString(),
                                 context: context,
                               ),
 
@@ -272,7 +272,7 @@ Widget buildAllBeneficaryInvoiceCard({required AllInvoiceBeneficaryModel invoice
                     SizedBox(height: 2.h,),
                     Center(
                         child: Text(
-                          "المجموع ${invoice.invoice![index].totalPrice}",
+                          "المجموع ${invoice.data![index].totalPrice}",
                           style:  TextStyle(
                             color: Theme.of(context).primaryColor,
                             fontWeight: FontWeight.bold,

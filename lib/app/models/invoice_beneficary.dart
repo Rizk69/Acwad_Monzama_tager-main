@@ -28,23 +28,6 @@ class InvoiceBeneficary {
   }
 }
 
-class AllInvoiceBeneficaryModel {
-  String? message;
-  List<InvoiceBeneficaryData>? invoice;
-
-  AllInvoiceBeneficaryModel({this.message, this.invoice});
-
-  AllInvoiceBeneficaryModel.fromJson(Map<String, dynamic> json) {
-    message = json['message'];
-    if (json['invoice'] != null) {
-      invoice = <InvoiceBeneficaryData>[];
-      json['invoice'].forEach((v) {
-        invoice!.add(new InvoiceBeneficaryData.fromJson(v));
-      });
-    }
-  }
-}
-
 class InvoiceBeneficaryData {
   String? invoiceNo;
   String? date;

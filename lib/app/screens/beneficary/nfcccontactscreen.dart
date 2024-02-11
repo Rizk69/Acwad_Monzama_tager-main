@@ -89,7 +89,7 @@ class _NfcContactCardScreenState extends State<NfcContactCardScreen> {
           SnackBar(
             content: Text(responseBody['exists'] == false ? 'False' : 'True'),
             backgroundColor:
-                responseBody['exists'] == false ? Colors.red : Colors.green,
+            responseBody['exists'] == false ? Colors.red : Colors.green,
           ),
         );
         print('Server response: ${response.body}');
@@ -131,15 +131,16 @@ class _NfcContactCardScreenState extends State<NfcContactCardScreen> {
       if (response.statusCode == 200) {
         Map<String, dynamic> responseBody = jsonDecode(response.body);
         BeneficaryNfcModel beneficaryNfcModel =
-            BeneficaryNfcModel.fromJson(responseBody);
+        BeneficaryNfcModel.fromJson(responseBody);
         ScaffoldMessenger.of(context).hideCurrentSnackBar();
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => BeneficaryNfcScreen(
-              beneficaryNfcModel: beneficaryNfcModel,
-              cubit: cubit,
-            ),
+            builder: (context) =>
+                BeneficaryNfcScreen(
+                  beneficaryNfcModel: beneficaryNfcModel,
+                  cubit: cubit,
+                ),
           ),
         );
 
@@ -180,11 +181,19 @@ class _NfcContactCardScreenState extends State<NfcContactCardScreen> {
     return Center(
       child: Container(
         margin: EdgeInsets.all(15),
-        height: MediaQuery.of(context).size.height / 3,
-        width: MediaQuery.of(context).size.width,
+        height: MediaQuery
+            .of(context)
+            .size
+            .height / 3,
+        width: MediaQuery
+            .of(context)
+            .size
+            .width,
         padding: EdgeInsets.all(20),
         decoration: BoxDecoration(
-          color: Theme.of(context).primaryColorDark,
+          color: Theme
+              .of(context)
+              .primaryColorDark,
           borderRadius: BorderRadius.circular(15),
           boxShadow: [
             BoxShadow(
@@ -204,7 +213,9 @@ class _NfcContactCardScreenState extends State<NfcContactCardScreen> {
               style: TextStyle(
                 fontSize: 18.0,
                 fontWeight: FontWeight.bold,
-                color: Theme.of(context).primaryColor,
+                color: Theme
+                    .of(context)
+                    .primaryColor,
               ),
             ),
             SizedBox(height: 23),
@@ -215,36 +226,52 @@ class _NfcContactCardScreenState extends State<NfcContactCardScreen> {
                 password = value;
               },
               style: TextStyle(
-                color: Theme.of(context).primaryColorLight,
+                color: Theme
+                    .of(context)
+                    .primaryColorLight,
               ),
               decoration: InputDecoration(
                 enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(13),
                     borderSide: BorderSide(
-                      color: Theme.of(context).primaryColorLight,
+                      color: Theme
+                          .of(context)
+                          .primaryColorLight,
                     )),
                 focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(13),
                     borderSide: BorderSide(
-                      color: Theme.of(context).primaryColorLight,
+                      color: Theme
+                          .of(context)
+                          .primaryColorLight,
                     )),
-                fillColor: Theme.of(context).primaryColorLight,
+                fillColor: Theme
+                    .of(context)
+                    .primaryColorLight,
                 labelText: 'كلمة المرور',
                 labelStyle: TextStyle(
-                  color: Theme.of(context).primaryColorLight,
+                  color: Theme
+                      .of(context)
+                      .primaryColorLight,
                 ),
                 hintStyle: TextStyle(
-                  color: Theme.of(context).primaryColorLight,
+                  color: Theme
+                      .of(context)
+                      .primaryColorLight,
                 ),
                 border: OutlineInputBorder(
                   borderSide: BorderSide(
-                      color: Theme.of(context).primaryColorLight, width: 1),
+                      color: Theme
+                          .of(context)
+                          .primaryColorLight, width: 1),
                   borderRadius: BorderRadius.circular(8.0),
                 ),
                 suffixIcon: IconButton(
                   icon: Icon(
                     _isObscure ? Icons.visibility_off : Icons.visibility,
-                    color: Theme.of(context).primaryColorLight,
+                    color: Theme
+                        .of(context)
+                        .primaryColorLight,
                   ),
                   onPressed: () {
                     setState(() {
@@ -265,7 +292,9 @@ class _NfcContactCardScreenState extends State<NfcContactCardScreen> {
                   child: Text(
                     'موافق',
                     style: TextStyle(
-                      color: Theme.of(context).primaryColorLight,
+                      color: Theme
+                          .of(context)
+                          .primaryColorLight,
                     ),
                   ),
                 ),
@@ -278,7 +307,9 @@ class _NfcContactCardScreenState extends State<NfcContactCardScreen> {
                   child: Text(
                     'إلغاء',
                     style: TextStyle(
-                      color: Theme.of(context).primaryColorLight,
+                      color: Theme
+                          .of(context)
+                          .primaryColorLight,
                     ),
                   ),
                 ),
@@ -294,30 +325,39 @@ class _NfcContactCardScreenState extends State<NfcContactCardScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Container(
-        color: Theme.of(context).primaryColorDark,
+        color: Theme
+            .of(context)
+            .primaryColorDark,
         child: Stack(
           children: [
             imageBackground(context),
             Scaffold(
-              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-              body: showPasswordDialog("336F7E86"),
+              backgroundColor: Theme
+                  .of(context)
+                  .scaffoldBackgroundColor,
+              body:  showPasswordDialog("336F7E86"),
+
               // isNfcAvailable
               //     ?
               // Center(
-              //         child: SvgPicture.asset(
-              //           'assets/images/nfc_icon.svg',
-              //           color: Theme.of(context).primaryColor,
-              //           height: 200,
-              //           width: 200,
-              //         ),
-              //       )
+              //   child: SvgPicture.asset(
+              //     'assets/images/nfc_icon.svg',
+              //     color: Theme
+              //         .of(context)
+              //         .primaryColor,
+              //     height: 200,
+              //     width: 200,
+              //   ),
+              // )
               //     : Center(
-              //         child: Text(
-              //         'NFC is not available',
-              //         style: TextStyle(
-              //           color: Theme.of(context).primaryColorLight,
-              //         ),
-              //       )),
+              //     child: Text(
+              //       'NFC is not available',
+              //       style: TextStyle(
+              //         color: Theme
+              //             .of(context)
+              //             .primaryColorLight,
+              //       ),
+              //     )),
             ),
           ],
         ),

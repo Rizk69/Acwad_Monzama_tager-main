@@ -23,7 +23,7 @@ class BeneficaryInvoices extends StatelessWidget {
       child: BlocConsumer<ReportsCubit, ReportsState>(
         listener: (context, state) {},
         builder: (context, state) {
-          AllInvoiceBeneficaryModel? currentData;
+          InvoiceBeneficary? currentData;
 
           if (state is GetAllBeneficaryInvoicesSuccessState) {
             currentData = state.invoiceBeneficary;
@@ -32,7 +32,7 @@ class BeneficaryInvoices extends StatelessWidget {
             currentData = state.invoiceBeneficary;
           }
 
-          bool hasData = currentData != null && currentData.invoice != null && currentData.invoice!.isNotEmpty;
+          bool hasData = currentData != null && currentData.data != null && currentData.data!.isNotEmpty;
 
           return Container(
             color: Theme.of(context).primaryColorDark,
@@ -71,9 +71,9 @@ class BeneficaryInvoices extends StatelessWidget {
                           ? Expanded(
                         child: ListView.builder(
                           padding: const EdgeInsets.all(16),
-                          itemCount: currentData.invoice!.length,
+                          itemCount: currentData.data!.length,
                           itemBuilder: (BuildContext context, int index) {
-                            final item = currentData!.invoice![index];
+                            final item = currentData!.data![index];
                             return Padding(
                               padding: const EdgeInsets.only(bottom: 15),
                               child: GestureDetector(

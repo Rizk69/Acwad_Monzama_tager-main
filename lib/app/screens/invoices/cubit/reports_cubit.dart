@@ -152,23 +152,27 @@ class ReportsCubit extends Cubit<ReportsState> {
     try {
       emit(GetAllInvoiceBeneficaryLoadingState());
 
-      var allBeneficarySystemUrl = Uri.parse(ApiHelper.getAllBeneficary);
+      bool isConnected = await ApiHelper().connectedToInternet();
 
-      Map<String, String> headers = {'Accept': 'application/json'};
+      if (isConnected) {
+        var allBeneficarySystemUrl = Uri.parse(ApiHelper.getAllBeneficary);
 
-      var response = await http.get(allBeneficarySystemUrl, headers: headers);
-      print(response.statusCode);
+        Map<String, String> headers = {'Accept': 'application/json'};
 
-      if (response.statusCode == 200) {
-        var body = jsonDecode(response.body);
-        allInvoiceBeneficary = InvoiceBeneficary.fromJson(body);
-        emit(GetAllInvoicesSuccessState(allInvoiceBeneficary));
-      } else {
-        emit(GetAllInvoicesErrorState());
-      }
+        var response = await http.get(allBeneficarySystemUrl, headers: headers);
+        print(response.statusCode);
+
+        if (response.statusCode == 200) {
+          var body = jsonDecode(response.body);
+          allInvoiceBeneficary = InvoiceBeneficary.fromJson(body);
+          emit(GetAllInvoicesSuccessState(allInvoiceBeneficary));
+        } else {
+          emit(GetAllInvoicesErrorState("Error Data"));
+        }
+      } else {}
     } catch (e) {
       print(e.toString());
-      emit(GetAllInvoicesErrorState());
+      emit(GetAllInvoicesErrorState(e.toString()));
     }
   }
 
@@ -243,23 +247,24 @@ class ReportsCubit extends Cubit<ReportsState> {
         dailyInvoiceBeneficary = InvoiceBeneficary.fromJson(body);
         emit(GetDailyInvoicesSuccessState());
       } else {
-        emit(GetDailyInvoicesErrorState());
+        emit(GetDailyInvoicesErrorState("error "));
       }
     } catch (e) {
-      emit(GetDailyInvoicesErrorState());
+      emit(GetDailyInvoicesErrorState(e.toString()));
     }
   }
 
-
-  late AllInvoiceBeneficaryModel allBeneficaryInvoices;
+  late InvoiceBeneficary allBeneficaryInvoices;
 
   Future<void> getAllBeneficaryInvoices({required int beneficaryId}) async {
     try {
-      emit(GetAllBeneficaryInvoicesLoadingState()); // Emit a loading state before making the API call
+      emit(
+          GetAllBeneficaryInvoicesLoadingState()); // Emit a loading state before making the API call
 
       print(beneficaryId);
 
-      var loginURL = Uri.parse("${ApiHelper.invoiceBeneficaryDetails}$beneficaryId");
+      var loginURL =
+          Uri.parse("${ApiHelper.invoiceBeneficaryDetails}$beneficaryId");
 
       Map<String, String> headers = {'Accept': 'application/json'};
 
@@ -268,8 +273,8 @@ class ReportsCubit extends Cubit<ReportsState> {
       var body = jsonDecode(response.body);
       print(body);
 
-      if (body["invoice"] != null) {
-        allBeneficaryInvoices = AllInvoiceBeneficaryModel.fromJson(body);
+      if (body["data"] != null) {
+        allBeneficaryInvoices = InvoiceBeneficary.fromJson(body);
         emit(GetAllBeneficaryInvoicesSuccessState(allBeneficaryInvoices));
       } else {
         print("لا توجد فواتير متاحة".toString());
@@ -284,45 +289,47 @@ class ReportsCubit extends Cubit<ReportsState> {
   void searchAllInvoiceBeneficaryInvoiceNumber(String query) async {
     emit(SearchBeneficaryAllInvoiceLoadingState());
     try {
-      AllInvoiceBeneficaryModel originalData = allBeneficaryInvoices;
+      InvoiceBeneficary originalData = allBeneficaryInvoices;
 
       if (query.isEmpty) {
         emit(SearchBeneficaryAllInvoiceSuccessState(originalData));
         return;
       }
 
-      final filteredData = originalData.invoice?.where((invoice) {
-        final invoiceNo = invoice.invoiceNo;
-        final name = invoice.fullName;
-        final cash_Category = invoice.cashOrCategory;
-        final vendor = invoice.vendorName;
+      final filteredData = originalData.data?.where((invoice) {
+            final invoiceNo = invoice.invoiceNo;
+            final name = invoice.fullName;
+            final cash_Category = invoice.cashOrCategory;
+            final vendor = invoice.vendorName;
 
-        if (invoiceNo != null &&
-            invoiceNo.toLowerCase().contains(query.toLowerCase())) {
-          return true;
-        }
+            if (invoiceNo != null &&
+                invoiceNo.toLowerCase().contains(query.toLowerCase())) {
+              return true;
+            }
 
-        if (name != null &&
-            name.toLowerCase().contains(query.toLowerCase())) {
-          return true;
-        }
-        if (cash_Category != null &&
-            cash_Category.toLowerCase().contains(query.toLowerCase())) {
-          return true;
-        }
-        if (vendor != null &&
-            vendor.toLowerCase().contains(query.toLowerCase())) {
-          return true;
-        }
-        return false;
-      }).toList() ??
+            if (name != null &&
+                name.toLowerCase().contains(query.toLowerCase())) {
+              return true;
+            }
+            if (cash_Category != null &&
+                cash_Category.toLowerCase().contains(query.toLowerCase())) {
+              return true;
+            }
+            if (vendor != null &&
+                vendor.toLowerCase().contains(query.toLowerCase())) {
+              return true;
+            }
+            return false;
+          }).toList() ??
           [];
 
       if (filteredData.isNotEmpty) {
-        final resultModel = AllInvoiceBeneficaryModel(message: "نتائج البحث",invoice: filteredData);
+        final resultModel = InvoiceBeneficary(
+            message: "نتائج البحث", data: filteredData);
         emit(SearchBeneficaryAllInvoiceSuccessState(resultModel));
       } else {
-        emit(SearchBeneficaryAllInvoiceErrorState("لم يتم العثور على فواتير مطابقة"));
+        emit(SearchBeneficaryAllInvoiceErrorState(
+            "لم يتم العثور على فواتير مطابقة"));
       }
     } catch (e) {
       emit(SearchBeneficaryAllInvoiceErrorState(e.toString()));

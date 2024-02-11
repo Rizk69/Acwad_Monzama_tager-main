@@ -308,8 +308,6 @@ class AddInvoice extends StatelessWidget {
                                                           InputDecoration(
                                                         border:
                                                             OutlineInputBorder(),
-                                                        labelText:
-                                                            'Enter Count',
                                                       ),
                                                     ),
                                                   ),
@@ -350,7 +348,7 @@ class AddInvoice extends StatelessWidget {
                                                   .format(now);
                                           NfcDataCubit.get(context)
                                               .convertScannedItemsToProductsBody(
-                                              context: context,
+                                                  context: context,
                                                   paidmoney: int.parse(
                                                       NfcDataCubit.get(context)
                                                           .calculateTotalPrice()
