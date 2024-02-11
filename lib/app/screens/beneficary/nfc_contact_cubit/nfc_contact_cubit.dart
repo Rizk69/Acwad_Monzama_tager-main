@@ -38,9 +38,10 @@ class NfcDataCubit extends Cubit<NfcDataState> {
     emit(AddProductSuccess());
   }
 
-  void removeProduct(int index) {
+  void removeProduct(int index, Product product) {
     emit(RemoveProductLoading());
-    scannedItems.removeAt(index);
+    scannedItemsMap.remove(product.id);
+    scannedItems.remove(product);
     emit(RemoveProductSuccess());
   }
 
@@ -184,13 +185,15 @@ class NfcDataCubit extends Cubit<NfcDataState> {
 
     var cashURL = Uri.parse(
         "${ApiHelper.setInvoiceBeneficary}?PaidBeneficaryId=$paidBeneficaryId&vendorId=$vendorId&beneficaryId=$beneficaryId&date=$date&paidmoney=$paidMoney");
-
+    print(
+        "${ApiHelper.setInvoiceBeneficary}?PaidBeneficaryId=$paidBeneficaryId&vendorId=$vendorId&beneficaryId=$beneficaryId&date=$date&paidmoney=$paidMoney");
     Map<String, String> headers = {'Accept': 'application/json'};
 
     await http.post(cashURL, headers: headers).then((value) {
       var body = jsonDecode(value.body);
       cashInvoice = Invoice.fromJson(body);
-      print(cashInvoice?.message);
+      print("][[[${cashInvoice?.message}");
+
       if (cashInvoice?.message == 'Success') {
         Navigator.push(
           context,
@@ -203,6 +206,7 @@ class NfcDataCubit extends Cubit<NfcDataState> {
       // printInvoice(cashInvoice);
     }).catchError((onError) {
       print(onError);
+      print(onError.toString());
       emit(MakeCashErrorState(onError.toString()));
     });
   }

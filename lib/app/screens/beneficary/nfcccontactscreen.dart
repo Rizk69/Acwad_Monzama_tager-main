@@ -332,32 +332,26 @@ class _NfcContactCardScreenState extends State<NfcContactCardScreen> {
           children: [
             imageBackground(context),
             Scaffold(
-              backgroundColor: Theme
-                  .of(context)
-                  .scaffoldBackgroundColor,
-              body:  showPasswordDialog("336F7E86"),
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+              body:
+                  // showPasswordDialog("336F7E86"),
 
-              // isNfcAvailable
-              //     ?
-              // Center(
-              //   child: SvgPicture.asset(
-              //     'assets/images/nfc_icon.svg',
-              //     color: Theme
-              //         .of(context)
-              //         .primaryColor,
-              //     height: 200,
-              //     width: 200,
-              //   ),
-              // )
-              //     : Center(
-              //     child: Text(
-              //       'NFC is not available',
-              //       style: TextStyle(
-              //         color: Theme
-              //             .of(context)
-              //             .primaryColorLight,
-              //       ),
-              //     )),
+                  isNfcAvailable
+                      ? Center(
+                          child: SvgPicture.asset(
+                            'assets/images/nfc_icon.svg',
+                            color: Theme.of(context).primaryColor,
+                            height: 200,
+                            width: 200,
+                          ),
+                        )
+                      : Center(
+                          child: Text(
+                          'NFC is not available',
+                          style: TextStyle(
+                            color: Theme.of(context).primaryColorLight,
+                          ),
+                        )),
             ),
           ],
         ),

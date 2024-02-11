@@ -173,7 +173,8 @@ class SignInScreenState extends State<SignInScreen> {
                                         ),
                                         hintText: '********',
                                         hintStyle: Styles.textStyleTitle16
-                                            .copyWith(color: Colors.black),
+                                            .copyWith(
+                                                color: Colors.grey.shade600),
                                         focusedBorder: OutlineInputBorder(
                                           borderRadius:
                                               BorderRadius.circular(12.0),

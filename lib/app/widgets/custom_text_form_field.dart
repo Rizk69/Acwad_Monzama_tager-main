@@ -25,7 +25,8 @@ class CustomTextFormField extends StatelessWidget {
       controller: controller,
       decoration: InputDecoration(
         hintText: hintText,
-        hintStyle: Styles.textStyleTitle16.copyWith(color: Colors.black),
+        hintStyle:
+            Styles.textStyleTitle16.copyWith(color: Colors.grey.shade600),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12.0),
         ),
