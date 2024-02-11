@@ -29,7 +29,7 @@ class BeneficaryCubit extends Cubit<BeneficaryState> {
     try {
       var request = http.MultipartRequest('POST', signatureUrl)
         ..headers.addAll({'Accept': 'application/json'})
-        ..files.add(await http.MultipartFile.fromPath('signature', file.path))
+        ..files.add(await http.MultipartFile.fromPath('signing', file.path))
         ..files.add(await http.MultipartFile.fromPath('image', img.path));
 
       var response = await request.send();
