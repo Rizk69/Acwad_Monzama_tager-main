@@ -307,7 +307,7 @@ class _InvoiceDetailsState extends State<InvoiceDetails> {
                                   ColorManager.baseYellow),
                             ),
                             onPressed: () {
-                              printInvoice(widget.item);
+                              printInvoice(widget.item, context);
                             },
                             child: const Text(
                               'طباعة',

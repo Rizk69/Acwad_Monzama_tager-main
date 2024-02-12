@@ -192,14 +192,17 @@ class NfcDataCubit extends Cubit<NfcDataState> {
     await http.post(cashURL, headers: headers).then((value) {
       var body = jsonDecode(value.body);
       cashInvoice = Invoice.fromJson(body);
-      print("][[[${cashInvoice?.message}");
+      print("${cashInvoice?.message}");
 
       if (cashInvoice?.message == 'Success') {
-        Navigator.push(
+        Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(
-              builder: (context) => SignatureScreen(cashInvoice: cashInvoice!)),
+            builder: (context) => SignatureScreen(cashInvoice: cashInvoice!),
+          ),
+          (route) => false,
         );
+
         emit(MakeCashSuccessState(cashInvoice!));
       }
 
@@ -219,7 +222,7 @@ class NfcDataCubit extends Cubit<NfcDataState> {
 
       var paidBeneficaryId =
           Uri.parse("${ApiHelper.getPaidBeneficary}$beneficaryId");
-
+      print("${ApiHelper.getPaidBeneficary}$beneficaryId");
       Map<String, String> headers = {'Accept': 'application/json'};
 
       var response = await http.get(paidBeneficaryId, headers: headers);

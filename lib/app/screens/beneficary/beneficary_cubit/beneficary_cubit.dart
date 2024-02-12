@@ -25,26 +25,30 @@ class BeneficaryCubit extends Cubit<BeneficaryState> {
   }) async {
     var signatureUrl =
         Uri.parse("${ApiHelper.setBeneficarySignature}$invoiceNumber");
+    print(signatureUrl);
 
     try {
       var request = http.MultipartRequest('POST', signatureUrl)
         ..headers.addAll({'Accept': 'application/json'})
-        ..files.add(await http.MultipartFile.fromPath('signing', file.path))
-        ..files.add(await http.MultipartFile.fromPath('image', img.path));
+        ..files.add(await http.MultipartFile.fromPath('signing', file.path));
+
+      if (img.existsSync()) {
+        request.files.add(await http.MultipartFile.fromPath('image', img.path));
+      }
 
       var response = await request.send();
 
       if (response.statusCode == 200) {
-        print('Signature uploaded successfully');
+        print('تم رفع التوقيع بنجاح');
         emit(SendSignatureBeneficarySuccessState());
         printInvoice(beneficaryInvoice);
       } else {
-        print('Failed to upload signature');
-        emit(SendSignatureBeneficaryErrorState('Error uploading signature'));
+        print('فشل في رفع التوقيع');
+        emit(SendSignatureBeneficaryErrorState('خطأ في رفع التوقيع'));
       }
     } catch (e) {
-      print('Error sending signature: $e');
-      emit(SendSignatureBeneficaryErrorState('Error sending signature'));
+      print('خطأ في إرسال التوقيع: $e');
+      emit(SendSignatureBeneficaryErrorState('خطأ في إرسال التوقيع'));
     }
   }
 

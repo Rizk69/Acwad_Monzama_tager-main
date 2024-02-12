@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/material.dart';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/services.dart';
@@ -11,8 +12,12 @@ import 'package:smartcard/app/models/model_keys.dart';
 import 'package:smartcard/main.dart';
 
 import '../utils/common.dart';
+import '../utils/routes_manager.dart';
 
-Future<void> printInvoice(InvoiceBeneficaryData? data) async {
+Future<void> printInvoice(
+    InvoiceBeneficaryData? data, BuildContext context) async {
+  Navigator.pushNamedAndRemoveUntil(
+      context, Routes.homeFormRoute, (route) => false);
   final pw.Document pdf = pw.Document();
 
   // final List<List<dynamic>> tableData = data?.items?.map((item) {
