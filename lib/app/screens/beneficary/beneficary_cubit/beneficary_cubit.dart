@@ -22,6 +22,7 @@ class BeneficaryCubit extends Cubit<BeneficaryState> {
     required File file,
     required File img,
     required Invoice beneficaryInvoice,
+    required BuildContext context,
   }) async {
     var signatureUrl =
         Uri.parse("${ApiHelper.setBeneficarySignature}$invoiceNumber");
@@ -41,7 +42,7 @@ class BeneficaryCubit extends Cubit<BeneficaryState> {
       if (response.statusCode == 200) {
         print('تم رفع التوقيع بنجاح');
         emit(SendSignatureBeneficarySuccessState());
-        printInvoice(beneficaryInvoice);
+        printInvoice(beneficaryInvoice,context);
       } else {
         print('فشل في رفع التوقيع');
         emit(SendSignatureBeneficaryErrorState('خطأ في رفع التوقيع'));

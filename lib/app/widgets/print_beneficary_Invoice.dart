@@ -1,19 +1,17 @@
 import 'dart:io';
-
-import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 import 'package:smartcard/app/models/invoice.dart';
-import 'package:smartcard/app/models/invoice_beneficary.dart';
-import 'package:smartcard/app/models/model_keys.dart';
-import 'package:smartcard/main.dart';
+import 'package:smartcard/app/utils/routes_manager.dart';
 
-import '../utils/common.dart';
+Future<void> printInvoice(Invoice? data ,context) async {
+  Navigator.pushNamedAndRemoveUntil(
+      context, Routes.homeFormRoute, (route) => false);
 
-Future<void> printInvoice(Invoice? data) async {
   final pw.Document pdf = pw.Document();
 
   var arabicFont =

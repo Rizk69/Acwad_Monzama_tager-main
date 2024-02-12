@@ -224,6 +224,7 @@ class _SignatureScreenState extends State<SignatureScreen> {
                                             file: signatureFile,
                                             beneficaryInvoice:
                                                 widget.cashInvoice,
+                                            context: context
                                           );
                                         } else {
                                           showDialog(

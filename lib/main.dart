@@ -17,6 +17,7 @@ void main() async {
   Bloc.observer = MyBlocObserver();
   WidgetsFlutterBinding.ensureInitialized();
   await CashHelper.init();
+  // await DatabaseHelper.instance.database; // Initialize the database
 
 //  await dbHelper.deleteDatabaseFn();
 //   await dbHelper.openDatabaseFn();

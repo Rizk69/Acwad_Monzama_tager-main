@@ -115,7 +115,7 @@ Widget buildInvoiceCard({required InvoiceBeneficary invoice, index , required co
                     SizedBox(height: 2.h,),
                     Center(
                         child: Text(
-                          "المجموع ${invoice.data![index].totalPrice}",
+                          "المجموع ${invoice.data![index].total_price}",
                     style:  TextStyle(
                       color: Theme.of(context).primaryColor,
                       fontWeight: FontWeight.bold,
@@ -272,7 +272,7 @@ Widget buildAllBeneficaryInvoiceCard({required InvoiceBeneficary invoice, index 
                     SizedBox(height: 2.h,),
                     Center(
                         child: Text(
-                          "المجموع ${invoice.data![index].totalPrice}",
+                          "المجموع ${invoice.data![index].total_price}",
                           style:  TextStyle(
                             color: Theme.of(context).primaryColor,
                             fontWeight: FontWeight.bold,

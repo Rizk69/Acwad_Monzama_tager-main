@@ -150,55 +150,85 @@ class ReportsCubit extends Cubit<ReportsState> {
   late InvoiceBeneficary allInvoiceBeneficary;
 
   Future<void> getAllInvoiceBeneficary() async {
-    try {
-      emit(GetAllInvoiceBeneficaryLoadingState());
+    emit(GetAllInvoiceBeneficaryLoadingState());
+    bool isConnected = await ApiHelper().connectedToInternet();
 
-      bool isConnected = await ApiHelper().connectedToInternet();
-
-      if (isConnected) {
+    if (isConnected) {
+      try {
         var allBeneficarySystemUrl = Uri.parse(ApiHelper.getAllBeneficary);
         Map<String, String> headers = {'Accept': 'application/json'};
-
         var response = await http.get(allBeneficarySystemUrl, headers: headers);
-        print(response.statusCode);
 
         if (response.statusCode == 200) {
           var body = jsonDecode(response.body);
           allInvoiceBeneficary = InvoiceBeneficary.fromJson(body);
-          print('////////////////');
-          await storeInvoiceInDatabase(
-              allInvoiceBeneficary); // Ensure that this method is awaited
-          emit(GetAllInvoicesSuccessState(allInvoiceBeneficary));
+
+          // Save to SQLite
+          await saveDataToSQLite(allInvoiceBeneficary);
         } else {
           emit(GetAllInvoicesErrorState("Error Data"));
         }
-      } else {
-        // Handle no internet connection case
+      } catch (e) {
+        emit(GetAllInvoicesErrorState(e.toString()));
       }
-    } catch (e) {
-      print(e.toString());
-      emit(GetAllInvoicesErrorState(e.toString()));
+    } else {
+      // Fetch from SQLite
+      try {
+        var invoiceBeneficaryFromDB = await fetchDataFromSQLite();
+        emit(GetAllInvoicesSuccessState(invoiceBeneficaryFromDB));
+      } catch (e) {
+        emit(GetAllInvoicesErrorState(e.toString()));
+      }
     }
   }
 
-  Future<void> storeInvoiceInDatabase(
-      InvoiceBeneficary invoiceBeneficary) async {
-    try {
-      DatabaseHelper helper = DatabaseHelper.instance;
-      await helper.deleteAllInvoiceBeneficaries();
-      for (var invoiceData in invoiceBeneficary.data!) {
-        // Assuming `insertInvoiceBeneficary` and `insertProduct` are methods in your DatabaseHelper
-        await helper.insertInvoiceBeneficary(invoiceData.toJson());
-        if (invoiceData.product != null) {
-          for (var product in invoiceData.product!) {
-            await helper.insertProduct(product.toJson());
-          }
-        }
+  Future<void> saveDataToSQLite(InvoiceBeneficary data) async {
+    final db = await DatabaseHelper.instance.database;
+
+    for (var beneficaryData in data.data!) {
+      await db.insert('InvoiceBeneficaryData', {
+        'invoiceNo': beneficaryData.invoiceNo,
+        'date': beneficaryData.date,
+        'total_price': beneficaryData.total_price.toString(),
+        'accountId': beneficaryData.accountId,
+        'fullName': beneficaryData.fullName,
+        'vendorName': beneficaryData.vendorName,
+        'cashOrCategory': beneficaryData.cashOrCategory,
+      });
+      for (var product in beneficaryData.product!) {
+        await db.insert('Product', {
+          'invoiceNo': beneficaryData.invoiceNo,
+          'name': product.name,
+          'price': product.price,
+          'barcode': product.barcode,
+          'count': product.count,
+          'category': product.category,
+        });
       }
-    } catch (e) {
-      print(e.toString());
+
+      emit(GetAllInvoicesSuccessState(allInvoiceBeneficary));
+
+
     }
   }
+  Future<InvoiceBeneficary> fetchDataFromSQLite() async {
+    final db = await DatabaseHelper.instance.database;
+    List<Map> beneficaryDatas = await db.query('InvoiceBeneficaryData');
+    List<InvoiceBeneficaryData> invoiceBeneficaryDataList = [];
+
+    for (var beneficaryData in beneficaryDatas) {
+      List<Map> products = await db.query('Product', where: 'invoiceNo = ?', whereArgs: [beneficaryData['invoiceNo']]);
+      List<Product> productList = products.map((product) => Product.fromJson(product.cast<String, dynamic>())).toList();
+
+      var beneficaryDataObj = InvoiceBeneficaryData.fromJson(beneficaryData.cast<String, dynamic>());
+      beneficaryDataObj.product = productList;
+      invoiceBeneficaryDataList.add(beneficaryDataObj);
+    }
+
+    return InvoiceBeneficary(data: invoiceBeneficaryDataList);
+  }
+
+
 
   void searchInvoiceBeneficaryNumber(String query) async {
     emit(SearchInvoiceBeneficaryLoadingState());

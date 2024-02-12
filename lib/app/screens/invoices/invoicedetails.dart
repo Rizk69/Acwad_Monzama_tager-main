@@ -279,7 +279,7 @@ class _InvoiceDetailsState extends State<InvoiceDetails> {
                                     ],
                                   ),
                                 Text(
-                                  "مجموع الفاتورة  :   ${widget.item?.totalPrice ?? 0}",
+                                  "مجموع الفاتورة  :   ${widget.item?.total_price ?? 0}",
                                   style: TextStyle(
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold,

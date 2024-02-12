@@ -134,7 +134,7 @@ Future<void> printInvoice(
             pw.Directionality(
                 textDirection: pw.TextDirection.rtl,
                 child: pw.Center(
-                    child: pw.Text("${data?.totalPrice ?? 0}",
+                    child: pw.Text("${data?.total_price ?? 0}",
                         style: pw.TextStyle(
                           fontSize: 13,
                         )))),

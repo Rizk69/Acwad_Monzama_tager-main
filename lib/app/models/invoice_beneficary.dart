@@ -31,7 +31,7 @@ class InvoiceBeneficary {
 class InvoiceBeneficaryData {
   String? invoiceNo;
   String? date;
-  int? totalPrice;
+  int? total_price;
   int? accountId;
   String? fullName;
   String? cashOrCategory;
@@ -41,7 +41,7 @@ class InvoiceBeneficaryData {
   InvoiceBeneficaryData({
     this.invoiceNo,
     this.date,
-    this.totalPrice,
+    this.total_price,
     this.accountId,
     this.fullName,
     this.vendorName,
@@ -52,7 +52,7 @@ class InvoiceBeneficaryData {
   InvoiceBeneficaryData.fromJson(Map<String, dynamic> json) {
     invoiceNo = json['invoiceNo'];
     date = json['date'];
-    totalPrice = json['total_price'];
+    total_price = json['total_price'];
     accountId = json['accountId'];
     fullName = json['fullName'];
     vendorName = json['vendorName'];
@@ -69,7 +69,7 @@ class InvoiceBeneficaryData {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['invoiceNo'] = invoiceNo;
     data['date'] = date;
-    data['total_price'] = totalPrice;
+    data['total_price'] = total_price;
     data['accountId'] = accountId;
     data['fullName'] = fullName;
     data['vendorName'] = vendorName;
