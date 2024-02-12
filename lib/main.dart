@@ -11,7 +11,7 @@ import 'app/utils/helper/database_helper.dart';
 
 late SharedPreferences sharedPreferences;
 AppStore appStore = AppStore();
-final dbHelper = DatabaseHelper();
+// final dbHelper = DatabaseHelper();
 
 void main() async {
   Bloc.observer = MyBlocObserver();
@@ -19,7 +19,7 @@ void main() async {
   await CashHelper.init();
 
 //  await dbHelper.deleteDatabaseFn();
-  await dbHelper.openDatabaseFn();
+//   await dbHelper.openDatabaseFn();
   await EasyLocalization.ensureInitialized();
   await initialize();
   runApp(EasyLocalization(

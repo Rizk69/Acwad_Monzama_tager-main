@@ -3,7 +3,6 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 
 import '../../main.dart';
-import '../utils/helper/database_helper.dart';
 
 class MyConnectivityStatefulWidget extends StatefulWidget {
   @override
@@ -19,7 +18,7 @@ class _MyConnectivityStatefulWidgetState
   @override
   void initState() {
     super.initState();
-    checkConnectivity(); // Call the method to check connectivity
+    checkConnectivity();
   }
 
   Future<void> checkConnectivity() async {
@@ -34,7 +33,7 @@ class _MyConnectivityStatefulWidgetState
         if (connectivityResult == ConnectivityResult.wifi) {
           print("hon");
           print("Connected to WiFi!");
-          await dbHelper.getAllInvoices();
+          // await dbHelper.getAllInvoices();
         } else if (connectivityResult == ConnectivityResult.mobile) {
           print("Connected to Mobile Data!");
         } else {

@@ -26,8 +26,8 @@ Future<void> saveUserData(VendorModel data) async {
 Future<void> logout(BuildContext context) async {
   appStore.setLoading(true);
   await clearPreferences();
-  await dbHelper.deleteDatabaseFn();
-  await dbHelper.openDatabaseFn();
+  // await dbHelper.deleteDatabaseFn();
+  // await dbHelper.openDatabaseFn();
   appStore.setLoading(false);
 }
 

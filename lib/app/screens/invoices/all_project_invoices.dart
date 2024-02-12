@@ -6,11 +6,12 @@ import 'package:smartcard/app/models/invoice_beneficary.dart';
 import 'package:smartcard/app/screens/invoices/cubit/reports_cubit.dart';
 import 'package:smartcard/app/widgets/build_invoice_card.dart';
 import 'package:smartcard/app/widgets/default_appbar.dart';
-import '../../../main.dart';
 import '../../widgets/backgrond_image.dart';
 import 'invoicedetails.dart';
 
 class AllInvoicesView extends StatelessWidget {
+  const AllInvoicesView({super.key});
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -66,43 +67,43 @@ class AllInvoicesView extends StatelessWidget {
                         state is GetAllInvoiceBeneficaryLoadingState
                             ? const Center(child: CircularProgressIndicator())
                             : hasData
-                                ? Expanded(
-                                    child: ListView.builder(
-                                      padding: const EdgeInsets.all(16),
-                                      itemCount: currentData.data!.length,
-                                      itemBuilder:
-                                          (BuildContext context, int index) {
-                                        final item = currentData!.data![index];
-                                        return Padding(
-                                          padding:
-                                              const EdgeInsets.only(bottom: 15),
-                                          child: GestureDetector(
-                                            onTap: () {
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        InvoiceDetails(
-                                                            item: item)),
-                                              );
-                                            },
-                                            child: buildInvoiceCard(
-                                                invoice: currentData,
-                                                index: index,
-                                                context: context),
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                  )
-                                : Expanded(
-                                    child: Center(
-                                      child: Lottie.asset(
-                                        'assets/images/empty_invoice.json',
-                                        fit: BoxFit.fill,
-                                      ),
-                                    ),
-                                  ),
+                            ? Expanded(
+                          child: ListView.builder(
+                            padding: const EdgeInsets.all(16),
+                            itemCount: currentData.data!.length,
+                            itemBuilder:
+                                (BuildContext context, int index) {
+                              final item = currentData!.data![index];
+                              return Padding(
+                                padding:
+                                const EdgeInsets.only(bottom: 15),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              InvoiceDetails(
+                                                  item: item)),
+                                    );
+                                  },
+                                  child: buildInvoiceCard(
+                                      invoice: currentData,
+                                      index: index,
+                                      context: context),
+                                ),
+                              );
+                            },
+                          ),
+                        )
+                            : Expanded(
+                          child: Center(
+                            child: Lottie.asset(
+                              'assets/images/empty_invoice.json',
+                              fit: BoxFit.fill,
+                            ),
+                          ),
+                        ),
                       ],
                     )),
               ],

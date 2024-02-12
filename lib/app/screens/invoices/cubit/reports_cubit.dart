@@ -5,6 +5,7 @@ import 'package:smartcard/app/models/invoice_beneficary.dart';
 import 'package:smartcard/app/network/api_end_points.dart';
 
 import '../../../models/CategoriesModel.dart';
+import '../../../utils/helper/database_helper.dart';
 
 part 'reports_state.dart';
 
@@ -156,7 +157,6 @@ class ReportsCubit extends Cubit<ReportsState> {
 
       if (isConnected) {
         var allBeneficarySystemUrl = Uri.parse(ApiHelper.getAllBeneficary);
-
         Map<String, String> headers = {'Accept': 'application/json'};
 
         var response = await http.get(allBeneficarySystemUrl, headers: headers);
@@ -165,14 +165,38 @@ class ReportsCubit extends Cubit<ReportsState> {
         if (response.statusCode == 200) {
           var body = jsonDecode(response.body);
           allInvoiceBeneficary = InvoiceBeneficary.fromJson(body);
+          print('////////////////');
+          await storeInvoiceInDatabase(
+              allInvoiceBeneficary); // Ensure that this method is awaited
           emit(GetAllInvoicesSuccessState(allInvoiceBeneficary));
         } else {
           emit(GetAllInvoicesErrorState("Error Data"));
         }
-      } else {}
+      } else {
+        // Handle no internet connection case
+      }
     } catch (e) {
       print(e.toString());
       emit(GetAllInvoicesErrorState(e.toString()));
+    }
+  }
+
+  Future<void> storeInvoiceInDatabase(
+      InvoiceBeneficary invoiceBeneficary) async {
+    try {
+      DatabaseHelper helper = DatabaseHelper.instance;
+      await helper.deleteAllInvoiceBeneficaries();
+      for (var invoiceData in invoiceBeneficary.data!) {
+        // Assuming `insertInvoiceBeneficary` and `insertProduct` are methods in your DatabaseHelper
+        await helper.insertInvoiceBeneficary(invoiceData.toJson());
+        if (invoiceData.product != null) {
+          for (var product in invoiceData.product!) {
+            await helper.insertProduct(product.toJson());
+          }
+        }
+      }
+    } catch (e) {
+      print(e.toString());
     }
   }
 
@@ -324,8 +348,8 @@ class ReportsCubit extends Cubit<ReportsState> {
           [];
 
       if (filteredData.isNotEmpty) {
-        final resultModel = InvoiceBeneficary(
-            message: "نتائج البحث", data: filteredData);
+        final resultModel =
+            InvoiceBeneficary(message: "نتائج البحث", data: filteredData);
         emit(SearchBeneficaryAllInvoiceSuccessState(resultModel));
       } else {
         emit(SearchBeneficaryAllInvoiceErrorState(
