@@ -127,13 +127,13 @@ class _NfcContactCardScreenState extends State<NfcContactCardScreen> {
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'cardID': cardID, 'cardpassword': password}),
       );
+      Map<String, dynamic> responseBody = jsonDecode(response.body);
+      BeneficaryNfcModel beneficaryNfcModel = BeneficaryNfcModel.fromJson(responseBody);
+
+      print(responseBody);
 
       if (response.statusCode == 200) {
-        Map<String, dynamic> responseBody = jsonDecode(response.body);
-        BeneficaryNfcModel beneficaryNfcModel =
-            BeneficaryNfcModel.fromJson(responseBody);
         ScaffoldMessenger.of(context).hideCurrentSnackBar();
-
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
@@ -143,16 +143,14 @@ class _NfcContactCardScreenState extends State<NfcContactCardScreen> {
             ),
           ),
         );
-
         return true;
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Server request failed'),
+            content: Text(beneficaryNfcModel.message??"Server Error"),
             backgroundColor: Colors.red,
           ),
         );
-        print('Server request failed with status code: ${response.statusCode}');
         return false;
       }
     } catch (e) {

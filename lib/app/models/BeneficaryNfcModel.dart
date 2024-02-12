@@ -1,10 +1,13 @@
 class BeneficaryNfcModel {
   Data? data;
+  String? message;
 
   BeneficaryNfcModel({this.data});
 
   BeneficaryNfcModel.fromJson(Map<String, dynamic> json) {
     data = json['data'] != null ? new Data.fromJson(json['data']) : null;
+    message = json['message'];
+
   }
 
   Map<String, dynamic> toJson() {
@@ -12,6 +15,8 @@ class BeneficaryNfcModel {
     if (this.data != null) {
       data['data'] = this.data!.toJson();
     }
+    data['message'] = message;
+
     return data;
   }
 }
