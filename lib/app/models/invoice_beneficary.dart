@@ -52,7 +52,11 @@ class InvoiceBeneficaryData {
   InvoiceBeneficaryData.fromJson(Map<String, dynamic> json) {
     invoiceNo = json['invoiceNo'];
     date = json['date'];
-    total_price = json['total_price'];
+    if (json['total_price'] is String) {
+      total_price = int.tryParse(json['total_price']);
+    } else {
+      total_price = json['total_price'];
+    }
     accountId = json['accountId'];
     fullName = json['fullName'];
     vendorName = json['vendorName'];

@@ -14,35 +14,280 @@ class ReportsCubit extends Cubit<ReportsState> {
 
   ReportsCubit() : super(InvoicesInitial());
 
-  late InvoiceBeneficary invoiceBeneficary;
+  // Future<bool> connectedToInternet() async {
+  //   if (isConnected) {
+  //     return false; // No internet connection
+  //   } else {
+  //     return true; // Internet connection available
+  //   }
+  // }
 
-  Future<void> getInvoiceBeneficary({required int vendorId}) async {
-    try {
-      emit(
-          GetInvoicesLoadingState()); // Emit a loading state before making the API call
+  late InvoiceBeneficary allInvoiceBeneficary;
 
-      print(vendorId);
+  Future<void> getAllInvoiceBeneficary() async {
+    emit(GetAllInvoiceBeneficaryLoadingState());
+    bool isConnected = await ApiHelper().connectedToInternet();
 
-      var loginURL = Uri.parse("${ApiHelper.invoiceBeneficary}$vendorId");
+    if (isConnected) {
+      try {
+        var allBeneficarySystemUrl = Uri.parse(ApiHelper.getAllBeneficary);
+        Map<String, String> headers = {'Accept': 'application/json'};
+        var response = await http.get(allBeneficarySystemUrl, headers: headers);
 
-      Map<String, String> headers = {'Accept': 'application/json'};
+        if (response.statusCode == 200) {
+          var body = jsonDecode(response.body);
+          allInvoiceBeneficary = InvoiceBeneficary.fromJson(body);
 
-      var response = await http.get(loginURL, headers: headers);
-
-      var body = jsonDecode(response.body);
-
-      if (body["data"] != null) {
-        invoiceBeneficary = InvoiceBeneficary.fromJson(body);
-        emit(GetInvoicesSuccessState(invoiceBeneficary));
-      } else {
-        emit(GetInvoicesErrorState("لا توجد فواتير متاحة"));
+          // Save to SQLite
+          await saveDataToSQLite(allInvoiceBeneficary);
+        } else {
+          emit(GetAllInvoicesErrorState("Error Data"));
+        }
+      } catch (e) {
+        emit(GetAllInvoicesErrorState(e.toString()));
       }
-    } catch (e) {
-      print(e.toString());
-      emit(GetInvoicesErrorState(e.toString()));
+    } else {
+      // Fetch from SQLite
+      try {
+        var invoiceBeneficaryFromDB = await fetchDataFromSQLite();
+        emit(GetAllInvoicesSuccessState(invoiceBeneficaryFromDB));
+      } catch (e) {
+        print(e.toString());
+        emit(GetAllInvoicesErrorState(e.toString()));
+      }
     }
   }
 
+  Future<void> saveDataToSQLite(InvoiceBeneficary data) async {
+    final db = await DatabaseHelper.instance.database;
+
+    for (var beneficaryData in data.data!) {
+      await db.insert('AllInvoiceBeneficaryData', {
+        'invoiceNo': beneficaryData.invoiceNo,
+        'date': beneficaryData.date,
+        'total_price': beneficaryData.total_price.toString(),
+        'accountId': beneficaryData.accountId,
+        'fullName': beneficaryData.fullName,
+        'vendorName': beneficaryData.vendorName,
+        'cashOrCategory': beneficaryData.cashOrCategory,
+      });
+      for (var product in beneficaryData.product!) {
+        await db.insert('ProductAllInvoice', {
+          'invoiceNo': beneficaryData.invoiceNo,
+          'name': product.name,
+          'price': product.price,
+          'barcode': product.barcode,
+          'count': product.count,
+          'category': product.category,
+        });
+      }
+
+      emit(GetAllInvoicesSuccessState(allInvoiceBeneficary));
+    }
+  }
+
+  Future<InvoiceBeneficary> fetchDataFromSQLite() async {
+    final db = await DatabaseHelper.instance.database;
+    List<Map> beneficaryDatas = await db.query('AllInvoiceBeneficaryData');
+    List<InvoiceBeneficaryData> invoiceBeneficaryDataList = [];
+
+    for (var beneficaryData in beneficaryDatas) {
+      List<Map> products = await db.query('ProductAllInvoice',
+          where: 'invoiceNo = ?', whereArgs: [beneficaryData['invoiceNo']]);
+      List<Product> productList = products
+          .map((product) => Product.fromJson(product.cast<String, dynamic>()))
+          .toList();
+
+      var beneficaryDataObj = InvoiceBeneficaryData.fromJson(
+          beneficaryData.cast<String, dynamic>());
+      beneficaryDataObj.product = productList;
+      invoiceBeneficaryDataList.add(beneficaryDataObj);
+    }
+
+    return InvoiceBeneficary(data: invoiceBeneficaryDataList);
+  }
+
+  /////////////////////
+  late InvoiceBeneficary invoiceBeneficary;
+
+  Future<void> getInvoiceBeneficary({required int vendorId}) async {
+    bool isConnected = await ApiHelper().connectedToInternet();
+
+    if (isConnected) {
+      try {
+        emit(GetInvoicesLoadingState());
+
+        print(vendorId);
+
+        var loginURL = Uri.parse("${ApiHelper.invoiceBeneficary}$vendorId");
+
+        Map<String, String> headers = {'Accept': 'application/json'};
+
+        var response = await http.get(loginURL, headers: headers);
+
+        var body = jsonDecode(response.body);
+
+        if (body["data"] != null) {
+          invoiceBeneficary = InvoiceBeneficary.fromJson(body);
+          await saveInvoiceBeneficary(invoiceBeneficary);
+
+          // emit(GetInvoicesSuccessState(invoiceBeneficary));
+        } else {
+          emit(GetInvoicesErrorState("لا توجد فواتير متاحة"));
+        }
+      } catch (e) {
+        print(e.toString());
+        emit(GetInvoicesErrorState(e.toString()));
+      }
+    } else {
+      try {
+        var invoiceBeneficaryFromDB = await fetchInvoiceBeneficary();
+        emit(GetInvoicesSuccessState(invoiceBeneficaryFromDB));
+      } catch (e) {
+        print(e.toString());
+        emit(GetInvoicesErrorState(e.toString()));
+      }
+    }
+  }
+
+  Future<void> saveInvoiceBeneficary(InvoiceBeneficary data) async {
+    final db = await DatabaseHelper.instance.database;
+
+    for (var beneficaryData in data.data!) {
+      await db.insert('InvoiceBeneficaryData', {
+        'invoiceNo': beneficaryData.invoiceNo,
+        'date': beneficaryData.date,
+        'total_price': beneficaryData.total_price.toString(),
+        'accountId': beneficaryData.accountId,
+        'fullName': beneficaryData.fullName,
+        'vendorName': beneficaryData.vendorName,
+        'cashOrCategory': beneficaryData.cashOrCategory,
+      });
+      for (var product in beneficaryData.product!) {
+        await db.insert('ProductInvoice', {
+          'invoiceNo': beneficaryData.invoiceNo,
+          'name': product.name,
+          'price': product.price,
+          'barcode': product.barcode,
+          'count': product.count,
+          'category': product.category,
+        });
+      }
+
+      emit(GetInvoicesSuccessState(invoiceBeneficary));
+    }
+  }
+
+  Future<InvoiceBeneficary> fetchInvoiceBeneficary() async {
+    final db = await DatabaseHelper.instance.database;
+    List<Map> beneficaryDatas = await db.query('InvoiceBeneficaryData');
+    List<InvoiceBeneficaryData> invoiceBeneficaryDataList = [];
+
+    for (var beneficaryData in beneficaryDatas) {
+      List<Map> products = await db.query('ProductInvoice',
+          where: 'invoiceNo = ?', whereArgs: [beneficaryData['invoiceNo']]);
+      List<Product> productList = products
+          .map((product) => Product.fromJson(product.cast<String, dynamic>()))
+          .toList();
+
+      var beneficaryDataObj = InvoiceBeneficaryData.fromJson(
+          beneficaryData.cast<String, dynamic>());
+      beneficaryDataObj.product = productList;
+      invoiceBeneficaryDataList.add(beneficaryDataObj);
+    }
+
+    return InvoiceBeneficary(data: invoiceBeneficaryDataList);
+  }
+
+///////////////////////////////
+  late InvoiceBeneficary dailyInvoiceBeneficary;
+
+  Future<void> getDailyInvoiceBeneficary({required int vendorID}) async {
+    bool isConnected = await ApiHelper().connectedToInternet();
+    if (isConnected) {
+      try {
+        emit(GetDailyInvoicesLoadingState());
+
+        var dailyBeneficarySystemUrl =
+            Uri.parse("${ApiHelper.getDailyBeneficary}$vendorID");
+
+        Map<String, String> headers = {'Accept': 'application/json'};
+
+        var response =
+            await http.get(dailyBeneficarySystemUrl, headers: headers);
+        print(response.statusCode);
+
+        if (response.statusCode == 200) {
+          var body = jsonDecode(response.body);
+          dailyInvoiceBeneficary = InvoiceBeneficary.fromJson(body);
+          saveDailyInvoiceBeneficary(dailyInvoiceBeneficary);
+        } else {
+          emit(GetDailyInvoicesErrorState("error "));
+        }
+      } catch (e) {
+        emit(GetDailyInvoicesErrorState(e.toString()));
+      }
+    } else {
+      try {
+        var invoiceBeneficaryFromDB = await fetchDailyInvoiceBeneficary();
+        emit(GetDailyInvoicesSuccessState(invoiceBeneficaryFromDB));
+      } catch (e) {
+        print(e.toString());
+        emit(GetDailyInvoicesErrorState(e.toString()));
+      }
+    }
+  }
+
+  Future<void> saveDailyInvoiceBeneficary(InvoiceBeneficary data) async {
+    final db = await DatabaseHelper.instance.database;
+
+    for (var beneficaryData in data.data!) {
+      await db.insert('DailyInvoiceBeneficaryData', {
+        'invoiceNo': beneficaryData.invoiceNo,
+        'date': beneficaryData.date,
+        'total_price': beneficaryData.total_price.toString(),
+        'accountId': beneficaryData.accountId,
+        'fullName': beneficaryData.fullName,
+        'vendorName': beneficaryData.vendorName,
+        'cashOrCategory': beneficaryData.cashOrCategory,
+      });
+      for (var product in beneficaryData.product!) {
+        await db.insert('ProductDailyInvoice', {
+          'invoiceNo': beneficaryData.invoiceNo,
+          'name': product.name,
+          'price': product.price,
+          'barcode': product.barcode,
+          'count': product.count,
+          'category': product.category,
+        });
+      }
+
+      emit(GetDailyInvoicesSuccessState(dailyInvoiceBeneficary));
+    }
+  }
+
+  Future<InvoiceBeneficary> fetchDailyInvoiceBeneficary() async {
+    final db = await DatabaseHelper.instance.database;
+    List<Map> beneficaryDatas = await db.query('DailyInvoiceBeneficaryData');
+    List<InvoiceBeneficaryData> invoiceBeneficaryDataList = [];
+
+    for (var beneficaryData in beneficaryDatas) {
+      List<Map> products = await db.query('ProductDailyInvoice',
+          where: 'invoiceNo = ?', whereArgs: [beneficaryData['invoiceNo']]);
+      List<Product> productList = products
+          .map((product) => Product.fromJson(product.cast<String, dynamic>()))
+          .toList();
+
+      var beneficaryDataObj = InvoiceBeneficaryData.fromJson(
+          beneficaryData.cast<String, dynamic>());
+      beneficaryDataObj.product = productList;
+      invoiceBeneficaryDataList.add(beneficaryDataObj);
+    }
+
+    return InvoiceBeneficary(data: invoiceBeneficaryDataList);
+  }
+
+  ///////////////////////////////
   late CategoriesModel categoriesModel;
 
   Future<void> getCategory({required int vendorId}) async {
@@ -147,89 +392,6 @@ class ReportsCubit extends Cubit<ReportsState> {
     }
   }
 
-  late InvoiceBeneficary allInvoiceBeneficary;
-
-  Future<void> getAllInvoiceBeneficary() async {
-    emit(GetAllInvoiceBeneficaryLoadingState());
-    bool isConnected = await ApiHelper().connectedToInternet();
-
-    if (isConnected) {
-      try {
-        var allBeneficarySystemUrl = Uri.parse(ApiHelper.getAllBeneficary);
-        Map<String, String> headers = {'Accept': 'application/json'};
-        var response = await http.get(allBeneficarySystemUrl, headers: headers);
-
-        if (response.statusCode == 200) {
-          var body = jsonDecode(response.body);
-          allInvoiceBeneficary = InvoiceBeneficary.fromJson(body);
-
-          // Save to SQLite
-          await saveDataToSQLite(allInvoiceBeneficary);
-        } else {
-          emit(GetAllInvoicesErrorState("Error Data"));
-        }
-      } catch (e) {
-        emit(GetAllInvoicesErrorState(e.toString()));
-      }
-    } else {
-      // Fetch from SQLite
-      try {
-        var invoiceBeneficaryFromDB = await fetchDataFromSQLite();
-        emit(GetAllInvoicesSuccessState(invoiceBeneficaryFromDB));
-      } catch (e) {
-        emit(GetAllInvoicesErrorState(e.toString()));
-      }
-    }
-  }
-
-  Future<void> saveDataToSQLite(InvoiceBeneficary data) async {
-    final db = await DatabaseHelper.instance.database;
-
-    for (var beneficaryData in data.data!) {
-      await db.insert('InvoiceBeneficaryData', {
-        'invoiceNo': beneficaryData.invoiceNo,
-        'date': beneficaryData.date,
-        'total_price': beneficaryData.total_price.toString(),
-        'accountId': beneficaryData.accountId,
-        'fullName': beneficaryData.fullName,
-        'vendorName': beneficaryData.vendorName,
-        'cashOrCategory': beneficaryData.cashOrCategory,
-      });
-      for (var product in beneficaryData.product!) {
-        await db.insert('Product', {
-          'invoiceNo': beneficaryData.invoiceNo,
-          'name': product.name,
-          'price': product.price,
-          'barcode': product.barcode,
-          'count': product.count,
-          'category': product.category,
-        });
-      }
-
-      emit(GetAllInvoicesSuccessState(allInvoiceBeneficary));
-
-
-    }
-  }
-  Future<InvoiceBeneficary> fetchDataFromSQLite() async {
-    final db = await DatabaseHelper.instance.database;
-    List<Map> beneficaryDatas = await db.query('InvoiceBeneficaryData');
-    List<InvoiceBeneficaryData> invoiceBeneficaryDataList = [];
-
-    for (var beneficaryData in beneficaryDatas) {
-      List<Map> products = await db.query('Product', where: 'invoiceNo = ?', whereArgs: [beneficaryData['invoiceNo']]);
-      List<Product> productList = products.map((product) => Product.fromJson(product.cast<String, dynamic>())).toList();
-
-      var beneficaryDataObj = InvoiceBeneficaryData.fromJson(beneficaryData.cast<String, dynamic>());
-      beneficaryDataObj.product = productList;
-      invoiceBeneficaryDataList.add(beneficaryDataObj);
-    }
-
-    return InvoiceBeneficary(data: invoiceBeneficaryDataList);
-  }
-
-
-
   void searchInvoiceBeneficaryNumber(String query) async {
     emit(SearchInvoiceBeneficaryLoadingState());
     try {
@@ -279,32 +441,6 @@ class ReportsCubit extends Cubit<ReportsState> {
     } catch (e) {
       print(e.toString());
       emit(SearchAllInvoiceBeneficaryErrorState(e.toString()));
-    }
-  }
-
-  late InvoiceBeneficary dailyInvoiceBeneficary;
-
-  Future<void> getDailyInvoiceBeneficary({required int vendorID}) async {
-    try {
-      emit(GetDailyInvoicesLoadingState());
-
-      var dailyBeneficarySystemUrl =
-          Uri.parse("${ApiHelper.getDailyBeneficary}$vendorID");
-
-      Map<String, String> headers = {'Accept': 'application/json'};
-
-      var response = await http.get(dailyBeneficarySystemUrl, headers: headers);
-      print(response.statusCode);
-
-      if (response.statusCode == 200) {
-        var body = jsonDecode(response.body);
-        dailyInvoiceBeneficary = InvoiceBeneficary.fromJson(body);
-        emit(GetDailyInvoicesSuccessState());
-      } else {
-        emit(GetDailyInvoicesErrorState("error "));
-      }
-    } catch (e) {
-      emit(GetDailyInvoicesErrorState(e.toString()));
     }
   }
 

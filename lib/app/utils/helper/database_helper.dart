@@ -1,4 +1,3 @@
-import 'package:smartcard/app/models/invoice_beneficary.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
@@ -36,7 +35,7 @@ CREATE TABLE InvoiceBeneficaryData (
   ''');
 
     await db.execute('''
-CREATE TABLE Product (
+CREATE TABLE ProductInvoice (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   invoiceNo TEXT,
   name TEXT,
@@ -47,6 +46,56 @@ CREATE TABLE Product (
   FOREIGN KEY (invoiceNo) REFERENCES InvoiceBeneficaryData(invoiceNo)
 );
   ''');
+    await db.execute('''
+CREATE TABLE AllInvoiceBeneficaryData (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  invoiceNo TEXT,
+  date TEXT,
+  total_price TEXT,
+  accountId INTEGER,
+  fullName TEXT,
+  vendorName TEXT,
+  cashOrCategory TEXT
+);
+  ''');
+
+    await db.execute('''
+CREATE TABLE ProductAllInvoice (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  invoiceNo TEXT,
+  name TEXT,
+  price TEXT,
+  barcode TEXT,
+  count INTEGER,
+  category TEXT,
+  FOREIGN KEY (invoiceNo) REFERENCES InvoiceBeneficaryData(invoiceNo)
+);
+  ''');
+    await db.execute('''
+CREATE TABLE DailyInvoiceBeneficaryData (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  invoiceNo TEXT,
+  date TEXT,
+  total_price TEXT,
+  accountId INTEGER,
+  fullName TEXT,
+  vendorName TEXT,
+  cashOrCategory TEXT
+);
+  ''');
+
+//     await db.execute('''
+// CREATE TABLE ProductDailyInvoice (
+//   id INTEGER PRIMARY KEY AUTOINCREMENT,
+//   invoiceNo TEXT,
+//   name TEXT,
+//   price TEXT,
+//   barcode TEXT,
+//   count INTEGER,
+//   category TEXT,
+//   FOREIGN KEY (invoiceNo) REFERENCES InvoiceBeneficaryData(invoiceNo)
+// );
+//   ''');
   }
 
   Future<void> resetDatabase() async {

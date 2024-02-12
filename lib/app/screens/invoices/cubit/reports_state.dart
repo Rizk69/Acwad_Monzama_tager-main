@@ -96,7 +96,11 @@ class GetAllInvoicesErrorState extends ReportsState {
 
 class GetDailyInvoicesLoadingState extends ReportsState {}
 
-class GetDailyInvoicesSuccessState extends ReportsState {}
+class GetDailyInvoicesSuccessState extends ReportsState {
+  final InvoiceBeneficary dailyInvoiceBeneficary;
+
+  GetDailyInvoicesSuccessState(this.dailyInvoiceBeneficary);
+}
 
 class GetDailyInvoicesErrorState extends ReportsState {
   final String error;
