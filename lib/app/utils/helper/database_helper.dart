@@ -71,31 +71,43 @@ CREATE TABLE ProductAllInvoice (
   FOREIGN KEY (invoiceNo) REFERENCES InvoiceBeneficaryData(invoiceNo)
 );
   ''');
-    await db.execute('''
-CREATE TABLE DailyInvoiceBeneficaryData (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  invoiceNo TEXT,
-  date TEXT,
-  total_price TEXT,
-  accountId INTEGER,
-  fullName TEXT,
-  vendorName TEXT,
-  cashOrCategory TEXT
-);
-  ''');
 
-//     await db.execute('''
-// CREATE TABLE ProductDailyInvoice (
-//   id INTEGER PRIMARY KEY AUTOINCREMENT,
-//   invoiceNo TEXT,
-//   name TEXT,
-//   price TEXT,
-//   barcode TEXT,
-//   count INTEGER,
-//   category TEXT,
-//   FOREIGN KEY (invoiceNo) REFERENCES InvoiceBeneficaryData(invoiceNo)
-// );
-//   ''');
+    await db.execute('''
+      CREATE TABLE DailyInvoiceBeneficary (
+        id INTEGER PRIMARY KEY,
+        message TEXT,
+        sumCashPaid REAL,
+        sumCategoryPaid REAL
+      )
+    ''');
+
+    await db.execute('''
+      CREATE TABLE DailyInvoiceBeneficaryData (
+        id INTEGER PRIMARY KEY,
+        invoiceNo TEXT,
+        date TEXT,
+        total_price INTEGER,
+        accountId INTEGER,
+        fullName TEXT,
+        cashOrCategory TEXT,
+        vendorName TEXT,
+        invoiceBeneficaryId INTEGER,
+        FOREIGN KEY (invoiceBeneficaryId) REFERENCES InvoiceBeneficary(id)
+      )
+    ''');
+
+    await db.execute('''
+      CREATE TABLE ProductDailyInvoice (
+        id INTEGER PRIMARY KEY,
+        name TEXT,
+        price INTEGER,
+        barcode TEXT,
+        count INTEGER,
+        category TEXT,
+        invoiceBeneficaryDataId INTEGER,
+        FOREIGN KEY (invoiceBeneficaryDataId) REFERENCES InvoiceBeneficaryData(id)
+      )
+    ''');
   }
 
   Future<void> resetDatabase() async {

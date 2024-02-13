@@ -4,6 +4,7 @@ import 'package:smartcard/app/network/app_api.dart';
 import 'package:smartcard/app/screens/auth/login.dart';
 import 'package:smartcard/app/screens/vendor/all_paid_vendor.dart';
 import 'package:smartcard/app/utils/resource/color_manager.dart';
+import '../network/api_end_points.dart';
 import 'routes_manager.dart';
 
 class DrawerData extends StatelessWidget {
@@ -11,6 +12,8 @@ class DrawerData extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool isConnected = ApiHelper.isInternet;
+
     final List<DrawerItem> drawer = [
       DrawerItem('معلوماتي', Icons.account_circle, () {
         Navigator.pushNamed(context, Routes.profileRoute);
@@ -18,21 +21,22 @@ class DrawerData extends StatelessWidget {
       DrawerItem('الفواتير', Icons.message, () {
         Navigator.pushNamed(context, Routes.invoicesRoute);
       }),
-      DrawerItem('تقارير اليومية', Icons.notes, () {
-        Navigator.pushNamed(context, Routes.cashCategory);
-      }),
+      if (isConnected)
+        DrawerItem('تقارير اليومية', Icons.notes, () {
+          Navigator.pushNamed(context, Routes.cashCategory);
+        }),
       DrawerItem('التقارير', Icons.notes, () {
         Navigator.pushNamed(context, Routes.allInvoiceRoute);
       }),
-
-      DrawerItem('تقارير الدفعات ', Icons.loop, () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => PaidProjectsScreen(),
-          ),
-        );
-      }),
+      if (isConnected)
+        DrawerItem('تقارير الدفعات ', Icons.loop, () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => PaidProjectsScreen(),
+            ),
+          );
+        }),
 
       // DrawerItem('تسجيل خروج', Icons.exit_to_app, () async {
       //   await logout(context);
@@ -116,7 +120,7 @@ class DrawerData extends StatelessWidget {
                 child: ElevatedButton(
                   style: ButtonStyle(
                     backgroundColor:
-                        MaterialStateProperty.all<Color>(Colors.transparent),
+                    MaterialStateProperty.all<Color>(Colors.transparent),
                     shape: MaterialStateProperty.all<OutlinedBorder>(
                       RoundedRectangleBorder(
                         side: const BorderSide(
@@ -129,11 +133,11 @@ class DrawerData extends StatelessWidget {
                     elevation: MaterialStateProperty.all<double>(0),
                   ),
                   onPressed: () async {
-                    await logout(context).then((value){
+                    await logout(context).then((value) {
                       Navigator.pushAndRemoveUntil(
                         context,
                         MaterialPageRoute(builder: (context) => SignInScreen()),
-                            (Route<dynamic> route) => false,
+                        (Route<dynamic> route) => false,
                       );
                     });
                   },

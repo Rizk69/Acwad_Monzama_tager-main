@@ -203,38 +203,26 @@ class ReportsCubit extends Cubit<ReportsState> {
   late InvoiceBeneficary dailyInvoiceBeneficary;
 
   Future<void> getDailyInvoiceBeneficary({required int vendorID}) async {
-    bool isConnected = await ApiHelper().connectedToInternet();
-    if (isConnected) {
-      try {
-        emit(GetDailyInvoicesLoadingState());
+    try {
+      emit(GetDailyInvoicesLoadingState());
 
-        var dailyBeneficarySystemUrl =
-            Uri.parse("${ApiHelper.getDailyBeneficary}$vendorID");
+      var dailyBeneficarySystemUrl =
+          Uri.parse("${ApiHelper.getDailyBeneficary}$vendorID");
 
-        Map<String, String> headers = {'Accept': 'application/json'};
+      Map<String, String> headers = {'Accept': 'application/json'};
 
-        var response =
-            await http.get(dailyBeneficarySystemUrl, headers: headers);
-        print(response.statusCode);
+      var response = await http.get(dailyBeneficarySystemUrl, headers: headers);
+      print(response.statusCode);
 
-        if (response.statusCode == 200) {
-          var body = jsonDecode(response.body);
-          dailyInvoiceBeneficary = InvoiceBeneficary.fromJson(body);
-          saveDailyInvoiceBeneficary(dailyInvoiceBeneficary);
-        } else {
-          emit(GetDailyInvoicesErrorState("error "));
-        }
-      } catch (e) {
-        emit(GetDailyInvoicesErrorState(e.toString()));
+      if (response.statusCode == 200) {
+        var body = jsonDecode(response.body);
+        dailyInvoiceBeneficary = InvoiceBeneficary.fromJson(body);
+        emit(GetDailyInvoicesSuccessState());
+      } else {
+        emit(GetDailyInvoicesErrorState("error "));
       }
-    } else {
-      try {
-        var invoiceBeneficaryFromDB = await fetchDailyInvoiceBeneficary();
-        emit(GetDailyInvoicesSuccessState(invoiceBeneficaryFromDB));
-      } catch (e) {
-        print(e.toString());
-        emit(GetDailyInvoicesErrorState(e.toString()));
-      }
+    } catch (e) {
+      emit(GetDailyInvoicesErrorState(e.toString()));
     }
   }
 
@@ -262,7 +250,7 @@ class ReportsCubit extends Cubit<ReportsState> {
         });
       }
 
-      emit(GetDailyInvoicesSuccessState(dailyInvoiceBeneficary));
+      emit(GetDailyInvoicesSuccessState());
     }
   }
 
