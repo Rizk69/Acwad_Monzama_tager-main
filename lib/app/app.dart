@@ -8,7 +8,7 @@ import 'package:smartcard/app/screens/beneficary/nfc_contact_cubit/nfc_contact_c
 import 'package:smartcard/app/utils/resource/constants_manager.dart';
 import 'package:smartcard/app/utils/resource/theme_manger/theme_manager.dart';
 import '../main.dart';
-import 'utils/resource/theme_manger/cubit/theme_cubit.dart';
+import 'utils/resource/theme_manger/cubit/app_cubit.dart';
 import 'utils/routes_manager.dart';
 
 class MyApp extends StatefulWidget {
@@ -56,12 +56,12 @@ class _MyAppState extends State<MyApp> {
         }),
 
         BlocProvider(create: (context) {
-          return ThemeCubit();
+          return AppCubit();
         }),
       ],
       child: ResponsiveSizer(
         builder: (context, orientation, screenType) {
-          return BlocConsumer<ThemeCubit, ThemeState>(
+          return BlocConsumer<AppCubit, ThemeState>(
             listener: (context, state) {
             },
             builder: (context, state) {
@@ -72,7 +72,7 @@ class _MyAppState extends State<MyApp> {
                 debugShowCheckedModeBanner: false,
                 onGenerateRoute: RouteGenerator.getRoute,
                 home: SplashScreen(),
-                themeMode: ThemeCubit
+                themeMode: AppCubit
                     .get(context)
                     .isDark ? ThemeMode.dark : ThemeMode.light,
                 theme: lightTheme,

@@ -25,6 +25,9 @@ class ApiHelper {
   static const setBeneficarySignature = "${baseUrl}api/saveImage/";
 
 
+  static const offline = "${baseUrl}api/getAllData/";
+
+
   static bool isInternet = false ;
   Future<bool> connectedToInternet() async {
     var connectivityResult = await Connectivity().checkConnectivity();

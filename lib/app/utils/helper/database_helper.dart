@@ -1,3 +1,8 @@
+import 'package:smartcard/app/models/CategoriesModel.dart';
+import 'package:smartcard/app/models/benficary_data_model.dart';
+import 'package:smartcard/app/models/invoice_beneficary.dart';
+import 'package:smartcard/app/models/offline_model.dart';
+import 'package:smartcard/app/models/vendor.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
@@ -72,42 +77,55 @@ CREATE TABLE ProductAllInvoice (
 );
   ''');
 
-    await db.execute('''
-      CREATE TABLE DailyInvoiceBeneficary (
-        id INTEGER PRIMARY KEY,
-        message TEXT,
-        sumCashPaid REAL,
-        sumCategoryPaid REAL
-      )
-    ''');
+
 
     await db.execute('''
-      CREATE TABLE DailyInvoiceBeneficaryData (
-        id INTEGER PRIMARY KEY,
-        invoiceNo TEXT,
-        date TEXT,
-        total_price INTEGER,
-        accountId INTEGER,
-        fullName TEXT,
-        cashOrCategory TEXT,
-        vendorName TEXT,
-        invoiceBeneficaryId INTEGER,
-        FOREIGN KEY (invoiceBeneficaryId) REFERENCES InvoiceBeneficary(id)
-      )
-    ''');
+CREATE TABLE OfflineVendorData (
+  id INTEGER PRIMARY KEY,
+  name TEXT,
+  phone TEXT,
+  accountID TEXT,
+  balance REAL,
+  status INTEGER,
+  email TEXT
+);
+''');
+    // Create table for Beneficary
+    await db.execute('''
+CREATE TABLE OfflineBeneficiary (
+  id INTEGER PRIMARY KEY,
+  fullName TEXT,
+  mobile TEXT,
+  balance REAL,
+  cardID TEXT,
+  cardpassword TEXT,
+  nationalID REAL
+);
+''');
 
     await db.execute('''
-      CREATE TABLE ProductDailyInvoice (
-        id INTEGER PRIMARY KEY,
-        name TEXT,
-        price INTEGER,
-        barcode TEXT,
-        count INTEGER,
-        category TEXT,
-        invoiceBeneficaryDataId INTEGER,
-        FOREIGN KEY (invoiceBeneficaryDataId) REFERENCES InvoiceBeneficaryData(id)
-      )
-    ''');
+CREATE TABLE OfflinePaidBeneficiary (
+  id INTEGER PRIMARY KEY,
+  date TEXT,
+  cashOrCategory TEXT,
+  name TEXT,
+  paid_money INTEGER,
+  paidDone INTEGER,
+  type INTEGER,
+  beneficiaryId INTEGER,
+  FOREIGN KEY (beneficiaryId) REFERENCES OfflineBeneficiary(id)
+);
+''');
+
+    await db.execute('''
+CREATE TABLE OfflineCategoriesData (
+  id INTEGER PRIMARY KEY,
+  name TEXT,
+  price REAL,
+  paidBeneficiaryId INTEGER,
+  FOREIGN KEY (paidBeneficiaryId) REFERENCES OfflinePaidBeneficiary(id)
+);
+''');
   }
 
   Future<void> resetDatabase() async {
@@ -121,6 +139,333 @@ CREATE TABLE ProductAllInvoice (
 
     await database; // إعادة فتح القاعدة لإنشائها من جديد
   }
+
+  Future<void> saveInvoiceBeneficary(InvoiceBeneficary data) async {
+    final db = await DatabaseHelper.instance.database;
+
+    for (var beneficaryData in data.data!) {
+      // Check if the record already exists
+      List<Map> existingRecords = await db.query('InvoiceBeneficaryData',
+          where: 'invoiceNo = ?', whereArgs: [beneficaryData.invoiceNo]);
+
+      if (existingRecords.isNotEmpty) {
+        // Update the existing record
+        await db.update(
+            'InvoiceBeneficaryData',
+            {
+              'date': beneficaryData.date,
+              'total_price': beneficaryData.total_price.toString(),
+              'accountId': beneficaryData.accountId,
+              'fullName': beneficaryData.fullName,
+              'vendorName': beneficaryData.vendorName,
+              'cashOrCategory': beneficaryData.cashOrCategory,
+            },
+            where: 'invoiceNo = ?',
+            whereArgs: [beneficaryData.invoiceNo]);
+      } else {
+        // Insert a new record
+        await db.insert('InvoiceBeneficaryData', {
+          'invoiceNo': beneficaryData.invoiceNo,
+          'date': beneficaryData.date,
+          'total_price': beneficaryData.total_price.toString(),
+          'accountId': beneficaryData.accountId,
+          'fullName': beneficaryData.fullName,
+          'vendorName': beneficaryData.vendorName,
+          'cashOrCategory': beneficaryData.cashOrCategory,
+        });
+      }
+
+      // Update or insert products for this invoice
+      for (var product in beneficaryData.product!) {
+        List<Map> existingProductRecords = await db.query('ProductInvoice',
+            where: 'barcode = ? AND invoiceNo = ?',
+            whereArgs: [product.barcode, beneficaryData.invoiceNo]);
+
+        if (existingProductRecords.isNotEmpty) {
+          // Update the existing product record
+          await db.update(
+              'ProductInvoice',
+              {
+                'name': product.name,
+                'price': product.price,
+                'count': product.count,
+                'category': product.category,
+              },
+              where: 'barcode = ? AND invoiceNo = ?',
+              whereArgs: [product.barcode, beneficaryData.invoiceNo]);
+        } else {
+          // Insert a new product record
+          await db.insert('ProductInvoice', {
+            'invoiceNo': beneficaryData.invoiceNo,
+            'name': product.name,
+            'price': product.price,
+            'barcode': product.barcode,
+            'count': product.count,
+            'category': product.category,
+          });
+        }
+      }
+    }
+  }
+  Future<InvoiceBeneficary> fetchInvoiceBeneficary() async {
+    final db = await DatabaseHelper.instance.database;
+    List<Map> beneficaryDatas = await db.query('InvoiceBeneficaryData');
+    List<InvoiceBeneficaryData> invoiceBeneficaryDataList = [];
+
+    for (var beneficaryData in beneficaryDatas) {
+      List<Map> products = await db.query('ProductInvoice',
+          where: 'invoiceNo = ?', whereArgs: [beneficaryData['invoiceNo']]);
+      List<Product> productList = products
+          .map((product) => Product.fromJson(product.cast<String, dynamic>()))
+          .toList();
+
+      var beneficaryDataObj = InvoiceBeneficaryData.fromJson(
+          beneficaryData.cast<String, dynamic>());
+      beneficaryDataObj.product = productList;
+      invoiceBeneficaryDataList.add(beneficaryDataObj);
+    }
+
+    return InvoiceBeneficary(data: invoiceBeneficaryDataList);
+  }
+
+
+  Future<void> saveDataToSQLite(InvoiceBeneficary data) async {
+    final db = await DatabaseHelper.instance.database;
+
+    for (var beneficaryData in data.data!) {
+      // Check if the record already exists
+      List<Map> existingRecords = await db.query('AllInvoiceBeneficaryData',
+          where: 'invoiceNo = ?', whereArgs: [beneficaryData.invoiceNo]);
+
+      if (existingRecords.isNotEmpty) {
+        // Update the existing record
+        await db.update(
+            'AllInvoiceBeneficaryData',
+            {
+              'date': beneficaryData.date,
+              'total_price': beneficaryData.total_price.toString(),
+              'accountId': beneficaryData.accountId,
+              'fullName': beneficaryData.fullName,
+              'vendorName': beneficaryData.vendorName,
+              'cashOrCategory': beneficaryData.cashOrCategory,
+            },
+            where: 'invoiceNo = ?',
+            whereArgs: [beneficaryData.invoiceNo]);
+      } else {
+        // Insert a new record
+        await db.insert('AllInvoiceBeneficaryData', {
+          'invoiceNo': beneficaryData.invoiceNo,
+          'date': beneficaryData.date,
+          'total_price': beneficaryData.total_price.toString(),
+          'accountId': beneficaryData.accountId,
+          'fullName': beneficaryData.fullName,
+          'vendorName': beneficaryData.vendorName,
+          'cashOrCategory': beneficaryData.cashOrCategory,
+        });
+      }
+
+      // Update or insert products for this invoice
+      for (var product in beneficaryData.product!) {
+        List<Map> existingProductRecords = await db.query('ProductAllInvoice',
+            where: 'barcode = ? AND invoiceNo = ?',
+            whereArgs: [product.barcode, beneficaryData.invoiceNo]);
+
+        if (existingProductRecords.isNotEmpty) {
+          // Update the existing product record
+          await db.update(
+              'ProductAllInvoice',
+              {
+                'name': product.name,
+                'price': product.price,
+                'count': product.count,
+                'category': product.category,
+              },
+              where: 'barcode = ? AND invoiceNo = ?',
+              whereArgs: [product.barcode, beneficaryData.invoiceNo]);
+        } else {
+          // Insert a new product record
+          await db.insert('ProductAllInvoice', {
+            'invoiceNo': beneficaryData.invoiceNo,
+            'name': product.name,
+            'price': product.price,
+            'barcode': product.barcode,
+            'count': product.count,
+            'category': product.category,
+          });
+        }
+      }
+    }
+  }
+  Future<InvoiceBeneficary> fetchDataFromSQLite() async {
+    final db = await DatabaseHelper.instance.database;
+    List<Map> beneficaryDatas = await db.query('AllInvoiceBeneficaryData');
+    List<InvoiceBeneficaryData> invoiceBeneficaryDataList = [];
+
+    for (var beneficaryData in beneficaryDatas) {
+      List<Map> products = await db.query('ProductAllInvoice',
+          where: 'invoiceNo = ?', whereArgs: [beneficaryData['invoiceNo']]);
+      List<Product> productList = products
+          .map((product) => Product.fromJson(product.cast<String, dynamic>()))
+          .toList();
+
+      var beneficaryDataObj = InvoiceBeneficaryData.fromJson(
+          beneficaryData.cast<String, dynamic>());
+      beneficaryDataObj.product = productList;
+      invoiceBeneficaryDataList.add(beneficaryDataObj);
+    }
+
+    return InvoiceBeneficary(data: invoiceBeneficaryDataList);
+  }
+
+
+  Future<void> saveOfflineData(OfflineModel data) async {
+    final db = await database;
+
+    // Insert or update vendor data
+    if (data.vendor != null) {
+      var vendorData = {
+        'id': data.vendor!.id,
+        'name': data.vendor!.name,
+        'phone': data.vendor!.phone,
+        'accountID': data.vendor!.accountID,
+        'balance': data.vendor!.balance,
+        'status': data.vendor!.status,
+        'email': data.vendor!.email,
+      };
+
+      List<Map> existingVendorRecords = await db.query(
+        'OfflineVendorData',
+        where: 'id = ?',
+        whereArgs: [data.vendor!.id],
+      );
+
+      if (existingVendorRecords.isNotEmpty) {
+        await db.update(
+          'OfflineVendorData',
+          vendorData,
+          where: 'id = ?',
+          whereArgs: [data.vendor!.id],
+        );
+      } else {
+        await db.insert('OfflineVendorData', vendorData);
+      }
+    }
+
+    // Insert or update beneficiaries and their related data
+    for (var beneficiary in data.beneficiaries ?? []) {
+      List<Map> existingBeneficiaryRecords = await db.query(
+        'OfflineBeneficiary',
+        where: 'id = ?',
+        whereArgs: [beneficiary.id],
+      );
+
+      if (existingBeneficiaryRecords.isNotEmpty) {
+        await db.update(
+          'OfflineBeneficiary',
+          beneficiary.toJson(),
+          where: 'id = ?',
+          whereArgs: [beneficiary.id],
+        );
+      } else {
+        await db.insert('OfflineBeneficiary', beneficiary.toJson());
+      }
+
+      for (var paidBeneficiary in beneficiary.paidBeneficary ?? []) {
+        List<Map> existingPaidBeneficiaryRecords = await db.query(
+          'OfflinePaidBeneficiary',
+          where: 'id = ?',
+          whereArgs: [paidBeneficiary.id],
+        );
+
+        if (existingPaidBeneficiaryRecords.isNotEmpty) {
+          await db.update(
+            'OfflinePaidBeneficiary',
+            {
+              ...paidBeneficiary.toJson(),
+              'beneficiaryId': beneficiary.id,
+            },
+            where: 'id = ?',
+            whereArgs: [paidBeneficiary.id],
+          );
+        } else {
+          await db.insert(
+            'OfflinePaidBeneficiary',
+            {
+              ...paidBeneficiary.toJson(),
+              'beneficiaryId': beneficiary.id,
+            },
+          );
+        }
+
+        for (var category in paidBeneficiary.products ?? []) {
+          List<Map> existingCategoryRecords = await db.query(
+            'OfflineCategoriesData',
+            where: 'id = ?',
+            whereArgs: [category.id],
+          );
+
+          if (existingCategoryRecords.isNotEmpty) {
+            await db.update(
+              'OfflineCategoriesData',
+              {
+                ...category.toJson(),
+                'paidBeneficiaryId': paidBeneficiary.id,
+              },
+              where: 'id = ?',
+              whereArgs: [category.id],
+            );
+          } else {
+            await db.insert(
+              'OfflineCategoriesData',
+              {
+                ...category.toJson(),
+                'paidBeneficiaryId': paidBeneficiary.id,
+              },
+            );
+          }
+        }
+      }
+    }
+  }
+  Future<OfflineModel?> getOfflineDataFromDB() async {
+    final db = await database;
+    List<Map<String, dynamic>> vendorData = await db.query('OfflineVendorData');
+    List<Map<String, dynamic>> beneficiariesData = await db.query('OfflineBeneficiary');
+
+    VendorData? vendor = vendorData.isNotEmpty ? VendorData.fromJson(vendorData.first) : null;
+    List<Beneficiary> beneficiaries = [];
+
+    for (var beneficiaryData in beneficiariesData) {
+      List<Map<String, dynamic>> paidBeneficiariesData = await db.query(
+        'OfflinePaidBeneficiary',
+        where: 'beneficiaryId = ?',
+        whereArgs: [beneficiaryData['id']],
+      );
+
+      List<PaidBeneficaryData> paidBeneficiaries = [];
+
+      for (var paidBeneficiaryData in paidBeneficiariesData) {
+        List<Map<String, dynamic>> categoriesData = await db.query(
+          'OfflineCategoriesData',
+          where: 'paidBeneficiaryId = ?',
+          whereArgs: [paidBeneficiaryData['id']],
+        );
+
+        List<CategoriesData> categories = categoriesData.map((e) => CategoriesData.fromJson(e)).toList();
+        PaidBeneficaryData paidBeneficiary = PaidBeneficaryData.fromJson(paidBeneficiaryData);
+        paidBeneficiary.products = categories;
+        paidBeneficiaries.add(paidBeneficiary);
+      }
+
+      Beneficiary beneficiary = Beneficiary.fromJson(beneficiaryData);
+      beneficiary.paidBeneficary = paidBeneficiaries;
+      beneficiaries.add(beneficiary);
+    }
+
+    return OfflineModel(vendor: vendor, beneficiaries: beneficiaries);
+  }
+
+
 
   Future close() async {
     final db = await instance.database;

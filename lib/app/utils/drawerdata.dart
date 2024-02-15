@@ -21,13 +21,14 @@ class DrawerData extends StatelessWidget {
       DrawerItem('الفواتير', Icons.message, () {
         Navigator.pushNamed(context, Routes.invoicesRoute);
       }),
+
+      DrawerItem('التقارير', Icons.notes, () {
+        Navigator.pushNamed(context, Routes.allInvoiceRoute);
+      }),
       if (isConnected)
         DrawerItem('تقارير اليومية', Icons.notes, () {
           Navigator.pushNamed(context, Routes.cashCategory);
         }),
-      DrawerItem('التقارير', Icons.notes, () {
-        Navigator.pushNamed(context, Routes.allInvoiceRoute);
-      }),
       if (isConnected)
         DrawerItem('تقارير الدفعات ', Icons.loop, () {
           Navigator.push(

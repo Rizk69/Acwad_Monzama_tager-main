@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smartcard/app/screens/beneficary/nfcccontactscreen.dart';
-import 'package:smartcard/app/utils/resource/theme_manger/cubit/theme_cubit.dart';
+import 'package:smartcard/app/utils/resource/theme_manger/cubit/app_cubit.dart';
 import '../../main.dart';
 import '../widgets/MyConnectivityStatefulWidget.dart';
 import '../widgets/backgrond_image.dart';
@@ -99,7 +99,7 @@ class _HomeFormState extends State<HomeForm>
                   ..translate(slide)
                   ..scale(scale),
                 alignment: Alignment.center,
-                child: BlocBuilder<ThemeCubit, ThemeState>(
+                child: BlocBuilder<AppCubit, ThemeState>(
                   builder: (context, state) {
                     return Container(
                       color: Theme.of(context).primaryColor,
@@ -113,8 +113,7 @@ class _HomeFormState extends State<HomeForm>
                                 backgroundColor: Theme.of(context)
                                     .appBarTheme
                                     .backgroundColor,
-                                leading: IconButton(
-                                  onPressed: () => _toggleAnimation(),
+                                leading: IconButton(onPressed: () => _toggleAnimation(),
                                   icon: AnimatedIcon(
                                     color: Theme.of(context).primaryColor,
                                     icon: AnimatedIcons.menu_close,
@@ -124,13 +123,23 @@ class _HomeFormState extends State<HomeForm>
                                 actions: [
                                   IconButton(
                                     onPressed: () {
-                                      ThemeCubit.get(context).changeAppMode();
+                                      AppCubit.get(context).getOfflineData(vendorId: appStore.userId);
+                                    },
+                                    icon: Icon(
+                                      Icons.update,
+                                      color: Theme.of(context).primaryColor,
+                                    ),
+                                  ),
+                                  IconButton(
+                                    onPressed: () {
+                                      AppCubit.get(context).changeAppMode();
                                     },
                                     icon: Icon(
                                       Icons.brightness_4_outlined,
                                       color: Theme.of(context).primaryColor,
                                     ),
                                   ),
+
                                 ],
                               ),
                               body: Container(

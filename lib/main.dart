@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:smartcard/app/network/api_end_points.dart';
 import 'package:smartcard/app/utils/helper/bloc_observer.dart';
 import 'app/store/app_store.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
@@ -17,6 +18,7 @@ void main() async {
   Bloc.observer = MyBlocObserver();
   WidgetsFlutterBinding.ensureInitialized();
   await CashHelper.init();
+  await ApiHelper().connectedToInternet();
   // await DatabaseHelper.instance.database; // Initialize the database
 
 //  await dbHelper.deleteDatabaseFn();

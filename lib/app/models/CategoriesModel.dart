@@ -1,15 +1,15 @@
 class CategoriesModel {
   String? message;
-  List<Categories>? categories;
+  List<CategoriesData>? categories;
 
   CategoriesModel({this.message, this.categories});
 
   CategoriesModel.fromJson(Map<String, dynamic> json) {
     message = json['message'];
     if (json['Categories'] != null) {
-      categories = <Categories>[];
+      categories = <CategoriesData>[];
       json['Categories'].forEach((v) {
-        categories!.add(new Categories.fromJson(v));
+        categories!.add(new CategoriesData.fromJson(v));
       });
     }
   }
@@ -24,14 +24,14 @@ class CategoriesModel {
   }
 }
 
-class Categories {
+class CategoriesData {
   int? id;
   String? name;
-  int? price;
+  num? price;
 
-  Categories({this.id, this.name, this.price});
+  CategoriesData({this.id, this.name, this.price});
 
-  Categories.fromJson(Map<String, dynamic> json) {
+  CategoriesData.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     name = json['name'];
     price = json['price'];

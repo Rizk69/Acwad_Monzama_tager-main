@@ -1,3 +1,5 @@
+import 'package:smartcard/app/models/CategoriesModel.dart';
+
 class PaidBeneficaryInfo {
   List<PaidBeneficaryDataInfo>? date;
 
@@ -20,6 +22,10 @@ class PaidBeneficaryDataInfo {
   int? uprove;
   num? paidMoney;
   num? paidDone;
+  num? name;
+  CategoriesData? data;
+  List<CategoriesData>? categories;
+
 
   PaidBeneficaryDataInfo(
       {this.id,
@@ -34,6 +40,13 @@ class PaidBeneficaryDataInfo {
     cashOrCategory = json['cashOrCategory'];
     uprove = json['uprove'];
     paidMoney = json['paid_money'];
-    paidDone = json['fullName'];
+    date = json['date'];
+    name = json['name'];
+    if (json['products'] != null) {
+      categories = <CategoriesData>[];
+      json['products'].forEach((v) {
+        categories!.add(CategoriesData.fromJson(v));
+      });
+    }
   }
 }

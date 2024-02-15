@@ -11,16 +11,10 @@ part 'reports_state.dart';
 
 class ReportsCubit extends Cubit<ReportsState> {
   static ReportsCubit get(context) => BlocProvider.of(context);
+  final db =  DatabaseHelper.instance;
 
   ReportsCubit() : super(InvoicesInitial());
 
-  // Future<bool> connectedToInternet() async {
-  //   if (isConnected) {
-  //     return false; // No internet connection
-  //   } else {
-  //     return true; // Internet connection available
-  //   }
-  // }
 
   late InvoiceBeneficary allInvoiceBeneficary;
 
@@ -39,7 +33,9 @@ class ReportsCubit extends Cubit<ReportsState> {
           allInvoiceBeneficary = InvoiceBeneficary.fromJson(body);
 
           // Save to SQLite
-          await saveDataToSQLite(allInvoiceBeneficary);
+          await db.saveDataToSQLite(allInvoiceBeneficary);
+          emit(GetAllInvoicesSuccessState(allInvoiceBeneficary));
+
         } else {
           emit(GetAllInvoicesErrorState("Error Data"));
         }
@@ -49,62 +45,13 @@ class ReportsCubit extends Cubit<ReportsState> {
     } else {
       // Fetch from SQLite
       try {
-        var invoiceBeneficaryFromDB = await fetchDataFromSQLite();
+        var invoiceBeneficaryFromDB = await db.fetchDataFromSQLite();
         emit(GetAllInvoicesSuccessState(invoiceBeneficaryFromDB));
       } catch (e) {
         print(e.toString());
         emit(GetAllInvoicesErrorState(e.toString()));
       }
     }
-  }
-
-  Future<void> saveDataToSQLite(InvoiceBeneficary data) async {
-    final db = await DatabaseHelper.instance.database;
-
-    for (var beneficaryData in data.data!) {
-      await db.insert('AllInvoiceBeneficaryData', {
-        'invoiceNo': beneficaryData.invoiceNo,
-        'date': beneficaryData.date,
-        'total_price': beneficaryData.total_price.toString(),
-        'accountId': beneficaryData.accountId,
-        'fullName': beneficaryData.fullName,
-        'vendorName': beneficaryData.vendorName,
-        'cashOrCategory': beneficaryData.cashOrCategory,
-      });
-      for (var product in beneficaryData.product!) {
-        await db.insert('ProductAllInvoice', {
-          'invoiceNo': beneficaryData.invoiceNo,
-          'name': product.name,
-          'price': product.price,
-          'barcode': product.barcode,
-          'count': product.count,
-          'category': product.category,
-        });
-      }
-
-      emit(GetAllInvoicesSuccessState(allInvoiceBeneficary));
-    }
-  }
-
-  Future<InvoiceBeneficary> fetchDataFromSQLite() async {
-    final db = await DatabaseHelper.instance.database;
-    List<Map> beneficaryDatas = await db.query('AllInvoiceBeneficaryData');
-    List<InvoiceBeneficaryData> invoiceBeneficaryDataList = [];
-
-    for (var beneficaryData in beneficaryDatas) {
-      List<Map> products = await db.query('ProductAllInvoice',
-          where: 'invoiceNo = ?', whereArgs: [beneficaryData['invoiceNo']]);
-      List<Product> productList = products
-          .map((product) => Product.fromJson(product.cast<String, dynamic>()))
-          .toList();
-
-      var beneficaryDataObj = InvoiceBeneficaryData.fromJson(
-          beneficaryData.cast<String, dynamic>());
-      beneficaryDataObj.product = productList;
-      invoiceBeneficaryDataList.add(beneficaryDataObj);
-    }
-
-    return InvoiceBeneficary(data: invoiceBeneficaryDataList);
   }
 
   /////////////////////
@@ -117,7 +64,6 @@ class ReportsCubit extends Cubit<ReportsState> {
       try {
         emit(GetInvoicesLoadingState());
 
-        print(vendorId);
 
         var loginURL = Uri.parse("${ApiHelper.invoiceBeneficary}$vendorId");
 
@@ -129,9 +75,9 @@ class ReportsCubit extends Cubit<ReportsState> {
 
         if (body["data"] != null) {
           invoiceBeneficary = InvoiceBeneficary.fromJson(body);
-          await saveInvoiceBeneficary(invoiceBeneficary);
+          await db.saveInvoiceBeneficary(invoiceBeneficary);
 
-          // emit(GetInvoicesSuccessState(invoiceBeneficary));
+          emit(GetInvoicesSuccessState(invoiceBeneficary));
         } else {
           emit(GetInvoicesErrorState("لا توجد فواتير متاحة"));
         }
@@ -141,7 +87,7 @@ class ReportsCubit extends Cubit<ReportsState> {
       }
     } else {
       try {
-        var invoiceBeneficaryFromDB = await fetchInvoiceBeneficary();
+        var invoiceBeneficaryFromDB = await db.fetchInvoiceBeneficary();
         emit(GetInvoicesSuccessState(invoiceBeneficaryFromDB));
       } catch (e) {
         print(e.toString());
@@ -150,54 +96,6 @@ class ReportsCubit extends Cubit<ReportsState> {
     }
   }
 
-  Future<void> saveInvoiceBeneficary(InvoiceBeneficary data) async {
-    final db = await DatabaseHelper.instance.database;
-
-    for (var beneficaryData in data.data!) {
-      await db.insert('InvoiceBeneficaryData', {
-        'invoiceNo': beneficaryData.invoiceNo,
-        'date': beneficaryData.date,
-        'total_price': beneficaryData.total_price.toString(),
-        'accountId': beneficaryData.accountId,
-        'fullName': beneficaryData.fullName,
-        'vendorName': beneficaryData.vendorName,
-        'cashOrCategory': beneficaryData.cashOrCategory,
-      });
-      for (var product in beneficaryData.product!) {
-        await db.insert('ProductInvoice', {
-          'invoiceNo': beneficaryData.invoiceNo,
-          'name': product.name,
-          'price': product.price,
-          'barcode': product.barcode,
-          'count': product.count,
-          'category': product.category,
-        });
-      }
-
-      emit(GetInvoicesSuccessState(invoiceBeneficary));
-    }
-  }
-
-  Future<InvoiceBeneficary> fetchInvoiceBeneficary() async {
-    final db = await DatabaseHelper.instance.database;
-    List<Map> beneficaryDatas = await db.query('InvoiceBeneficaryData');
-    List<InvoiceBeneficaryData> invoiceBeneficaryDataList = [];
-
-    for (var beneficaryData in beneficaryDatas) {
-      List<Map> products = await db.query('ProductInvoice',
-          where: 'invoiceNo = ?', whereArgs: [beneficaryData['invoiceNo']]);
-      List<Product> productList = products
-          .map((product) => Product.fromJson(product.cast<String, dynamic>()))
-          .toList();
-
-      var beneficaryDataObj = InvoiceBeneficaryData.fromJson(
-          beneficaryData.cast<String, dynamic>());
-      beneficaryDataObj.product = productList;
-      invoiceBeneficaryDataList.add(beneficaryDataObj);
-    }
-
-    return InvoiceBeneficary(data: invoiceBeneficaryDataList);
-  }
 
 ///////////////////////////////
   late InvoiceBeneficary dailyInvoiceBeneficary;
@@ -226,54 +124,7 @@ class ReportsCubit extends Cubit<ReportsState> {
     }
   }
 
-  Future<void> saveDailyInvoiceBeneficary(InvoiceBeneficary data) async {
-    final db = await DatabaseHelper.instance.database;
 
-    for (var beneficaryData in data.data!) {
-      await db.insert('DailyInvoiceBeneficaryData', {
-        'invoiceNo': beneficaryData.invoiceNo,
-        'date': beneficaryData.date,
-        'total_price': beneficaryData.total_price.toString(),
-        'accountId': beneficaryData.accountId,
-        'fullName': beneficaryData.fullName,
-        'vendorName': beneficaryData.vendorName,
-        'cashOrCategory': beneficaryData.cashOrCategory,
-      });
-      for (var product in beneficaryData.product!) {
-        await db.insert('ProductDailyInvoice', {
-          'invoiceNo': beneficaryData.invoiceNo,
-          'name': product.name,
-          'price': product.price,
-          'barcode': product.barcode,
-          'count': product.count,
-          'category': product.category,
-        });
-      }
-
-      emit(GetDailyInvoicesSuccessState());
-    }
-  }
-
-  Future<InvoiceBeneficary> fetchDailyInvoiceBeneficary() async {
-    final db = await DatabaseHelper.instance.database;
-    List<Map> beneficaryDatas = await db.query('DailyInvoiceBeneficaryData');
-    List<InvoiceBeneficaryData> invoiceBeneficaryDataList = [];
-
-    for (var beneficaryData in beneficaryDatas) {
-      List<Map> products = await db.query('ProductDailyInvoice',
-          where: 'invoiceNo = ?', whereArgs: [beneficaryData['invoiceNo']]);
-      List<Product> productList = products
-          .map((product) => Product.fromJson(product.cast<String, dynamic>()))
-          .toList();
-
-      var beneficaryDataObj = InvoiceBeneficaryData.fromJson(
-          beneficaryData.cast<String, dynamic>());
-      beneficaryDataObj.product = productList;
-      invoiceBeneficaryDataList.add(beneficaryDataObj);
-    }
-
-    return InvoiceBeneficary(data: invoiceBeneficaryDataList);
-  }
 
   ///////////////////////////////
   late CategoriesModel categoriesModel;

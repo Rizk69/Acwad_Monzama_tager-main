@@ -74,7 +74,7 @@ class NfcDataCubit extends Cubit<NfcDataState> {
         return ProductBody(id: 0, count: 0);
       }
     }).toList();
-    invoiceBeneficaryCategory(
+    sellProduct(
       context: context,
       date: date,
       paidBeneficaryId: paidBeneficaryId,
@@ -123,7 +123,7 @@ class NfcDataCubit extends Cubit<NfcDataState> {
 
   Invoice? beneficaryInvoice;
 
-  Future<void> invoiceBeneficaryCategory(
+  Future<void> sellProduct(
       {required int paidBeneficaryId,
       required int vendorId,
       required int beneficaryId,
