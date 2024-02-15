@@ -39,15 +39,6 @@ class DrawerData extends StatelessWidget {
           );
         }),
 
-      // DrawerItem('تسجيل خروج', Icons.exit_to_app, () async {
-      //   await logout(context);
-      //   Navigator.pushAndRemoveUntil(
-      //     context,
-      //     MaterialPageRoute(builder: (context) => SignInScreen()),
-      //     (Route<dynamic> route) => false,
-      //   );
-      //   // Add onTap logic for 'تسجيل خروج'
-      // }),
     ];
     return SingleChildScrollView(
       child: Container(

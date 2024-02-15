@@ -70,9 +70,9 @@ Future<void> printInvoice(Invoice? data ,context) async {
             pw.Directionality(
                 textDirection: pw.TextDirection.rtl,
                 child: pw.Center(
-                    child: pw.Text('${data?.data?.invoiceNo}',
+                    child: pw.Text('${data?.data?.invoiceNo!=-1? data?.data?.invoiceNo : 'تمت عملية البيع في وضع الاوفلاين'}',
                         style: const pw.TextStyle(
-                          fontSize: 13,
+                          fontSize: 10,
                         )))),
             pw.Directionality(
                 textDirection: pw.TextDirection.rtl,

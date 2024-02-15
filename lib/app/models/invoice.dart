@@ -16,7 +16,7 @@ class InvoiceData {
   String? beneficaryName;
   int? invoiceNo;
   String? date;
-  int? residualMoney;
+  num? residualMoney;
 
   InvoiceData(
       {this.vendorName,

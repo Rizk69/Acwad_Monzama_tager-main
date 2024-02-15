@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nb_utils/nb_utils.dart';
 import 'package:smartcard/app/models/ProductModel.dart';
 import 'package:smartcard/app/models/benficary_data_model.dart';
 import 'package:smartcard/app/models/invoice.dart';
@@ -86,6 +87,7 @@ class NfcDataCubit extends Cubit<NfcDataState> {
   }
 
   ProductModel productModel = ProductModel(message: '', product: []);
+
   Future<bool> getCategoryInvoiceShow({
     required int idCategory,
   }) async {
@@ -94,7 +96,8 @@ class NfcDataCubit extends Cubit<NfcDataState> {
       bool isConnected = await ApiHelper().connectedToInternet();
 
       if (isConnected) {
-        var paidBeneficaryId = Uri.parse("${ApiHelper.getProductBeneficary}$idCategory");
+        var paidBeneficaryId =
+            Uri.parse("${ApiHelper.getProductBeneficary}$idCategory");
         Map<String, String> headers = {'Accept': 'application/json'};
 
         var response = await http.get(paidBeneficaryId, headers: headers);
@@ -106,7 +109,8 @@ class NfcDataCubit extends Cubit<NfcDataState> {
             emit(NfcDataLoaded());
             return true;
           } else {
-            emit(NfcDataError('Failed to load data: ${productModel.message ?? 'Not Found'}'));
+            emit(NfcDataError(
+                'Failed to load data: ${productModel.message ?? 'Not Found'}'));
             return false;
           }
         } else {
@@ -123,7 +127,9 @@ class NfcDataCubit extends Cubit<NfcDataState> {
         );
 
         if (results.isNotEmpty) {
-          List<ProductData> productList = results.map((e) => ProductData.fromJson(e.cast<String, dynamic>())).toList();
+          List<ProductData> productList = results
+              .map((e) => ProductData.fromJson(e.cast<String, dynamic>()))
+              .toList();
           productModel = ProductModel(
             message: 'Success',
             product: productList,
@@ -140,7 +146,6 @@ class NfcDataCubit extends Cubit<NfcDataState> {
       return false;
     }
   }
-
 
   Invoice? beneficaryInvoice;
 
@@ -193,6 +198,7 @@ class NfcDataCubit extends Cubit<NfcDataState> {
     }
   }
 
+  List<CashRequest> cashRequests = [];
   Invoice? cashInvoice;
 
   makeCashPayment(
@@ -200,39 +206,80 @@ class NfcDataCubit extends Cubit<NfcDataState> {
       required int vendorId,
       required int beneficaryId,
       required String date,
+        required InvoiceData data,
       required double paidMoney,
       required BuildContext context}) async {
     emit(MakeCashLoadingState());
 
-    var cashURL = Uri.parse(
-        "${ApiHelper.setInvoiceBeneficary}?PaidBeneficaryId=$paidBeneficaryId&vendorId=$vendorId&beneficaryId=$beneficaryId&date=$date&paidmoney=$paidMoney");
-    print(
-        "${ApiHelper.setInvoiceBeneficary}?PaidBeneficaryId=$paidBeneficaryId&vendorId=$vendorId&beneficaryId=$beneficaryId&date=$date&paidmoney=$paidMoney");
-    Map<String, String> headers = {'Accept': 'application/json'};
+    bool isConnected = await ApiHelper().connectedToInternet();
 
-    await http.post(cashURL, headers: headers).then((value) {
-      var body = jsonDecode(value.body);
-      cashInvoice = Invoice.fromJson(body);
-      print("${cashInvoice?.message}");
+    if (isConnected) {
+      var cashURL = Uri.parse(
+          "${ApiHelper.setInvoiceBeneficary}?PaidBeneficaryId=$paidBeneficaryId&vendorId=$vendorId&beneficaryId=$beneficaryId&date=$date&paidmoney=$paidMoney");
+      print(
+          "${ApiHelper.setInvoiceBeneficary}?PaidBeneficaryId=$paidBeneficaryId&vendorId=$vendorId&beneficaryId=$beneficaryId&date=$date&paidmoney=$paidMoney");
+      Map<String, String> headers = {'Accept': 'application/json'};
 
-      if (cashInvoice?.message == 'Success') {
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(
-            builder: (context) => SignatureScreen(cashInvoice: cashInvoice!),
-          ),
-          (route) => false,
-        );
+      await http.post(cashURL, headers: headers).then((value) {
+        var body = jsonDecode(value.body);
+        cashInvoice = Invoice.fromJson(body);
+        print("${cashInvoice?.message}");
 
-        emit(MakeCashSuccessState(cashInvoice!));
-      }
+        if (cashInvoice?.message == 'Success') {
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+              builder: (context) => SignatureScreen(cashInvoice: cashInvoice!),
+            ),
+            (route) => false,
+          );
 
-      // printInvoice(cashInvoice);
-    }).catchError((onError) {
-      print(onError);
-      print(onError.toString());
-      emit(MakeCashErrorState(onError.toString()));
-    });
+          emit(MakeCashSuccessState(cashInvoice!));
+        }
+
+        // printInvoice(cashInvoice);
+      }).catchError((onError) {
+        print(onError);
+        print(onError.toString());
+        emit(MakeCashErrorState(onError.toString()));
+      });
+    } else {
+      // Offline mode
+      CashRequest cashRequest = CashRequest(
+        paidBeneficaryId: paidBeneficaryId,
+        vendorId: vendorId,
+        beneficaryId: beneficaryId,
+        date: date,
+        paidMoney: paidMoney,
+      );
+
+      cashRequests.add(cashRequest);
+      await saveCashRequestsToSharedPreferences(data: data,context: context);
+      // Handle offline UI or notification
+    }
+  }
+
+  Future<void> saveCashRequestsToSharedPreferences(
+      {required InvoiceData data, required BuildContext context}) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String> cashRequestStrings =
+        cashRequests.map((e) => jsonEncode(e.toJson())).toList();
+    await prefs.setStringList('cashRequests', cashRequestStrings);
+    printInvoice(
+        Invoice(
+          data: data,
+        ),
+        context);
+  }
+
+  Future<void> loadCashRequestsFromSharedPreferences() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String>? cashRequestStrings = prefs.getStringList('cashRequests');
+    if (cashRequestStrings != null) {
+      cashRequests = cashRequestStrings
+          .map((e) => CashRequest.fromJson(jsonDecode(e)))
+          .toList();
+    }
   }
 
   late PaidBeneficaryModel paidBeneficary;
@@ -250,9 +297,11 @@ class NfcDataCubit extends Cubit<NfcDataState> {
       );
 
       if (results.isNotEmpty) {
-        List<PaidBeneficaryData> paidBeneficaryDataList = results.map((e) => PaidBeneficaryData.fromJson(e.cast<String, dynamic>())).toList();
+        List<PaidBeneficaryData> paidBeneficaryDataList = results
+            .map((e) => PaidBeneficaryData.fromJson(e.cast<String, dynamic>()))
+            .toList();
         paidBeneficary = PaidBeneficaryModel(
-          beneficary: null,  // Adjust this according to your model structure
+          beneficary: null, // Adjust this according to your model structure
           message: 'Success',
           paidBeneficary: PaidBeneficary(date: paidBeneficaryDataList),
         );
@@ -264,7 +313,8 @@ class NfcDataCubit extends Cubit<NfcDataState> {
       // Update data with API response if there is an internet connection
       bool isConnected = await ApiHelper().connectedToInternet();
       if (isConnected) {
-        var paidBeneficaryUrl = Uri.parse("${ApiHelper.getPaidBeneficary}$beneficaryId");
+        var paidBeneficaryUrl =
+            Uri.parse("${ApiHelper.getPaidBeneficary}$beneficaryId");
         Map<String, String> headers = {'Accept': 'application/json'};
 
         var response = await http.get(paidBeneficaryUrl, headers: headers);
@@ -274,7 +324,8 @@ class NfcDataCubit extends Cubit<NfcDataState> {
           if (paidBeneficary.message == 'Success') {
             emit(GetPaidBeneficarySuccessState());
           } else {
-            emit(GetPaidBeneficaryErrorState(paidBeneficary.message.toString()));
+            emit(
+                GetPaidBeneficaryErrorState(paidBeneficary.message.toString()));
           }
         } else {
           emit(GetPaidBeneficaryErrorState('Failed to load data'));
@@ -284,7 +335,6 @@ class NfcDataCubit extends Cubit<NfcDataState> {
       emit(GetPaidBeneficaryErrorState(e.toString()));
     }
   }
-
 }
 
 class ProductBody {
@@ -292,4 +342,39 @@ class ProductBody {
   int? count;
 
   ProductBody({this.id, this.count});
+}
+
+class CashRequest {
+  int paidBeneficaryId;
+  int vendorId;
+  int beneficaryId;
+  String date;
+  double paidMoney;
+
+  CashRequest(
+      {required this.paidBeneficaryId,
+      required this.vendorId,
+      required this.beneficaryId,
+      required this.date,
+      required this.paidMoney});
+
+  Map<String, dynamic> toJson() {
+    return {
+      'paidBeneficaryId': paidBeneficaryId,
+      'vendorId': vendorId,
+      'beneficaryId': beneficaryId,
+      'date': date,
+      'paidMoney': paidMoney,
+    };
+  }
+
+  factory CashRequest.fromJson(Map<String, dynamic> json) {
+    return CashRequest(
+      paidBeneficaryId: json['paidBeneficaryId'],
+      vendorId: json['vendorId'],
+      beneficaryId: json['beneficaryId'],
+      date: json['date'],
+      paidMoney: json['paidMoney'],
+    );
+  }
 }

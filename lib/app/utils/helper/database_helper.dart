@@ -143,6 +143,9 @@ CREATE TABLE OfflineCategoriesData (
     await database; // إعادة فتح القاعدة لإنشائها من جديد
   }
 
+
+
+
   Future<void> saveInvoiceBeneficary(InvoiceBeneficary data) async {
     final db = await DatabaseHelper.instance.database;
 

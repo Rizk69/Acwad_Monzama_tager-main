@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lottie/lottie.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:smartcard/app/models/invoice.dart';
 import 'package:smartcard/app/screens/beneficary/addinvoice.dart';
 import 'package:smartcard/app/utils/resource/color_manager.dart';
 import 'package:smartcard/app/widgets/backgrond_image.dart';
 import 'package:smartcard/main.dart';
+import 'package:sqflite/sqflite.dart';
 
 import 'nfc_contact_cubit/nfc_contact_cubit.dart';
 
@@ -294,7 +296,9 @@ class PaidBeneficaryScreen extends StatelessWidget {
                       Theme.of(context).primaryColor)),
               child: Text('تأكيد',
                   style: TextStyle(color: Theme.of(context).primaryColorDark)),
-              onPressed: () {
+              onPressed: () async {
+                Map<String, dynamic> beneficiaryData = await getBeneficiaryData(beneficaryId);
+
                 NfcDataCubit.get(context).makeCashPayment(
                   context: contextScreen,
                   paidBeneficaryId: paidBeneficaryId,
@@ -302,9 +306,16 @@ class PaidBeneficaryScreen extends StatelessWidget {
                   beneficaryId: beneficaryId,
                   date: formattedDate,
                   paidMoney: double.tryParse(paidMoneyController.text)!,
+                  data: InvoiceData(
+                    vendorName: appStore.name,
+                    invoiceNo: -1,
+                    date: formattedDate,
+                    residualMoney: beneficiaryData['residual_money'] - double.tryParse(paidMoneyController.text)!,
+                    beneficaryName: beneficiaryData['fullName'],
+                  ),
                 );
-                // ضع الشيفرة هنا لما يجب أن يحدث بعد التأكيد
-                Navigator.of(context).pop(); // إغلاق الحوار
+
+                Navigator.of(context).pop(); // Close the dialog
               },
             ),
           ],
@@ -313,4 +324,28 @@ class PaidBeneficaryScreen extends StatelessWidget {
       },
     );
   }
+  Future<Map<String, dynamic>> getBeneficiaryData(int beneficiaryId) async {
+    Database db = await openDatabase('invoice.db');
+    List<Map> beneficiaryData = await db.query(
+      'OfflineBeneficiary',
+      columns: ['fullName'],
+      where: 'id = ?',
+      whereArgs: [beneficiaryId],
+    );
+
+    List<Map> paidBeneficiaryData = await db.query(
+      'OfflinePaidBeneficiary',
+      columns: ['residual_money'],
+      where: 'beneficiaryId = ?',
+      whereArgs: [beneficiaryId],
+      orderBy: 'date DESC',
+      limit: 1,
+    );
+
+    String beneficiaryName = beneficiaryData.isNotEmpty ? beneficiaryData[0]['fullName'] : '';
+    num residualMoney = paidBeneficiaryData.isNotEmpty ? paidBeneficiaryData[0]['residual_money'] : 0.0;
+
+    return {'fullName': beneficiaryName, 'residual_money': residualMoney};
+  }
+
 }
