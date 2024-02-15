@@ -1,35 +1,35 @@
 class ProductModel {
   String? message;
-  List<Product>? product;
+  List<ProductData>? product;
 
   ProductModel({this.message, this.product});
 
   ProductModel.fromJson(Map<String, dynamic> json) {
     message = json['message'];
     if (json['product'] != null) {
-      product = <Product>[];
+      product = <ProductData>[];
       json['product'].forEach((v) {
-        product!.add(new Product.fromJson(v));
+        product!.add(new ProductData.fromJson(v));
       });
     }
   }
 }
 
-class Product {
+class ProductData {
   int? id;
   String? name;
-  int? price;
+  num? price;
   int? count = 1;
 
-  Product({this.id, this.name, this.price, this.count});
+  ProductData({this.id, this.name, this.price, this.count});
 
-  Product.fromJson(Map<String, dynamic> json) {
+  ProductData.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     name = json['name'];
     price = json['price'];
   }
 
-  Product copyWith({
+  ProductData copyWith({
     int? id,
     String? name,
     int? price,
@@ -40,7 +40,7 @@ class Product {
       convertedPrice = price.toInt();
     }
 
-    return Product(
+    return ProductData(
       id: id ?? this.id,
       name: name ?? this.name,
       price: convertedPrice ?? this.price,

@@ -12,7 +12,9 @@ import 'nfc_contact_cubit/nfc_contact_cubit.dart';
 
 class PaidBeneficaryScreen extends StatelessWidget {
   int paidBeneficaryId;
-  PaidBeneficaryScreen({super.key, required this.paidBeneficaryId});
+  int? beneficaryId;
+  String? beneficaryName;
+  PaidBeneficaryScreen({super.key, required this.paidBeneficaryId , this.beneficaryId, this.beneficaryName});
 
   @override
   Widget build(BuildContext context) {
@@ -99,53 +101,37 @@ class PaidBeneficaryScreen extends StatelessWidget {
                                             padding: const EdgeInsets.all(11),
                                             margin: const EdgeInsets.all(11),
                                             child: InkWell(
-                                              onTap: paidBeneficaryModel
-                                                              .paidBeneficary!
-                                                              .date![index]
-                                                              .paidDone ==
-                                                          0 &&
-                                                      paidBeneficaryModel
-                                                              .paidBeneficary!
-                                                              .date![index]
-                                                              .uprove ==
-                                                          1
+                                              onTap: paidBeneficaryModel.paidBeneficary!.date![index].paidDone == 0
+                                                  && paidBeneficaryModel.paidBeneficary!.date![index].uprove == 1
                                                   ? () async {
+
+
                                                       if (paidBeneficaryModel
                                                               .paidBeneficary!
                                                               .date![index]
-                                                              .type ==
-                                                          0) {
+                                                              .type == 0) {
                                                         _showConfirmationDialog(
                                                           contextScreen:
                                                               context,
                                                           index: index,
                                                           vendorId:
                                                               appStore.userId,
-                                                          paidBeneficaryId:
-                                                              paidBeneficaryModel
+                                                          paidBeneficaryId: paidBeneficaryModel
                                                                   .paidBeneficary!
                                                                   .date![index]
                                                                   .id!,
-                                                          beneficaryId:
-                                                              paidBeneficaryModel
-                                                                  .beneficary!
-                                                                  .id!,
+                                                          beneficaryId: paidBeneficaryModel.beneficary?.id ?? beneficaryId!,
                                                         );
                                                       }
-                                                      if (paidBeneficaryModel
-                                                              .paidBeneficary!
-                                                              .date![index]
-                                                              .type ==
-                                                          1) {
+                                                      if (paidBeneficaryModel.paidBeneficary!.date![index].type == 1) {
                                                         Navigator.push(
                                                           context,
                                                           MaterialPageRoute(
                                                             builder: (context) =>
                                                                 AddInvoice(
-                                                                    paidBeneficaryModel:
-                                                                        paidBeneficaryModel,
-                                                                    index:
-                                                                        index),
+                                                                    paidBeneficaryModel: paidBeneficaryModel,
+                                                                    beneficaryName: paidBeneficaryModel.beneficary?.fullName ?? beneficaryName!,
+                                                                    index: index),
                                                           ),
                                                         );
                                                       }

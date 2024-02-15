@@ -18,15 +18,14 @@ part 'nfc_contact_state.dart';
 
 class NfcDataCubit extends Cubit<NfcDataState> {
   NfcDataCubit() : super(NfcDataInitial());
-  ProductModel productModel = ProductModel(message: '', product: []);
   ProductBody productBody = ProductBody(id: 0, count: 0);
 
   static NfcDataCubit get(context) => BlocProvider.of(context);
 
-  Map<int, Product?> scannedItemsMap = {};
-  List<Product?> scannedItems = [];
+  Map<int, ProductData?> scannedItemsMap = {};
+  List<ProductData?> scannedItems = [];
 
-  void addProduct(Product product) {
+  void addProduct(ProductData product) {
     emit(AddProductLoading());
 
     final existingProduct = scannedItemsMap[product.id];
@@ -40,7 +39,7 @@ class NfcDataCubit extends Cubit<NfcDataState> {
     emit(AddProductSuccess());
   }
 
-  void removeProduct(int index, Product product) {
+  void removeProduct(int index, ProductData product) {
     emit(RemoveProductLoading());
     scannedItemsMap.remove(product.id);
     scannedItems.remove(product);
@@ -49,7 +48,7 @@ class NfcDataCubit extends Cubit<NfcDataState> {
 
   double calculateTotalPrice() {
     double totalPrice = 0.0;
-    for (Product? product in scannedItems) {
+    for (ProductData? product in scannedItems) {
       if (product != null && product.price != null) {
         totalPrice += product.price! * product.count!;
       }
@@ -66,7 +65,7 @@ class NfcDataCubit extends Cubit<NfcDataState> {
       required int paidmoney,
       required String date,
       required BuildContext context}) {
-    productsBody = scannedItems.map((Product? product) {
+    productsBody = scannedItems.map((ProductData? product) {
       if (product != null) {
         return ProductBody(
           id: product.id ?? 0,
@@ -86,42 +85,62 @@ class NfcDataCubit extends Cubit<NfcDataState> {
     );
   }
 
+  ProductModel productModel = ProductModel(message: '', product: []);
   Future<bool> getCategoryInvoiceShow({
     required int idCategory,
   }) async {
     try {
       emit(NfcDataLoading());
-      var paidBeneficaryId =
-          Uri.parse("${ApiHelper.getProductBeneficary}$idCategory");
+      bool isConnected = await ApiHelper().connectedToInternet();
 
-      Map<String, String> headers = {'Accept': 'application/json'};
+      if (isConnected) {
+        var paidBeneficaryId = Uri.parse("${ApiHelper.getProductBeneficary}$idCategory");
+        Map<String, String> headers = {'Accept': 'application/json'};
 
-      var response = await http.get(paidBeneficaryId, headers: headers);
-      var body = jsonDecode(response.body);
+        var response = await http.get(paidBeneficaryId, headers: headers);
+        var body = jsonDecode(response.body);
 
-      if (response.statusCode == 200 && body['product'].length > 0) {
-        productModel = ProductModel.fromJson(body);
-        if (productModel.message == 'Success') {
-          print(productModel.message);
-          print(productModel.product?.first.name.toString());
-          emit(NfcDataLoaded());
-          return true;
+        if (response.statusCode == 200 && body['product'].length > 0) {
+          productModel = ProductModel.fromJson(body);
+          if (productModel.message == 'Success') {
+            emit(NfcDataLoaded());
+            return true;
+          } else {
+            emit(NfcDataError('Failed to load data: ${productModel.message ?? 'Not Found'}'));
+            return false;
+          }
         } else {
-          emit(NfcDataError(
-              'Failed to load data: ${productModel.message ?? 'Not Found'}'));
+          emit(const NfcDataError('Failed to load data'));
           return false;
         }
       } else {
-        emit(const NfcDataError('Failed to load data'));
+        // Fetch data from OfflineCategoriesData table when there's no internet connection
+        final db = await DatabaseHelper.instance.database;
+        List<Map> results = await db.query(
+          'OfflineCategoriesData',
+          where: 'paidBeneficiaryId = ?',
+          whereArgs: [idCategory],
+        );
 
-        return false;
+        if (results.isNotEmpty) {
+          List<ProductData> productList = results.map((e) => ProductData.fromJson(e.cast<String, dynamic>())).toList();
+          productModel = ProductModel(
+            message: 'Success',
+            product: productList,
+          );
+          emit(NfcDataLoaded());
+          return true;
+        } else {
+          emit(const NfcDataError('No offline data available'));
+          return false;
+        }
       }
     } catch (e) {
       emit(NfcDataError('Failed to load data: ${e.toString()}'));
-
       return false;
     }
   }
+
 
   Invoice? beneficaryInvoice;
 

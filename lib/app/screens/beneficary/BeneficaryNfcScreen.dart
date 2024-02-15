@@ -94,6 +94,8 @@ class BeneficaryNfcScreen extends StatelessWidget {
                             context,
                             MaterialPageRoute(
                               builder: (context) => PaidBeneficaryScreen(
+                                beneficaryId: beneficaryNfcModel.data!.id,
+                                beneficaryName: "${beneficaryNfcModel.data!.firstName} ${beneficaryNfcModel.data!.fatherName}",
                                   paidBeneficaryId:
                                       beneficaryNfcModel.data!.id!),
                             ),

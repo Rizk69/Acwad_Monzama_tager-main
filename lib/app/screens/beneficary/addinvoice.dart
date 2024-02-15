@@ -16,9 +16,9 @@ import 'nfc_contact_cubit/nfc_contact_cubit.dart';
 class AddInvoice extends StatelessWidget {
   PaidBeneficaryModel paidBeneficaryModel;
   int index;
-
+  String beneficaryName;
   AddInvoice(
-      {super.key, required this.paidBeneficaryModel, required this.index});
+      {super.key, required this.paidBeneficaryModel, required this.index , required this.beneficaryName});
 
   @override
   Widget build(BuildContext context) {
@@ -87,7 +87,7 @@ class AddInvoice extends StatelessWidget {
                                         ),
                                         const SizedBox(width: 16.0),
                                         Text(
-                                          '${paidBeneficaryModel.beneficary?.fullName}',
+                                          '${beneficaryName}',
                                           style: TextStyle(
                                               color: Theme.of(context)
                                                   .primaryColor),
@@ -172,7 +172,7 @@ class AddInvoice extends StatelessWidget {
                                           }).toList(),
                                           onChanged: (String? selectedValue) {
                                             if (selectedValue != null) {
-                                              Product? selectedProduct =
+                                              ProductData? selectedProduct =
                                                   NfcDataCubit.get(context)
                                                       .productModel
                                                       .product!
