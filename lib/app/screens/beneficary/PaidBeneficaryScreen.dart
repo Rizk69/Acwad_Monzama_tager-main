@@ -188,7 +188,7 @@ class PaidBeneficaryScreen extends StatelessWidget {
                                                             .primaryColor),
                                                   ),
                                                   Text(
-                                                    'المبلغ المتبقي المتاح: ${paidBeneficaryModel.paidBeneficary!.date![index].residualMoney ?? ''}',
+                                                    'المبلغ المتبقي المتاح: ${paidBeneficaryModel.paidBeneficary!.date![index].residual_money ?? ''}',
                                                     style: TextStyle(
                                                         color: Theme.of(context)
                                                             .primaryColor),

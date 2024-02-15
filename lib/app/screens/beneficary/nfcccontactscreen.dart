@@ -4,6 +4,8 @@ import 'package:flutter_svg/svg.dart';
 import 'package:nfc_manager/nfc_manager.dart';
 import 'dart:typed_data';
 import 'package:http/http.dart' as http;
+import 'package:smartcard/app/network/api_end_points.dart';
+import 'package:smartcard/app/utils/helper/database_helper.dart';
 import '../../models/BeneficaryNfcModel.dart';
 import 'BeneficaryNfcScreen.dart';
 import '../../widgets/backgrond_image.dart';
@@ -74,72 +76,168 @@ class _NfcContactCardScreenState extends State<NfcContactCardScreen> {
   }
 
   Future<bool> _checkServerNfcAvailability(String cardID) async {
-    const serverEndpoint =
-        'https://monazama.acwad-it.com/api/Beneficary/card_nfc';
-    try {
-      final response = await http.post(
-        Uri.parse(serverEndpoint),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'cardID': cardID}),
-      );
+    bool isConnected = await ApiHelper().connectedToInternet();
 
-      if (response.statusCode == 200) {
-        Map<String, dynamic> responseBody = jsonDecode(response.body);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(responseBody['exists'] == false ? 'False' : 'True'),
-            backgroundColor:
-                responseBody['exists'] == false ? Colors.red : Colors.green,
-          ),
+    if (isConnected) {
+      const serverEndpoint = 'https://monazama.acwad-it.com/api/Beneficary/card_nfc';
+      try {
+        final response = await http.post(
+          Uri.parse(serverEndpoint),
+          headers: {'Content-Type': 'application/json'},
+          body: jsonEncode({'cardID': cardID}),
         );
-        print('Server response: ${response.body}');
-        return responseBody['exists'];
-      } else {
+
+        if (response.statusCode == 200) {
+          Map<String, dynamic> responseBody = jsonDecode(response.body);
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(responseBody['exists'] == false ? 'False' : 'True'),
+              backgroundColor: responseBody['exists'] == false ? Colors.red : Colors.green,
+            ),
+          );
+          print('Server response: ${response.body}');
+          return responseBody['exists'];
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Server request failed'),
+              backgroundColor: Colors.red,
+            ),
+          );
+          print('Server request failed with status code: ${response.statusCode}');
+          return false;
+        }
+      } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Server request failed'),
+            content: Text('Error making server request: $e'),
             backgroundColor: Colors.red,
           ),
         );
-        print('Server request failed with status code: ${response.statusCode}');
+        print('Error making server request: $e');
         return false;
+      } finally {
+        checkNfcAvailability();
       }
-    } catch (e) {
+    } else {
+      // Check OfflineBeneficiary table when there's no internet connection
+      final db = await DatabaseHelper.instance.database;
+      List<Map> results = await db.query(
+        'OfflineBeneficiary',
+        where: 'cardID = ?',
+        whereArgs: [cardID],
+      );
+
+      bool exists = results.isNotEmpty;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Error making server request: $e'),
-          backgroundColor: Colors.red,
+          content: Text(exists ? 'True' : 'False'),
+          backgroundColor: exists ? Colors.green : Colors.red,
         ),
       );
-      print('Error making server request: $e');
-      return false;
-    } finally {
       checkNfcAvailability();
+      return exists;
     }
   }
 
+
   Future<bool> _checkPasswordNfc(String cardID, String password) async {
+    bool isConnected = await ApiHelper().connectedToInternet();
     const serverEndpoint = 'https://monazama.acwad-it.com/api/Beneficary/nfc';
-    try {
-      final cubit = NfcDataCubit();
-      final response = await http.post(
-        Uri.parse(serverEndpoint),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'cardID': cardID, 'cardpassword': password}),
+    final cubit = NfcDataCubit();
+
+    print("Card Id $cardID");
+    print("Card password $password");
+    if (isConnected) {
+      try {
+        final response = await http.post(
+          Uri.parse(serverEndpoint),
+          headers: {'Content-Type': 'application/json'},
+          body: jsonEncode({'cardID': cardID, 'cardpassword': password}),
+        );
+        Map<String, dynamic> responseBody = jsonDecode(response.body);
+        BeneficaryNfcModel beneficaryNfcModel = BeneficaryNfcModel.fromJson(responseBody);
+
+        if (response.statusCode == 200) {
+          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => BeneficaryNfcScreen(
+                beneficaryNfcModel: beneficaryNfcModel,
+                cubit: cubit,
+              ),
+            ),
+          );
+          return true;
+        } else {
+          print(beneficaryNfcModel.message ?? "Server Error");
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(beneficaryNfcModel.message ?? "Server Error"),
+              backgroundColor: Colors.red,
+            ),
+          );
+          return false;
+        }
+      } catch (e) {
+        print(e.toString());
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error making server request: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+        return false;
+      }
+    }
+
+    else {
+      // Check in the OfflineBeneficiary table
+      final db = await DatabaseHelper.instance.database;
+      List<Map> results = await db.query(
+        'OfflineBeneficiary',
+        where: 'cardID = ? AND cardpassword = ?',
+        whereArgs: [cardID, password],
       );
-      Map<String, dynamic> responseBody = jsonDecode(response.body);
-      BeneficaryNfcModel beneficaryNfcModel = BeneficaryNfcModel.fromJson(responseBody);
 
-      print(responseBody);
+      if (results.isNotEmpty) {
+        // Here, you need to create a BeneficaryNfcModel instance from the offline data
+        // Assuming you have a constructor or method in BeneficaryNfcModel that can handle this
+        var beneficiaryData = results.first;
+        BeneficaryNfcModel beneficaryNfcModel = BeneficaryNfcModel(
+          data: BeneficaryDataModel(
+            id: beneficiaryData['id'],
+            firstName: beneficiaryData['fullName'].split(' ').first,
+            lastName: beneficiaryData['fullName'].split(' ').last,
+            mobile: beneficiaryData['mobile'],
+            balance: beneficiaryData['balance'],
+            cardID: beneficiaryData['cardID'],
+            nationalID: beneficiaryData['nationalID'],
+            // Set other fields as needed or use default values
+            createdBy: '',
+            updatedBy: '',
+            firstNameAr: '',
+            lastNameAr: '',
+            firstNameTr: '',
+            lastNameTr: '',
+            motherName: '',
+            fatherName: '',
+            nickName: '',
+            address: '',
+            birthday: '',
+            idNumber: 0,
+            paidMoney: 0,
+            numberOfFamilyMembers: 0,
+          ),
+        );
 
-      if (response.statusCode == 200) {
-        ScaffoldMessenger.of(context).hideCurrentSnackBar();
+
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
             builder: (context) => BeneficaryNfcScreen(
-              beneficaryNfcModel: beneficaryNfcModel,
-              cubit: cubit,
+              beneficaryNfcModel: beneficaryNfcModel, cubit: cubit,
             ),
           ),
         );
@@ -147,21 +245,12 @@ class _NfcContactCardScreenState extends State<NfcContactCardScreen> {
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(beneficaryNfcModel.message??"Server Error"),
+            content: Text('No offline data found for this card'),
             backgroundColor: Colors.red,
           ),
         );
         return false;
       }
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Error making server request: $e'),
-          backgroundColor: Colors.red,
-        ),
-      );
-      print('Error making server request: $e');
-      return false;
     }
   }
 

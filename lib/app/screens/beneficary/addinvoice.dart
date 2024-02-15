@@ -131,7 +131,7 @@ class AddInvoice extends StatelessWidget {
                                         ),
                                         const SizedBox(width: 16.0),
                                         Text(
-                                          '${paidBeneficaryModel.paidBeneficary?.date?[index].residualMoney}',
+                                          '${paidBeneficaryModel.paidBeneficary?.date?[index].residual_money}',
                                           style: TextStyle(
                                               color: Theme.of(context)
                                                   .primaryColor),

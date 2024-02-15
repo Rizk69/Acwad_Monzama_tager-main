@@ -113,6 +113,7 @@ CREATE TABLE OfflinePaidBeneficiary (
   name TEXT,
   paid_money INTEGER,
   paidDone INTEGER,
+  residual_money REAL,
   type INTEGER,
   beneficiaryId INTEGER,
   FOREIGN KEY (beneficiaryId) REFERENCES OfflineBeneficiary(id)
@@ -390,6 +391,7 @@ CREATE TABLE OfflineCategoriesData (
           'name': paidBeneficiary.name,
           'paid_money': paidBeneficiary.paidMoney,
           'paidDone': paidBeneficiary.paidDone,
+          'residual_money': paidBeneficiary.residual_money,
           'type': paidBeneficiary.type,
           'beneficiaryId': beneficiary.id,
         };

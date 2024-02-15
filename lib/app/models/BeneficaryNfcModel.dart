@@ -1,11 +1,11 @@
 class BeneficaryNfcModel {
-  Data? data;
+  BeneficaryDataModel? data;
   String? message;
 
   BeneficaryNfcModel({this.data});
 
   BeneficaryNfcModel.fromJson(Map<String, dynamic> json) {
-    data = json['data'] != null ? new Data.fromJson(json['data']) : null;
+    data = json['data'] != null ? new BeneficaryDataModel.fromJson(json['data']) : null;
     message = json['message'];
 
   }
@@ -21,12 +21,12 @@ class BeneficaryNfcModel {
   }
 }
 
-class Data {
+class BeneficaryDataModel {
   int? id;
   String? firstName;
   String? lastName;
   String? mobile;
-  int? balance;
+  num? balance;
   String? cardID;
   String? createdBy;
   String? updatedBy;
@@ -37,14 +37,14 @@ class Data {
   String? motherName;
   String? fatherName;
   String? nickName;
-  int? nationalID;
+  num? nationalID;
   String? address;
   String? birthday;
   int? idNumber;
   int? paidMoney;
   int? numberOfFamilyMembers;
 
-  Data(
+  BeneficaryDataModel(
       {this.id,
       this.firstName,
       this.lastName,
@@ -67,7 +67,7 @@ class Data {
       this.paidMoney,
       this.numberOfFamilyMembers});
 
-  Data.fromJson(Map<String, dynamic> json) {
+  BeneficaryDataModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     firstName = json['firstName'];
     lastName = json['lastName'];

@@ -6,7 +6,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smartcard/app/models/ProductModel.dart';
 import 'package:smartcard/app/models/benficary_data_model.dart';
 import 'package:smartcard/app/models/invoice.dart';
+import 'package:smartcard/app/models/offline_model.dart';
 import 'package:smartcard/app/utils/SignatureScreen.dart';
+import 'package:smartcard/app/utils/helper/database_helper.dart';
 import 'package:smartcard/app/widgets/print_beneficary_Invoice.dart';
 import 'package:http/http.dart' as http;
 
@@ -220,29 +222,50 @@ class NfcDataCubit extends Cubit<NfcDataState> {
     try {
       emit(GetPaidBeneficaryLoadingState());
 
-      var paidBeneficaryId =
-          Uri.parse("${ApiHelper.getPaidBeneficary}$beneficaryId");
-      print("${ApiHelper.getPaidBeneficary}$beneficaryId");
-      Map<String, String> headers = {'Accept': 'application/json'};
+      // Fetch data from OfflinePaidBeneficiary table first
+      final db = await DatabaseHelper.instance.database;
+      List<Map> results = await db.query(
+        'OfflinePaidBeneficiary',
+        where: 'beneficiaryId = ?',
+        whereArgs: [beneficaryId],
+      );
 
-      var response = await http.get(paidBeneficaryId, headers: headers);
-      if (response.statusCode == 200) {
-        var body = jsonDecode(response.body);
-        paidBeneficary = PaidBeneficaryModel.fromJson(body);
-        print(paidBeneficary.beneficary?.fullName ?? 'No name available');
-        if (paidBeneficary.message == 'Success') {
-          emit(GetPaidBeneficarySuccessState());
-        } else {
-          emit(GetPaidBeneficaryErrorState(paidBeneficary.message.toString()));
-        }
+      if (results.isNotEmpty) {
+        List<PaidBeneficaryData> paidBeneficaryDataList = results.map((e) => PaidBeneficaryData.fromJson(e.cast<String, dynamic>())).toList();
+        paidBeneficary = PaidBeneficaryModel(
+          beneficary: null,  // Adjust this according to your model structure
+          message: 'Success',
+          paidBeneficary: PaidBeneficary(date: paidBeneficaryDataList),
+        );
+        emit(GetPaidBeneficarySuccessState());
       } else {
-        emit(GetPaidBeneficaryErrorState('Failed to load data'));
+        emit(GetPaidBeneficaryErrorState('No offline data available'));
+      }
+
+      // Update data with API response if there is an internet connection
+      bool isConnected = await ApiHelper().connectedToInternet();
+      if (isConnected) {
+        var paidBeneficaryUrl = Uri.parse("${ApiHelper.getPaidBeneficary}$beneficaryId");
+        Map<String, String> headers = {'Accept': 'application/json'};
+
+        var response = await http.get(paidBeneficaryUrl, headers: headers);
+        if (response.statusCode == 200) {
+          var body = jsonDecode(response.body);
+          paidBeneficary = PaidBeneficaryModel.fromJson(body);
+          if (paidBeneficary.message == 'Success') {
+            emit(GetPaidBeneficarySuccessState());
+          } else {
+            emit(GetPaidBeneficaryErrorState(paidBeneficary.message.toString()));
+          }
+        } else {
+          emit(GetPaidBeneficaryErrorState('Failed to load data'));
+        }
       }
     } catch (e) {
-      print(e.toString());
       emit(GetPaidBeneficaryErrorState(e.toString()));
     }
   }
+
 }
 
 class ProductBody {

@@ -89,7 +89,7 @@ class PaidBeneficaryData {
   String? name;
   int? uprove;
   dynamic paidMoney;
-  dynamic residualMoney;
+  dynamic residual_money;
   int? paidDone;
   int? type;
   List<CategoriesData>? products;
@@ -101,7 +101,7 @@ class PaidBeneficaryData {
         this.name,
         this.uprove,
         this.paidMoney,
-        this.residualMoney,
+        this.residual_money,
         this.type,
         this.products,
         this.paidDone});
@@ -111,10 +111,10 @@ class PaidBeneficaryData {
     date = json['date']??'';
     cashOrCategory = json['cashOrCategory']??'';
     name = json['name']??'';
-    uprove = json['uprove']??0;
+    uprove = json['uprove']??1;
     paidMoney = json['paid_money']??0;
     type = json['type']??0;
-    residualMoney = json['residual_money']??0;
+    residual_money = json['residual_money']??0;
     paidDone = json['paidDone']??0;
 
 
@@ -132,9 +132,9 @@ class PaidBeneficaryData {
     data['id'] = id??0;
     data['date'] = date??"";
     data['cashOrCategory'] = cashOrCategory??"";
-    data['uprove'] = uprove??0;
+    data['uprove'] = uprove??1;
     data['paid_money'] = paidMoney??0;
-    data['residual_money'] = residualMoney??0;
+    data['residual_money'] = residual_money??0;
     data['paidDone'] = paidDone??0;
     data['type'] = type??0;
 
