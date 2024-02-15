@@ -5,18 +5,18 @@ import 'package:smartcard/app/models/vendor.dart';
 class OfflineModel {
   String? message;
   VendorData? vendor;
-  List<Beneficiary>? beneficiaries;
+  List<Beneficiary>? beneficaries;
 
-  OfflineModel({this.message, this.vendor, this.beneficiaries});
+  OfflineModel({this.message, this.vendor, this.beneficaries});
 
   OfflineModel.fromJson(Map<String, dynamic> json) {
     message = json['message'];
-    vendor =
-    json['vendor'] != null ?  VendorData.fromJson(json['vendor']) : null;
+    vendor = json['vendor'] != null ?  VendorData.fromJson(json['vendor']) : null;
+
     if (json['beneficaries'] != null) {
-      beneficiaries = <Beneficiary>[];
+      beneficaries = <Beneficiary>[];
       json['beneficaries'].forEach((v) {
-        beneficiaries!.add(Beneficiary.fromJson(v));
+        beneficaries!.add(Beneficiary.fromJson(v));
       });
     }
   }
@@ -27,8 +27,8 @@ class OfflineModel {
     if (vendor != null) {
       data['vendor'] = vendor!.toJson();
     }
-    if (this.beneficiaries != null) {
-      data['beneficaries'] = this.beneficiaries!.map((v) => v.toJson()).toList();
+    if (this.beneficaries != null) {
+      data['beneficaries'] = this.beneficaries!.map((v) => v.toJson()).toList();
     }
     return data;
   }

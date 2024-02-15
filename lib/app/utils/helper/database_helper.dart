@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:smartcard/app/models/CategoriesModel.dart';
 import 'package:smartcard/app/models/benficary_data_model.dart';
 import 'package:smartcard/app/models/invoice_beneficary.dart';
@@ -352,7 +354,17 @@ CREATE TABLE OfflineCategoriesData (
     }
 
     // Insert or update beneficiaries and their related data
-    for (var beneficiary in data.beneficiaries ?? []) {
+    for (var beneficiary in data.beneficaries ?? []) {
+      var beneficiaryData = {
+        'id': beneficiary.id,
+        'fullName': beneficiary.fullName,
+        'mobile': beneficiary.mobile,
+        'balance': beneficiary.balance,
+        'cardID': beneficiary.cardID,
+        'cardpassword': beneficiary.cardpassword,
+        'nationalID': beneficiary.nationalID,
+      };
+
       List<Map> existingBeneficiaryRecords = await db.query(
         'OfflineBeneficiary',
         where: 'id = ?',
@@ -362,15 +374,26 @@ CREATE TABLE OfflineCategoriesData (
       if (existingBeneficiaryRecords.isNotEmpty) {
         await db.update(
           'OfflineBeneficiary',
-          beneficiary.toJson(),
+          beneficiaryData,
           where: 'id = ?',
           whereArgs: [beneficiary.id],
         );
       } else {
-        await db.insert('OfflineBeneficiary', beneficiary.toJson());
+        await db.insert('OfflineBeneficiary', beneficiaryData);
       }
 
       for (var paidBeneficiary in beneficiary.paidBeneficary ?? []) {
+        var paidBeneficiaryData = {
+          'id': paidBeneficiary.id,
+          'date': paidBeneficiary.date,
+          'cashOrCategory': paidBeneficiary.cashOrCategory,
+          'name': paidBeneficiary.name,
+          'paid_money': paidBeneficiary.paidMoney,
+          'paidDone': paidBeneficiary.paidDone,
+          'type': paidBeneficiary.type,
+          'beneficiaryId': beneficiary.id,
+        };
+
         List<Map> existingPaidBeneficiaryRecords = await db.query(
           'OfflinePaidBeneficiary',
           where: 'id = ?',
@@ -380,24 +403,22 @@ CREATE TABLE OfflineCategoriesData (
         if (existingPaidBeneficiaryRecords.isNotEmpty) {
           await db.update(
             'OfflinePaidBeneficiary',
-            {
-              ...paidBeneficiary.toJson(),
-              'beneficiaryId': beneficiary.id,
-            },
+            paidBeneficiaryData,
             where: 'id = ?',
             whereArgs: [paidBeneficiary.id],
           );
         } else {
-          await db.insert(
-            'OfflinePaidBeneficiary',
-            {
-              ...paidBeneficiary.toJson(),
-              'beneficiaryId': beneficiary.id,
-            },
-          );
+          await db.insert('OfflinePaidBeneficiary', paidBeneficiaryData);
         }
 
         for (var category in paidBeneficiary.products ?? []) {
+          var categoryData = {
+            'id': category.id,
+            'name': category.name,
+            'price': category.price,
+            'paidBeneficiaryId': paidBeneficiary.id,
+          };
+
           List<Map> existingCategoryRecords = await db.query(
             'OfflineCategoriesData',
             where: 'id = ?',
@@ -407,62 +428,35 @@ CREATE TABLE OfflineCategoriesData (
           if (existingCategoryRecords.isNotEmpty) {
             await db.update(
               'OfflineCategoriesData',
-              {
-                ...category.toJson(),
-                'paidBeneficiaryId': paidBeneficiary.id,
-              },
+              categoryData,
               where: 'id = ?',
               whereArgs: [category.id],
             );
           } else {
-            await db.insert(
-              'OfflineCategoriesData',
-              {
-                ...category.toJson(),
-                'paidBeneficiaryId': paidBeneficiary.id,
-              },
-            );
+            await db.insert('OfflineCategoriesData', categoryData);
           }
         }
       }
     }
   }
+
   Future<OfflineModel?> getOfflineDataFromDB() async {
     final db = await database;
-    List<Map<String, dynamic>> vendorData = await db.query('OfflineVendorData');
     List<Map<String, dynamic>> beneficiariesData = await db.query('OfflineBeneficiary');
 
-    VendorData? vendor = vendorData.isNotEmpty ? VendorData.fromJson(vendorData.first) : null;
     List<Beneficiary> beneficiaries = [];
-
     for (var beneficiaryData in beneficiariesData) {
-      List<Map<String, dynamic>> paidBeneficiariesData = await db.query(
-        'OfflinePaidBeneficiary',
-        where: 'beneficiaryId = ?',
-        whereArgs: [beneficiaryData['id']],
-      );
-
-      List<PaidBeneficaryData> paidBeneficiaries = [];
-
-      for (var paidBeneficiaryData in paidBeneficiariesData) {
-        List<Map<String, dynamic>> categoriesData = await db.query(
-          'OfflineCategoriesData',
-          where: 'paidBeneficiaryId = ?',
-          whereArgs: [paidBeneficiaryData['id']],
-        );
-
-        List<CategoriesData> categories = categoriesData.map((e) => CategoriesData.fromJson(e)).toList();
-        PaidBeneficaryData paidBeneficiary = PaidBeneficaryData.fromJson(paidBeneficiaryData);
-        paidBeneficiary.products = categories;
-        paidBeneficiaries.add(paidBeneficiary);
-      }
+      List<PaidBeneficaryData> paidBeneficary = (jsonDecode(beneficiaryData['paidBeneficary']) as List)
+          .map((e) => PaidBeneficaryData.fromJson(e))
+          .toList();
 
       Beneficiary beneficiary = Beneficiary.fromJson(beneficiaryData);
-      beneficiary.paidBeneficary = paidBeneficiaries;
+      beneficiary.paidBeneficary = paidBeneficary;
       beneficiaries.add(beneficiary);
     }
 
-    return OfflineModel(vendor: vendor, beneficiaries: beneficiaries);
+    // Handle the vendor data similarly...
+    return OfflineModel(beneficaries:  beneficiaries);
   }
 
 
