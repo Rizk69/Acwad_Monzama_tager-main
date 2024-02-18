@@ -66,6 +66,7 @@ class NfcDataCubit extends Cubit<NfcDataState> {
       required int vendorId,
       required int beneficaryId,
       required double paidmoney,
+      required double residualMoney,
       required InvoiceData data,
       required String date,
       required BuildContext context}) {
@@ -87,6 +88,7 @@ class NfcDataCubit extends Cubit<NfcDataState> {
       vendorId: vendorId,
       paidmoney: paidmoney,
       data: data,
+      residualMoney: residualMoney,
     );
   }
 
@@ -158,26 +160,26 @@ class NfcDataCubit extends Cubit<NfcDataState> {
       required int vendorId,
       required int beneficaryId,
       required InvoiceData data,
+      required double residualMoney,
       required double paidmoney,
       required String date,
       required BuildContext context}) async {
     emit(BuyProductsLoadingState());
     bool isConnected = await ApiHelper().connectedToInternet();
+    Map<String, dynamic> requestBody = {
+      'product': productsBody.map((product) {
+        return {
+          'pro_id': product.id.toString(),
+          'count': product.count.toString(),
+        };
+      }).toList(),
+    };
     if (isConnected) {
       try {
         var paidBeneficaryUrl = Uri.parse(
             "${ApiHelper.setInvoiceBeneficary}?PaidBeneficaryId=$paidBeneficaryId&vendorId=$vendorId&beneficaryId=$beneficaryId&date=$date&paidmoney=$paidmoney");
 
         Map<String, String> headers = {'Accept': 'application/json'};
-
-        Map<String, dynamic> requestBody = {
-          'product': productsBody.map((product) {
-            return {
-              'pro_id': product.id.toString(),
-              'count': product.count.toString(),
-            };
-          }).toList(),
-        };
 
         var response = await http.post(paidBeneficaryUrl,
             body: jsonEncode(requestBody), headers: headers);
@@ -204,29 +206,50 @@ class NfcDataCubit extends Cubit<NfcDataState> {
         print(e.toString());
       }
     } else {
+      final db = DatabaseHelper.instance;
+
+      Map<String, dynamic> beneficiaryData =
+          await db.getBeneficiaryData(beneficaryId);
+
+      // double residualMoney = beneficiaryData['residual_money'];
+
+      print("paidBeneficaryId $paidBeneficaryId");
+      print("beneficaryId $beneficaryId");
+      print("vendorId $vendorId");
+      print("paidMoney $paidmoney");
+      print("residualMoney $residualMoney");
+
+      if (paidmoney > residualMoney) {
+        emit(SendOnlineErrorState(
+            'Paid money is greater than the residual money.'));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('المبلغ المراد سحبه اكبر من المتاح'),
+            backgroundColor: Colors.red,
+          ),
+        );
+        return;
+      }
+
+      // Update residual_money in the database
+
       // Offline mode
-    //   Map<String, dynamic> requestBody = {
-    //     'product': productsBody.map((product) {
-    //       return {
-    //         'pro_id': product.id.toString(),
-    //         'count': product.count.toString(),
-    //       };
-    //     }).toList(),
-    //   };
-    //   OffLineRequest offLineRequestBody = OffLineRequest(
-    //     product: [ProductBody()],
-    //     paidBeneficaryId: paidBeneficaryId,
-    //     vendorId: vendorId,
-    //     beneficaryId: beneficaryId,
-    //     date: date,
-    //     paidMoney: paidmoney,
-    //   );
-    //
-    //   offLineRequest.add(offLineRequestBody);
-    //   await saveOffLineRequestsToSharedPreferences(
-    //       data: data, context: context);
-    //   // Handle offline UI or notification
-     }
+      OffLineRequest offLineRequestBody = OffLineRequest(
+        products: productsBody,
+        paidBeneficaryId: paidBeneficaryId,
+        vendorId: vendorId,
+        beneficaryId: beneficaryId,
+        date: date,
+        paidMoney: paidmoney,
+      );
+
+      offLineRequest.add(offLineRequestBody);
+      await saveOffLineRequestsToSharedPreferences(
+          data: data, context: context);
+      await db.updateResidualMoney(paidBeneficaryId, calculateTotalPrice());
+
+      emit(SendOnlineSuccessState());
+    }
   }
 
   Invoice? cashInvoice;
@@ -275,13 +298,12 @@ class NfcDataCubit extends Cubit<NfcDataState> {
         emit(MakeCashErrorState(onError.toString()));
       });
     } else {
-
       final db = DatabaseHelper.instance;
 
-      Map<String, dynamic> beneficiaryData = await db.getBeneficiaryData(beneficaryId);
+      Map<String, dynamic> beneficiaryData =
+          await db.getBeneficiaryData(beneficaryId);
 
       // double residualMoney = beneficiaryData['residual_money'];
-
 
       print("paidBeneficaryId $paidBeneficaryId");
       print("beneficaryId $beneficaryId");
@@ -289,9 +311,9 @@ class NfcDataCubit extends Cubit<NfcDataState> {
       print("paidMoney $paidMoney");
       print("residualMoney $residualMoney");
 
-
       if (paidMoney > residualMoney) {
-        emit(SendOnlineErrorState('Paid money is greater than the residual money.'));
+        emit(SendOnlineErrorState(
+            'Paid money is greater than the residual money.'));
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('المبلغ المراد سحبه اكبر من المتاح'),
@@ -302,8 +324,6 @@ class NfcDataCubit extends Cubit<NfcDataState> {
       }
 
       // Update residual_money in the database
-
-      await db.updateResidualMoney(beneficaryId, paidMoney);
 
       // Offline mode
       OffLineRequest offLineRequestBody = OffLineRequest(
@@ -318,8 +338,10 @@ class NfcDataCubit extends Cubit<NfcDataState> {
       offLineRequest.add(offLineRequestBody);
       await saveOffLineRequestsToSharedPreferences(
           data: data, context: context);
+      await db.updateResidualMoney(paidBeneficaryId, paidMoney);
+
       emit(SendOnlineSuccessState());
-     }
+    }
   }
 
   Future<void> saveOffLineRequestsToSharedPreferences(
@@ -327,7 +349,9 @@ class NfcDataCubit extends Cubit<NfcDataState> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     List<String> offLineRequestStrings =
         offLineRequest.map((e) => jsonEncode(e.toJson())).toList();
-    await prefs.setStringList('offLineRequests', offLineRequestStrings).then((value) {
+    await prefs
+        .setStringList('offLineRequests', offLineRequestStrings)
+        .then((value) {
       emit(SendOnlineSuccessState());
       printInvoice(
           Invoice(
@@ -335,9 +359,7 @@ class NfcDataCubit extends Cubit<NfcDataState> {
           ),
           context);
     });
-
   }
-
 
   late PaidBeneficaryModel paidBeneficary;
 
@@ -400,9 +422,20 @@ class ProductBody {
 
   ProductBody({this.id, this.count});
 
-  ProductBody.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    count = json['count'];
+  // تحويل كائن ProductBody إلى تمثيل JSON
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'count': count,
+    };
+  }
+
+  // تحويل تمثيل JSON إلى كائن ProductBody
+  factory ProductBody.fromJson(Map<String, dynamic> json) {
+    return ProductBody(
+      id: json['id'],
+      count: json['count'],
+    );
   }
 }
 
@@ -433,8 +466,6 @@ class OffLineRequest {
     };
   }
 
-
-
   OffLineRequest.fromJson(Map<String, dynamic> json) {
     paidBeneficaryId = json['paidBeneficaryId'];
     vendorId = json['vendorId'];
@@ -449,5 +480,4 @@ class OffLineRequest {
       });
     }
   }
-
 }

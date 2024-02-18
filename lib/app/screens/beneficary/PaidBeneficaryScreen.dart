@@ -126,8 +126,10 @@ class PaidBeneficaryScreen extends StatelessWidget {
                                                               .type ==
                                                           0) {
                                                         _showConfirmationDialog(
-                                                          paidBeneficaryModel: paidBeneficaryModel,
-                                                          beneficaryName: beneficaryName!,
+                                                          paidBeneficaryModel:
+                                                              paidBeneficaryModel,
+                                                          beneficaryName:
+                                                              beneficaryName!,
                                                           contextScreen:
                                                               context,
                                                           index: index,
@@ -155,9 +157,7 @@ class PaidBeneficaryScreen extends StatelessWidget {
                                                           MaterialPageRoute(
                                                             builder: (context) => AddInvoice(
                                                                 beneficaryId:
-                                                                    paidBeneficaryModel
-                                                                        .beneficary!
-                                                                        .id!,
+                                                                    beneficaryId!,
                                                                 paidBeneficaryModel:
                                                                     paidBeneficaryModel,
                                                                 beneficaryName: paidBeneficaryModel
@@ -276,8 +276,8 @@ class PaidBeneficaryScreen extends StatelessWidget {
     required int paidBeneficaryId,
     required int vendorId,
     required int beneficaryId,
-    required  paidBeneficaryModel,
-    required  String beneficaryName,
+    required paidBeneficaryModel,
+    required String beneficaryName,
   }) {
     var now = DateTime.now();
     String formattedDate = DateFormat('yyyy-MM-dd', 'en').format(now);
@@ -332,7 +332,8 @@ class PaidBeneficaryScreen extends StatelessWidget {
               onPressed: () async {
                 NfcDataCubit.get(context).makeCashPayment(
                   context: contextScreen,
-                  residualMoney: paidBeneficaryModel.paidBeneficary!.date![index].residual_money,
+                  residualMoney: paidBeneficaryModel
+                      .paidBeneficary!.date![index].residual_money,
                   paidBeneficaryId: paidBeneficaryId,
                   vendorId: vendorId,
                   beneficaryId: beneficaryId,
@@ -342,7 +343,9 @@ class PaidBeneficaryScreen extends StatelessWidget {
                     vendorName: appStore.name,
                     invoiceNo: -1,
                     date: formattedDate,
-                    residualMoney: paidBeneficaryModel.paidBeneficary!.date![index].residual_money - double.tryParse(paidMoneyController.text),
+                    residualMoney: paidBeneficaryModel
+                            .paidBeneficary!.date![index].residual_money -
+                        double.tryParse(paidMoneyController.text),
                     beneficaryName: beneficaryName,
                   ),
                 );
@@ -356,5 +359,4 @@ class PaidBeneficaryScreen extends StatelessWidget {
       },
     );
   }
-
 }

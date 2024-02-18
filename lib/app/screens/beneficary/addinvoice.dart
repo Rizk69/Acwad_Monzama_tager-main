@@ -339,18 +339,26 @@ class AddInvoice extends StatelessWidget {
                                                 .format(now);
                                         NfcDataCubit.get(context)
                                             .convertScannedItemsToProductsBody(
+                                                residualMoney: paidBeneficaryModel
+                                                        .paidBeneficary!
+                                                        .date![index]
+                                                        .residual_money -
+                                                    NfcDataCubit.get(context)
+                                                        .calculateTotalPrice(),
                                                 data: InvoiceData(
                                                   vendorName: appStore.name,
                                                   invoiceNo: -1,
                                                   date: formattedDate,
-                                                  residualMoney: beneficiaryData[
-                                                          'residual_money'] -
+                                                  residualMoney: paidBeneficaryModel
+                                                          .paidBeneficary!
+                                                          .date![index]
+                                                          .residual_money -
                                                       NfcDataCubit.get(context)
                                                           .calculateTotalPrice(),
                                                   beneficaryName:
                                                       beneficaryName,
                                                 ),
-                                                context: context,
+                                            context: context,
                                                 paidmoney:
                                                     NfcDataCubit.get(context)
                                                         .calculateTotalPrice(),
@@ -360,9 +368,7 @@ class AddInvoice extends StatelessWidget {
                                                         .paidBeneficary!
                                                         .date![index]
                                                         .id!,
-                                                beneficaryId:
-                                                    paidBeneficaryModel
-                                                        .beneficary!.id!,
+                                                beneficaryId: beneficaryId,
                                                 date: formattedDate);
                                       },
                                       child: const Text(
