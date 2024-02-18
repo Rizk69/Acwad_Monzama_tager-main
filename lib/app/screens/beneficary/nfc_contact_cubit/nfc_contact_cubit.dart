@@ -7,6 +7,7 @@ import 'package:nb_utils/nb_utils.dart';
 import 'package:smartcard/app/models/ProductModel.dart';
 import 'package:smartcard/app/models/benficary_data_model.dart';
 import 'package:smartcard/app/models/invoice.dart';
+import 'package:smartcard/app/models/invoice_beneficary.dart';
 import 'package:smartcard/app/models/offline_model.dart';
 import 'package:smartcard/app/utils/SignatureScreen.dart';
 import 'package:smartcard/app/utils/helper/database_helper.dart';
@@ -20,6 +21,7 @@ part 'nfc_contact_state.dart';
 class NfcDataCubit extends Cubit<NfcDataState> {
   NfcDataCubit() : super(NfcDataInitial());
   ProductBody productBody = ProductBody(id: 0, count: 0);
+  List<OffLineRequest> offLineRequest = [];
 
   static NfcDataCubit get(context) => BlocProvider.of(context);
 
@@ -63,7 +65,8 @@ class NfcDataCubit extends Cubit<NfcDataState> {
       {required int paidBeneficaryId,
       required int vendorId,
       required int beneficaryId,
-      required int paidmoney,
+      required double paidmoney,
+      required InvoiceData data,
       required String date,
       required BuildContext context}) {
     productsBody = scannedItems.map((ProductData? product) {
@@ -83,6 +86,7 @@ class NfcDataCubit extends Cubit<NfcDataState> {
       beneficaryId: beneficaryId,
       vendorId: vendorId,
       paidmoney: paidmoney,
+      data: data,
     );
   }
 
@@ -153,16 +157,54 @@ class NfcDataCubit extends Cubit<NfcDataState> {
       {required int paidBeneficaryId,
       required int vendorId,
       required int beneficaryId,
-      required int paidmoney,
+      required InvoiceData data,
+      required double paidmoney,
       required String date,
       required BuildContext context}) async {
     emit(BuyProductsLoadingState());
-    try {
-      var paidBeneficaryUrl = Uri.parse(
-          "${ApiHelper.setInvoiceBeneficary}?PaidBeneficaryId=$paidBeneficaryId&vendorId=$vendorId&beneficaryId=$beneficaryId&date=$date&paidmoney=$paidmoney");
+    bool isConnected = await ApiHelper().connectedToInternet();
+    if (isConnected) {
+      try {
+        var paidBeneficaryUrl = Uri.parse(
+            "${ApiHelper.setInvoiceBeneficary}?PaidBeneficaryId=$paidBeneficaryId&vendorId=$vendorId&beneficaryId=$beneficaryId&date=$date&paidmoney=$paidmoney");
 
-      Map<String, String> headers = {'Accept': 'application/json'};
+        Map<String, String> headers = {'Accept': 'application/json'};
 
+        Map<String, dynamic> requestBody = {
+          'product': productsBody.map((product) {
+            return {
+              'pro_id': product.id.toString(),
+              'count': product.count.toString(),
+            };
+          }).toList(),
+        };
+
+        var response = await http.post(paidBeneficaryUrl,
+            body: jsonEncode(requestBody), headers: headers);
+        var body = jsonDecode(response.body);
+
+        if (response.statusCode == 200) {
+          print(body);
+          beneficaryInvoice = Invoice.fromJson(body);
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    SignatureScreen(cashInvoice: beneficaryInvoice!)),
+          );
+
+          // printInvoice(beneficaryInvoice);
+          emit(BuyProductsSuccessState());
+        } else {
+          emit(BuyProductsErrorState(
+              "Statues code is ${response.statusCode}: and message is  ${body["message"]}"));
+        }
+      } catch (e) {
+        emit(BuyProductsErrorState(e.toString()));
+        print(e.toString());
+      }
+    } else {
+      // Offline mode
       Map<String, dynamic> requestBody = {
         'product': productsBody.map((product) {
           return {
@@ -171,34 +213,22 @@ class NfcDataCubit extends Cubit<NfcDataState> {
           };
         }).toList(),
       };
+      OffLineRequest offLineRequestBody = OffLineRequest(
+        product: requestBody,
+        paidBeneficaryId: paidBeneficaryId,
+        vendorId: vendorId,
+        beneficaryId: beneficaryId,
+        date: date,
+        paidMoney: paidmoney,
+      );
 
-      var response = await http.post(paidBeneficaryUrl,
-          body: jsonEncode(requestBody), headers: headers);
-      var body = jsonDecode(response.body);
-
-      if (response.statusCode == 200) {
-        print(body);
-        beneficaryInvoice = Invoice.fromJson(body);
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) =>
-                  SignatureScreen(cashInvoice: beneficaryInvoice!)),
-        );
-
-        // printInvoice(beneficaryInvoice);
-        emit(BuyProductsSuccessState());
-      } else {
-        emit(BuyProductsErrorState(
-            "Statues code is ${response.statusCode}: and message is  ${body["message"]}"));
-      }
-    } catch (e) {
-      emit(BuyProductsErrorState(e.toString()));
-      print(e.toString());
+      offLineRequest.add(offLineRequestBody);
+      await saveOffLineRequestsToSharedPreferences(
+          data: data, context: context);
+      // Handle offline UI or notification
     }
   }
 
-  List<CashRequest> cashRequests = [];
   Invoice? cashInvoice;
 
   makeCashPayment(
@@ -245,7 +275,8 @@ class NfcDataCubit extends Cubit<NfcDataState> {
       });
     } else {
       // Offline mode
-      CashRequest cashRequest = CashRequest(
+      OffLineRequest offLineRequestBody = OffLineRequest(
+        product: ProductBody(),
         paidBeneficaryId: paidBeneficaryId,
         vendorId: vendorId,
         beneficaryId: beneficaryId,
@@ -253,18 +284,19 @@ class NfcDataCubit extends Cubit<NfcDataState> {
         paidMoney: paidMoney,
       );
 
-      cashRequests.add(cashRequest);
-      await saveCashRequestsToSharedPreferences(data: data, context: context);
+      offLineRequest.add(offLineRequestBody);
+      await saveOffLineRequestsToSharedPreferences(
+          data: data, context: context);
       // Handle offline UI or notification
     }
   }
 
-  Future<void> saveCashRequestsToSharedPreferences(
+  Future<void> saveOffLineRequestsToSharedPreferences(
       {required InvoiceData data, required BuildContext context}) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<String> cashRequestStrings =
-        cashRequests.map((e) => jsonEncode(e.toJson())).toList();
-    await prefs.setStringList('cashRequests', cashRequestStrings);
+    List<String> offLineRequestStrings =
+        offLineRequest.map((e) => jsonEncode(e.toJson())).toList();
+    await prefs.setStringList('offLineRequests', offLineRequestStrings);
     printInvoice(
         Invoice(
           data: data,
@@ -272,12 +304,13 @@ class NfcDataCubit extends Cubit<NfcDataState> {
         context);
   }
 
-  Future<void> loadCashRequestsFromSharedPreferences() async {
+  Future<void> loadOffLineRequestsFromSharedPreferences() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<String>? cashRequestStrings = prefs.getStringList('cashRequests');
-    if (cashRequestStrings != null) {
-      cashRequests = cashRequestStrings
-          .map((e) => CashRequest.fromJson(jsonDecode(e)))
+    List<String>? offLineRequestStrings =
+        prefs.getStringList('offLineRequests');
+    if (offLineRequestStrings != null) {
+      offLineRequest = offLineRequestStrings
+          .map((e) => OffLineRequest.fromJson(jsonDecode(e)))
           .toList();
     }
   }
@@ -344,18 +377,20 @@ class ProductBody {
   ProductBody({this.id, this.count});
 }
 
-class CashRequest {
+class OffLineRequest {
   int paidBeneficaryId;
   int vendorId;
   int beneficaryId;
   String date;
   double paidMoney;
+  ProductBody product;
 
-  CashRequest(
+  OffLineRequest(
       {required this.paidBeneficaryId,
       required this.vendorId,
       required this.beneficaryId,
       required this.date,
+      required this.product,
       required this.paidMoney});
 
   Map<String, dynamic> toJson() {
@@ -365,50 +400,17 @@ class CashRequest {
       'beneficaryId': beneficaryId,
       'date': date,
       'paidMoney': paidMoney,
+      'product': product,
     };
   }
 
-  factory CashRequest.fromJson(Map<String, dynamic> json) {
-    return CashRequest(
+  factory OffLineRequest.fromJson(Map<String, dynamic> json) {
+    return OffLineRequest(
       paidBeneficaryId: json['paidBeneficaryId'],
       vendorId: json['vendorId'],
       beneficaryId: json['beneficaryId'],
       date: json['date'],
-      paidMoney: json['paidMoney'],
-    );
-  }
-}
-
-class CategoryRequest {
-  int paidBeneficaryId;
-  int vendorId;
-  int beneficaryId;
-  String date;
-  double paidMoney;
-
-  CategoryRequest(
-      {required this.paidBeneficaryId,
-      required this.vendorId,
-      required this.beneficaryId,
-      required this.date,
-      required this.paidMoney});
-
-  Map<String, dynamic> toJson() {
-    return {
-      'paidBeneficaryId': paidBeneficaryId,
-      'vendorId': vendorId,
-      'beneficaryId': beneficaryId,
-      'date': date,
-      'paidMoney': paidMoney,
-    };
-  }
-
-  factory CategoryRequest.fromJson(Map<String, dynamic> json) {
-    return CategoryRequest(
-      paidBeneficaryId: json['paidBeneficaryId'],
-      vendorId: json['vendorId'],
-      beneficaryId: json['beneficaryId'],
-      date: json['date'],
+      product: json['product'],
       paidMoney: json['paidMoney'],
     );
   }

@@ -16,7 +16,12 @@ class PaidBeneficaryScreen extends StatelessWidget {
   int paidBeneficaryId;
   int? beneficaryId;
   String? beneficaryName;
-  PaidBeneficaryScreen({super.key, required this.paidBeneficaryId , this.beneficaryId, this.beneficaryName});
+
+  PaidBeneficaryScreen(
+      {super.key,
+      required this.paidBeneficaryId,
+      this.beneficaryId,
+      this.beneficaryName});
 
   @override
   Widget build(BuildContext context) {
@@ -103,37 +108,60 @@ class PaidBeneficaryScreen extends StatelessWidget {
                                             padding: const EdgeInsets.all(11),
                                             margin: const EdgeInsets.all(11),
                                             child: InkWell(
-                                              onTap: paidBeneficaryModel.paidBeneficary!.date![index].paidDone == 0
-                                                  && paidBeneficaryModel.paidBeneficary!.date![index].uprove == 1
+                                              onTap: paidBeneficaryModel
+                                                              .paidBeneficary!
+                                                              .date![index]
+                                                              .paidDone ==
+                                                          0 &&
+                                                      paidBeneficaryModel
+                                                              .paidBeneficary!
+                                                              .date![index]
+                                                              .uprove ==
+                                                          1
                                                   ? () async {
-
-
                                                       if (paidBeneficaryModel
                                                               .paidBeneficary!
                                                               .date![index]
-                                                              .type == 0) {
+                                                              .type ==
+                                                          0) {
                                                         _showConfirmationDialog(
                                                           contextScreen:
                                                               context,
                                                           index: index,
                                                           vendorId:
                                                               appStore.userId,
-                                                          paidBeneficaryId: paidBeneficaryModel
+                                                          paidBeneficaryId:
+                                                              paidBeneficaryModel
                                                                   .paidBeneficary!
                                                                   .date![index]
                                                                   .id!,
-                                                          beneficaryId: paidBeneficaryModel.beneficary?.id ?? beneficaryId!,
+                                                          beneficaryId:
+                                                              paidBeneficaryModel
+                                                                      .beneficary
+                                                                      ?.id ??
+                                                                  beneficaryId!,
                                                         );
                                                       }
-                                                      if (paidBeneficaryModel.paidBeneficary!.date![index].type == 1) {
+                                                      if (paidBeneficaryModel
+                                                              .paidBeneficary!
+                                                              .date![index]
+                                                              .type ==
+                                                          1) {
                                                         Navigator.push(
                                                           context,
                                                           MaterialPageRoute(
-                                                            builder: (context) =>
-                                                                AddInvoice(
-                                                                    paidBeneficaryModel: paidBeneficaryModel,
-                                                                    beneficaryName: paidBeneficaryModel.beneficary?.fullName ?? beneficaryName!,
-                                                                    index: index),
+                                                            builder: (context) => AddInvoice(
+                                                                beneficaryId:
+                                                                    paidBeneficaryModel
+                                                                        .beneficary!
+                                                                        .id!,
+                                                                paidBeneficaryModel:
+                                                                    paidBeneficaryModel,
+                                                                beneficaryName: paidBeneficaryModel
+                                                                        .beneficary
+                                                                        ?.fullName ??
+                                                                    beneficaryName!,
+                                                                index: index),
                                                           ),
                                                         );
                                                       }
@@ -297,7 +325,8 @@ class PaidBeneficaryScreen extends StatelessWidget {
               child: Text('تأكيد',
                   style: TextStyle(color: Theme.of(context).primaryColorDark)),
               onPressed: () async {
-                Map<String, dynamic> beneficiaryData = await getBeneficiaryData(beneficaryId);
+                Map<String, dynamic> beneficiaryData =
+                    await getBeneficiaryData(beneficaryId);
 
                 NfcDataCubit.get(context).makeCashPayment(
                   context: contextScreen,
@@ -310,7 +339,8 @@ class PaidBeneficaryScreen extends StatelessWidget {
                     vendorName: appStore.name,
                     invoiceNo: -1,
                     date: formattedDate,
-                    residualMoney: beneficiaryData['residual_money'] - double.tryParse(paidMoneyController.text)!,
+                    residualMoney: beneficiaryData['residual_money'] -
+                        double.tryParse(paidMoneyController.text)!,
                     beneficaryName: beneficiaryData['fullName'],
                   ),
                 );
@@ -324,6 +354,7 @@ class PaidBeneficaryScreen extends StatelessWidget {
       },
     );
   }
+
   Future<Map<String, dynamic>> getBeneficiaryData(int beneficiaryId) async {
     Database db = await openDatabase('invoice.db');
     List<Map> beneficiaryData = await db.query(
@@ -342,10 +373,12 @@ class PaidBeneficaryScreen extends StatelessWidget {
       limit: 1,
     );
 
-    String beneficiaryName = beneficiaryData.isNotEmpty ? beneficiaryData[0]['fullName'] : '';
-    num residualMoney = paidBeneficiaryData.isNotEmpty ? paidBeneficiaryData[0]['residual_money'] : 0.0;
+    String beneficiaryName =
+        beneficiaryData.isNotEmpty ? beneficiaryData[0]['fullName'] : '';
+    num residualMoney = paidBeneficiaryData.isNotEmpty
+        ? paidBeneficiaryData[0]['residual_money']
+        : 0.0;
 
     return {'fullName': beneficiaryName, 'residual_money': residualMoney};
   }
-
 }

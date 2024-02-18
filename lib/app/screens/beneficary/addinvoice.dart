@@ -4,11 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lottie/lottie.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:smartcard/app/models/invoice.dart';
 import 'package:smartcard/app/utils/default_snake_bar.dart';
 import 'package:smartcard/app/utils/resource/color_manager.dart';
 import 'package:smartcard/app/widgets/backgrond_image.dart';
 import 'package:smartcard/app/widgets/default_appbar.dart';
 import 'package:smartcard/main.dart';
+import 'package:sqflite/sqflite.dart';
 import '../../models/ProductModel.dart';
 import '../../models/benficary_data_model.dart';
 import 'nfc_contact_cubit/nfc_contact_cubit.dart';
@@ -16,11 +18,14 @@ import 'nfc_contact_cubit/nfc_contact_cubit.dart';
 class AddInvoice extends StatelessWidget {
   PaidBeneficaryModel paidBeneficaryModel;
   int index;
+  int beneficaryId;
   String beneficaryName;
+
   AddInvoice(
       {super.key,
       required this.paidBeneficaryModel,
       required this.index,
+      required this.beneficaryId,
       required this.beneficaryName});
 
   @override
@@ -323,18 +328,32 @@ class AddInvoice extends StatelessWidget {
                                             MaterialStateProperty.all(
                                                 ColorManager.baseYellow),
                                       ),
-                                      onPressed: () {
+                                      onPressed: () async {
+                                        Map<String, dynamic> beneficiaryData =
+                                            await getBeneficiaryData(
+                                                beneficaryId);
+
                                         var now = DateTime.now();
                                         String formattedDate =
                                             DateFormat('yyyy-MM-dd', 'en')
                                                 .format(now);
                                         NfcDataCubit.get(context)
                                             .convertScannedItemsToProductsBody(
+                                                data: InvoiceData(
+                                                  vendorName: appStore.name,
+                                                  invoiceNo: -1,
+                                                  date: formattedDate,
+                                                  residualMoney: beneficiaryData[
+                                                          'residual_money'] -
+                                                      NfcDataCubit.get(context)
+                                                          .calculateTotalPrice(),
+                                                  beneficaryName:
+                                                      beneficaryName,
+                                                ),
                                                 context: context,
-                                                paidmoney: int.parse(
+                                                paidmoney:
                                                     NfcDataCubit.get(context)
-                                                        .calculateTotalPrice()
-                                                        .toStringAsFixed(0)),
+                                                        .calculateTotalPrice(),
                                                 vendorId: appStore.userId,
                                                 paidBeneficaryId:
                                                     paidBeneficaryModel
@@ -371,5 +390,32 @@ class AddInvoice extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<Map<String, dynamic>> getBeneficiaryData(int beneficiaryId) async {
+    Database db = await openDatabase('invoice.db');
+    List<Map> beneficiaryData = await db.query(
+      'OfflineBeneficiary',
+      columns: ['fullName'],
+      where: 'id = ?',
+      whereArgs: [beneficiaryId],
+    );
+
+    List<Map> paidBeneficiaryData = await db.query(
+      'OfflinePaidBeneficiary',
+      columns: ['residual_money'],
+      where: 'beneficiaryId = ?',
+      whereArgs: [beneficiaryId],
+      orderBy: 'date DESC',
+      limit: 1,
+    );
+
+    String beneficiaryName =
+        beneficiaryData.isNotEmpty ? beneficiaryData[0]['fullName'] : '';
+    num residualMoney = paidBeneficiaryData.isNotEmpty
+        ? paidBeneficiaryData[0]['residual_money']
+        : 0.0;
+
+    return {'fullName': beneficiaryName, 'residual_money': residualMoney};
   }
 }
