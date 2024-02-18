@@ -214,7 +214,7 @@ class NfcDataCubit extends Cubit<NfcDataState> {
         }).toList(),
       };
       OffLineRequest offLineRequestBody = OffLineRequest(
-        product: requestBody,
+        product: [ProductBody()],
         paidBeneficaryId: paidBeneficaryId,
         vendorId: vendorId,
         beneficaryId: beneficaryId,
@@ -276,7 +276,7 @@ class NfcDataCubit extends Cubit<NfcDataState> {
     } else {
       // Offline mode
       OffLineRequest offLineRequestBody = OffLineRequest(
-        product: ProductBody(),
+        product: [ProductBody()],
         paidBeneficaryId: paidBeneficaryId,
         vendorId: vendorId,
         beneficaryId: beneficaryId,
@@ -383,7 +383,7 @@ class OffLineRequest {
   int beneficaryId;
   String date;
   double paidMoney;
-  ProductBody product;
+  List<ProductBody> product;
 
   OffLineRequest(
       {required this.paidBeneficaryId,
