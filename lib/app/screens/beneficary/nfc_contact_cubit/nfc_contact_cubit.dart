@@ -206,7 +206,7 @@ class NfcDataCubit extends Cubit<NfcDataState> {
       required int vendorId,
       required int beneficaryId,
       required String date,
-        required InvoiceData data,
+      required InvoiceData data,
       required double paidMoney,
       required BuildContext context}) async {
     emit(MakeCashLoadingState());
@@ -254,7 +254,7 @@ class NfcDataCubit extends Cubit<NfcDataState> {
       );
 
       cashRequests.add(cashRequest);
-      await saveCashRequestsToSharedPreferences(data: data,context: context);
+      await saveCashRequestsToSharedPreferences(data: data, context: context);
       // Handle offline UI or notification
     }
   }
@@ -370,6 +370,41 @@ class CashRequest {
 
   factory CashRequest.fromJson(Map<String, dynamic> json) {
     return CashRequest(
+      paidBeneficaryId: json['paidBeneficaryId'],
+      vendorId: json['vendorId'],
+      beneficaryId: json['beneficaryId'],
+      date: json['date'],
+      paidMoney: json['paidMoney'],
+    );
+  }
+}
+
+class CategoryRequest {
+  int paidBeneficaryId;
+  int vendorId;
+  int beneficaryId;
+  String date;
+  double paidMoney;
+
+  CategoryRequest(
+      {required this.paidBeneficaryId,
+      required this.vendorId,
+      required this.beneficaryId,
+      required this.date,
+      required this.paidMoney});
+
+  Map<String, dynamic> toJson() {
+    return {
+      'paidBeneficaryId': paidBeneficaryId,
+      'vendorId': vendorId,
+      'beneficaryId': beneficaryId,
+      'date': date,
+      'paidMoney': paidMoney,
+    };
+  }
+
+  factory CategoryRequest.fromJson(Map<String, dynamic> json) {
+    return CategoryRequest(
       paidBeneficaryId: json['paidBeneficaryId'],
       vendorId: json['vendorId'],
       beneficaryId: json['beneficaryId'],

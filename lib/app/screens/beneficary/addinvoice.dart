@@ -18,7 +18,10 @@ class AddInvoice extends StatelessWidget {
   int index;
   String beneficaryName;
   AddInvoice(
-      {super.key, required this.paidBeneficaryModel, required this.index , required this.beneficaryName});
+      {super.key,
+      required this.paidBeneficaryModel,
+      required this.index,
+      required this.beneficaryName});
 
   @override
   Widget build(BuildContext context) {
