@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:smartcard/app/utils/resource/theme_manger/cubit/app_cubit.dart';
 
 import '../../main.dart';
 
@@ -33,6 +34,7 @@ class _MyConnectivityStatefulWidgetState
         if (connectivityResult == ConnectivityResult.wifi) {
           print("hon");
           print("Connected to WiFi!");
+          AppCubit.get(context).sendPaidOfflineToOnline();
           // await dbHelper.getAllInvoices();
         } else if (connectivityResult == ConnectivityResult.mobile) {
           print("Connected to Mobile Data!");

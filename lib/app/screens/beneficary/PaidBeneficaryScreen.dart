@@ -5,6 +5,7 @@ import 'package:lottie/lottie.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:smartcard/app/models/invoice.dart';
 import 'package:smartcard/app/screens/beneficary/addinvoice.dart';
+import 'package:smartcard/app/utils/helper/database_helper.dart';
 import 'package:smartcard/app/utils/resource/color_manager.dart';
 import 'package:smartcard/app/widgets/backgrond_image.dart';
 import 'package:smartcard/main.dart';
@@ -125,6 +126,8 @@ class PaidBeneficaryScreen extends StatelessWidget {
                                                               .type ==
                                                           0) {
                                                         _showConfirmationDialog(
+                                                          paidBeneficaryModel: paidBeneficaryModel,
+                                                          beneficaryName: beneficaryName!,
                                                           contextScreen:
                                                               context,
                                                           index: index,
@@ -273,6 +276,8 @@ class PaidBeneficaryScreen extends StatelessWidget {
     required int paidBeneficaryId,
     required int vendorId,
     required int beneficaryId,
+    required  paidBeneficaryModel,
+    required  String beneficaryName,
   }) {
     var now = DateTime.now();
     String formattedDate = DateFormat('yyyy-MM-dd', 'en').format(now);
@@ -325,11 +330,9 @@ class PaidBeneficaryScreen extends StatelessWidget {
               child: Text('تأكيد',
                   style: TextStyle(color: Theme.of(context).primaryColorDark)),
               onPressed: () async {
-                Map<String, dynamic> beneficiaryData =
-                    await getBeneficiaryData(beneficaryId);
-
                 NfcDataCubit.get(context).makeCashPayment(
                   context: contextScreen,
+                  residualMoney: paidBeneficaryModel.paidBeneficary!.date![index].residual_money,
                   paidBeneficaryId: paidBeneficaryId,
                   vendorId: vendorId,
                   beneficaryId: beneficaryId,
@@ -339,9 +342,8 @@ class PaidBeneficaryScreen extends StatelessWidget {
                     vendorName: appStore.name,
                     invoiceNo: -1,
                     date: formattedDate,
-                    residualMoney: beneficiaryData['residual_money'] -
-                        double.tryParse(paidMoneyController.text)!,
-                    beneficaryName: beneficiaryData['fullName'],
+                    residualMoney: paidBeneficaryModel.paidBeneficary!.date![index].residual_money - double.tryParse(paidMoneyController.text),
+                    beneficaryName: beneficaryName,
                   ),
                 );
 
@@ -355,30 +357,4 @@ class PaidBeneficaryScreen extends StatelessWidget {
     );
   }
 
-  Future<Map<String, dynamic>> getBeneficiaryData(int beneficiaryId) async {
-    Database db = await openDatabase('invoice.db');
-    List<Map> beneficiaryData = await db.query(
-      'OfflineBeneficiary',
-      columns: ['fullName'],
-      where: 'id = ?',
-      whereArgs: [beneficiaryId],
-    );
-
-    List<Map> paidBeneficiaryData = await db.query(
-      'OfflinePaidBeneficiary',
-      columns: ['residual_money'],
-      where: 'beneficiaryId = ?',
-      whereArgs: [beneficiaryId],
-      orderBy: 'date DESC',
-      limit: 1,
-    );
-
-    String beneficiaryName =
-        beneficiaryData.isNotEmpty ? beneficiaryData[0]['fullName'] : '';
-    num residualMoney = paidBeneficiaryData.isNotEmpty
-        ? paidBeneficiaryData[0]['residual_money']
-        : 0.0;
-
-    return {'fullName': beneficiaryName, 'residual_money': residualMoney};
-  }
 }

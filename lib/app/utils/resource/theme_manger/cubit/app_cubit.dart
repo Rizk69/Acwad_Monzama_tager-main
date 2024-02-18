@@ -3,9 +3,11 @@ import 'dart:convert';
 import 'package:bloc/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
+import 'package:nb_utils/nb_utils.dart';
 import 'package:smartcard/app/models/offline_model.dart';
 import 'package:smartcard/app/network/api_end_points.dart';
 import 'package:http/http.dart' as http;
+import 'package:smartcard/app/screens/beneficary/nfc_contact_cubit/nfc_contact_cubit.dart';
 import 'package:smartcard/app/utils/helper/database_helper.dart';
 
 part 'app_state.dart';
@@ -14,9 +16,7 @@ class AppCubit extends Cubit<ThemeState> {
   AppCubit() : super(ThemeInitial());
 
   static AppCubit get(context) => BlocProvider.of(context);
-  final db =  DatabaseHelper.instance;
-
-
+  final db = DatabaseHelper.instance;
 
   late OfflineModel offlineModel;
 
@@ -56,7 +56,8 @@ class AppCubit extends Cubit<ThemeState> {
           emit(GetOfflineDataSuccessState());
         } else {
           print('No internet connection and no local data available');
-          emit(GetOfflineDataErrorState('No internet connection and no local data available'));
+          emit(GetOfflineDataErrorState(
+              'No internet connection and no local data available'));
         }
       }
     } catch (e) {
@@ -65,6 +66,99 @@ class AppCubit extends Cubit<ThemeState> {
     }
   }
 
+  List<OffLineRequest> offLineRequest = [];
+
+  Future<void> loadOffLineRequestsFromSharedPreferences() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String>? offLineRequestStrings =
+        prefs.getStringList('offLineRequests');
+    if (offLineRequestStrings != null) {
+      offLineRequest = offLineRequestStrings
+          .map((e) => OffLineRequest.fromJson(jsonDecode(e)))
+          .toList();
+      print(offLineRequest.length);
+      emit(GetRequestSuccessState());
+    }
+  }
+
+
+
+  Future<void> sendPaidOfflineToOnline() async {
+    List<Map<String, dynamic>> requestDataList = offLineRequest.map((request) {
+      List<Map<String, dynamic>> productsList = request.products!.map((product) => {
+        'pro_id': product.id,
+        'count': product.count,
+      }).toList();
+
+      return {
+        'PaidBeneficaryId': request.paidBeneficaryId,
+        'vendorId': request.vendorId,
+        'beneficaryId': request.beneficaryId,
+        'paidmoney': request.paidMoney,
+        'date': request.date,
+        'product': productsList,
+      };
+    }).toList();
+
+    var sendPaidUrl = Uri.parse(ApiHelper.sendPaidOfflineUrl);
+    var headers = {'Content-Type': 'application/json'};
+    var body = jsonEncode(requestDataList);
+
+    try {
+
+      var response = await http.post(sendPaidUrl, headers: headers, body: body);
+      if (response.statusCode == 200) {
+        emit(SendOfflineDataSuccessState());
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.remove('offLineRequests');
+      } else {
+        emit(SendOfflineDataErrorState("Erorr"));
+      }
+    } catch (e) {
+      print(e);
+      emit(SendOfflineDataErrorState(e.toString()));    }
+  }
+
+
+
+  // sendPaidOfflineToOnline() async {
+  //   emit(SendOfflineDataLoadingState());
+  //   bool isConnected = await ApiHelper().connectedToInternet();
+  //   if (isConnected) {
+  //     try {
+  //       var sendPaidUrl = Uri.parse(ApiHelper.sendPaidOfflineUrl);
+  //       Map<String, String> headers = {'Accept': 'application/json'};
+  //
+  //       print(offLineRequest.length);
+  //
+  //       var body = [
+  //         {
+  //           "paidBeneficaryId":1,
+  //           "vendorId":1,
+  //           "beneficaryId":1,
+  //           "date":"2024-02-18",
+  //           "paidMoney":40.0,
+  //           "product":[]
+  //         }
+  //       ];
+  //
+  //       var response = await http.post(sendPaidUrl,body:body , headers: headers);
+  //       if (response.statusCode == 200) {
+  //         var body = jsonDecode(response.body);
+  //         if (body['message'] == 'Success') {
+  //           emit(SendOfflineDataSuccessState());
+  //         } else {
+  //           emit(SendOfflineDataErrorState("Erorr"));
+  //         }
+  //       } else {
+  //         emit(SendOfflineDataErrorState('Failed to load data'));
+  //       }
+  //     } catch (e) {
+  //       print(e);
+  //       emit(SendOfflineDataErrorState(e.toString()));
+  //     }
+  //   }
+  // }
 
   bool isDark = false;
 
@@ -73,5 +167,4 @@ class AppCubit extends Cubit<ThemeState> {
     print("Is dark : $isDark");
     emit(AppChangeModeState());
   }
-
 }

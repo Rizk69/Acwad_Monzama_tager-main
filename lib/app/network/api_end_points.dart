@@ -24,6 +24,8 @@ class ApiHelper {
   static const setInvoiceBeneficary = "${baseUrl}api/invoiceBeneficary";
   static const setBeneficarySignature = "${baseUrl}api/saveImage/";
 
+  static const sendPaidOfflineUrl = "${baseUrl}api/invoiceBeneficaryOffline";
+
 
   static const offline = "${baseUrl}api/getAllData/";
 

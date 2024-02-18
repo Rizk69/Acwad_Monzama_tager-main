@@ -466,6 +466,60 @@ CREATE TABLE OfflineCategoriesData (
 
 
 
+  Future<Map<String, dynamic>> getBeneficiaryData(int beneficiaryId) async {
+    Database db = await openDatabase('invoice.db');
+    List<Map> beneficiaryData = await db.query(
+      'OfflineBeneficiary',
+      columns: ['fullName'],
+      where: 'id = ?',
+      whereArgs: [beneficiaryId],
+    );
+
+    List<Map> paidBeneficiaryData = await db.query(
+      'OfflinePaidBeneficiary',
+      columns: ['residual_money'],
+      where: 'beneficiaryId = ?',
+      whereArgs: [beneficiaryId],
+      orderBy: 'date DESC',
+      limit: 1,
+    );
+
+    String beneficiaryName =
+    beneficiaryData.isNotEmpty ? beneficiaryData[0]['fullName'] : '';
+    num residualMoney = paidBeneficiaryData.isNotEmpty
+        ? paidBeneficiaryData[0]['residual_money']
+        : 0.0;
+
+    return {'fullName': beneficiaryName, 'residual_money': residualMoney};
+  }
+
+
+
+  Future<void> updateResidualMoney(int paidBeneficiaryId, double amountToSubtract) async {
+    Database db = await openDatabase('invoice.db');
+    // First, get the current residual_money for the given paidBeneficiaryId
+    List<Map> result = await db.query(
+      'OfflinePaidBeneficiary',
+      columns: ['residual_money'],
+      where: 'id = ?',
+      whereArgs: [paidBeneficiaryId],
+    );
+
+    if (result.isNotEmpty) {
+      double currentResidualMoney = result[0]['residual_money'];
+      double newResidualMoney = currentResidualMoney - amountToSubtract;
+
+      // Update the residual_money with the new value
+      await db.update(
+        'OfflinePaidBeneficiary',
+        {'residual_money': newResidualMoney},
+        where: 'id = ?',
+        whereArgs: [paidBeneficiaryId],
+      );
+    }
+  }
+
+
   Future close() async {
     final db = await instance.database;
     db.close();

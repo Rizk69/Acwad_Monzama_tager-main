@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nb_utils/nb_utils.dart';
+import 'package:smartcard/app/screens/beneficary/nfc_contact_cubit/nfc_contact_cubit.dart';
 import 'package:smartcard/app/screens/beneficary/nfcccontactscreen.dart';
 import 'package:smartcard/app/utils/resource/theme_manger/cubit/app_cubit.dart';
 import '../../main.dart';
@@ -107,13 +109,25 @@ class _HomeFormState extends State<HomeForm>
                         children: [
                           imageBackground(context),
                           Scaffold(
+                              // floatingActionButton: FloatingActionButton(
+                              //   onPressed: () async {
+                              //     SharedPreferences prefs =
+                              //         await SharedPreferences.getInstance();
+                              //     List<String>? offLineRequestStrings =
+                              //         prefs.getStringList('offLineRequests');
+                              //     print(offLineRequestStrings);
+                              //     AppCubit.get(context)
+                              //         .sendPaidOfflineToOnline();
+                              //   },
+                              // ),
                               backgroundColor:
                                   Theme.of(context).scaffoldBackgroundColor,
                               appBar: AppBar(
                                 backgroundColor: Theme.of(context)
                                     .appBarTheme
                                     .backgroundColor,
-                                leading: IconButton(onPressed: () => _toggleAnimation(),
+                                leading: IconButton(
+                                  onPressed: () => _toggleAnimation(),
                                   icon: AnimatedIcon(
                                     color: Theme.of(context).primaryColor,
                                     icon: AnimatedIcons.menu_close,
@@ -123,7 +137,8 @@ class _HomeFormState extends State<HomeForm>
                                 actions: [
                                   IconButton(
                                     onPressed: () {
-                                      AppCubit.get(context).getOfflineData(vendorId: appStore.userId);
+                                      AppCubit.get(context).getOfflineData(
+                                          vendorId: appStore.userId);
                                     },
                                     icon: Icon(
                                       Icons.update,
@@ -139,7 +154,6 @@ class _HomeFormState extends State<HomeForm>
                                       color: Theme.of(context).primaryColor,
                                     ),
                                   ),
-
                                 ],
                               ),
                               body: Container(

@@ -31,7 +31,12 @@ class NfcDataLoaded extends NfcDataState {}
 
 class NfcDataLoading extends NfcDataState {}
 
+class SendOnlineSuccessState extends NfcDataState {}
+class SendOnlineErrorState extends NfcDataState {
+  final error;
 
+  const SendOnlineErrorState(this.error);
+}
 
 class MakeCashErrorState extends NfcDataState {
   final error;
