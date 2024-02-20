@@ -27,7 +27,6 @@ class _NfcContactCardScreenState extends State<NfcContactCardScreen> {
   void initState() {
     super.initState();
     _tagRead();
-
     checkNfcAvailability();
   }
 
@@ -78,9 +77,10 @@ class _NfcContactCardScreenState extends State<NfcContactCardScreen> {
   Future<bool> _checkServerNfcAvailability(String cardID) async {
     bool isConnected = await ApiHelper().connectedToInternet();
 
-    if (isConnected) {
-      const serverEndpoint = 'https://monazama.acwad-it.com/api/Beneficary/card_nfc';
-      try {
+    const serverEndpoint =
+        'https://monazama.acwad-it.com/api/Beneficary/card_nfc';
+    try {
+      if (isConnected) {
         final response = await http.post(
           Uri.parse(serverEndpoint),
           headers: {'Content-Type': 'application/json'},
@@ -92,7 +92,8 @@ class _NfcContactCardScreenState extends State<NfcContactCardScreen> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(responseBody['exists'] == false ? 'False' : 'True'),
-              backgroundColor: responseBody['exists'] == false ? Colors.red : Colors.green,
+              backgroundColor:
+                  responseBody['exists'] == false ? Colors.red : Colors.green,
             ),
           );
           print('Server response: ${response.body}');
@@ -104,42 +105,41 @@ class _NfcContactCardScreenState extends State<NfcContactCardScreen> {
               backgroundColor: Colors.red,
             ),
           );
-          print('Server request failed with status code: ${response.statusCode}');
+          print(
+              'Server request failed with status code: ${response.statusCode}');
           return false;
         }
-      } catch (e) {
+      } else {
+        final db = await DatabaseHelper.instance.database;
+        List<Map> results = await db.query(
+          'OfflineBeneficiary',
+          where: 'cardID = ?',
+          whereArgs: [cardID],
+        );
+
+        bool exists = results.isNotEmpty;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error making server request: $e'),
-            backgroundColor: Colors.red,
+            content: Text(exists ? 'الكارت موجود' : 'الكارت غير موجود'),
+            backgroundColor: exists ? Colors.green : Colors.red,
           ),
         );
-        print('Error making server request: $e');
-        return false;
-      } finally {
-        checkNfcAvailability();
-      }
-    } else {
-      // Check OfflineBeneficiary table when there's no internet connection
-      final db = await DatabaseHelper.instance.database;
-      List<Map> results = await db.query(
-        'OfflineBeneficiary',
-        where: 'cardID = ?',
-        whereArgs: [cardID],
-      );
 
-      bool exists = results.isNotEmpty;
+        return exists;
+      }
+    } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(exists ? 'True' : 'False'),
-          backgroundColor: exists ? Colors.green : Colors.red,
+          content: Text('Error making server request: $e'),
+          backgroundColor: Colors.red,
         ),
       );
+      print('Error making server request: $e');
+      return false;
+    } finally {
       checkNfcAvailability();
-      return exists;
     }
   }
-
 
   Future<bool> _checkPasswordNfc(String cardID, String password) async {
     bool isConnected = await ApiHelper().connectedToInternet();
@@ -156,7 +156,8 @@ class _NfcContactCardScreenState extends State<NfcContactCardScreen> {
           body: jsonEncode({'cardID': cardID, 'cardpassword': password}),
         );
         Map<String, dynamic> responseBody = jsonDecode(response.body);
-        BeneficaryNfcModel beneficaryNfcModel = BeneficaryNfcModel.fromJson(responseBody);
+        BeneficaryNfcModel beneficaryNfcModel =
+            BeneficaryNfcModel.fromJson(responseBody);
 
         if (response.statusCode == 200) {
           ScaffoldMessenger.of(context).hideCurrentSnackBar();
@@ -190,9 +191,7 @@ class _NfcContactCardScreenState extends State<NfcContactCardScreen> {
         );
         return false;
       }
-    }
-
-    else {
+    } else {
       // Check in the OfflineBeneficiary table
       final db = await DatabaseHelper.instance.database;
       List<Map> results = await db.query(
@@ -232,12 +231,12 @@ class _NfcContactCardScreenState extends State<NfcContactCardScreen> {
           ),
         );
 
-
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
             builder: (context) => BeneficaryNfcScreen(
-              beneficaryNfcModel: beneficaryNfcModel, cubit: cubit,
+              beneficaryNfcModel: beneficaryNfcModel,
+              cubit: cubit,
             ),
           ),
         );
@@ -388,24 +387,25 @@ class _NfcContactCardScreenState extends State<NfcContactCardScreen> {
             imageBackground(context),
             Scaffold(
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-              body: showPasswordDialog("336F7E86"),
+              body:
+                  //showPasswordDialog("336F7E86"),
 
-              // isNfcAvailable
-              //     ? Center(
-              //         child: SvgPicture.asset(
-              //           'assets/images/nfc_icon.svg',
-              //           color: Theme.of(context).primaryColor,
-              //           height: 200,
-              //           width: 200,
-              //         ),
-              //       )
-              //     : Center(
-              //         child: Text(
-              //         'NFC is not available',
-              //         style: TextStyle(
-              //           color: Theme.of(context).primaryColorLight,
-              //         ),
-              //       )),
+                  isNfcAvailable
+                      ? Center(
+                          child: SvgPicture.asset(
+                            'assets/images/nfc_icon.svg',
+                            color: Theme.of(context).primaryColor,
+                            height: 200,
+                            width: 200,
+                          ),
+                        )
+                      : Center(
+                          child: Text(
+                          'NFC is not available',
+                          style: TextStyle(
+                            color: Theme.of(context).primaryColorLight,
+                          ),
+                        )),
             ),
           ],
         ),

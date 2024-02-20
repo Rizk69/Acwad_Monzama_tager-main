@@ -11,7 +11,7 @@
         android:required="true" />
 
     <application
-        android:label="smartcard"
+        android:label="Monazmah"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
