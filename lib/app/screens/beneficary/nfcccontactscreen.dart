@@ -150,11 +150,17 @@ class _NfcContactCardScreenState extends State<NfcContactCardScreen> {
     print("Card password $password");
     if (isConnected) {
       try {
+        print("Card Id $cardID");
+        print("Card password $password");
         final response = await http.post(
           Uri.parse(serverEndpoint),
-          headers: {'Content-Type': 'application/json'},
+          headers: {
+            'Content-Type': 'application/json',
+          },
           body: jsonEncode({'cardID': cardID, 'cardpassword': password}),
         );
+        print("Card Id $cardID");
+        print("Card password $password");
         Map<String, dynamic> responseBody = jsonDecode(response.body);
         BeneficaryNfcModel beneficaryNfcModel =
             BeneficaryNfcModel.fromJson(responseBody);
@@ -166,8 +172,8 @@ class _NfcContactCardScreenState extends State<NfcContactCardScreen> {
             MaterialPageRoute(
               builder: (context) => BeneficaryNfcScreen(
                 beneficaryNfcModel: beneficaryNfcModel,
-                cubit: cubit,
-              ),
+                    cubit: cubit,
+                  ),
             ),
           );
           return true;
@@ -387,25 +393,24 @@ class _NfcContactCardScreenState extends State<NfcContactCardScreen> {
             imageBackground(context),
             Scaffold(
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-              body:
-                  //showPasswordDialog("336F7E86"),
+              body: showPasswordDialog("43729786"),
 
-                  isNfcAvailable
-                      ? Center(
-                          child: SvgPicture.asset(
-                            'assets/images/nfc_icon.svg',
-                            color: Theme.of(context).primaryColor,
-                            height: 200,
-                            width: 200,
-                          ),
-                        )
-                      : Center(
-                          child: Text(
-                          'NFC is not available',
-                          style: TextStyle(
-                            color: Theme.of(context).primaryColorLight,
-                          ),
-                        )),
+              // isNfcAvailable
+              //     ? Center(
+              //         child: SvgPicture.asset(
+              //           'assets/images/nfc_icon.svg',
+              //           color: Theme.of(context).primaryColor,
+              //           height: 200,
+              //           width: 200,
+              //         ),
+              //       )
+              //     : Center(
+              //         child: Text(
+              //         'NFC is not available',
+              //         style: TextStyle(
+              //           color: Theme.of(context).primaryColorLight,
+              //         ),
+              //       )),
             ),
           ],
         ),
