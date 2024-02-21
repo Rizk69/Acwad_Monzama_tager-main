@@ -25,6 +25,10 @@ void main() async {
 //   await dbHelper.openDatabaseFn();
   await EasyLocalization.ensureInitialized();
   await initialize();
+  sharedPreferences =
+      await SharedPreferences.getInstance(); // Initialize sharedPreferences
+
+  await sharedPreferences.setBool('isFirstTime', true);
   runApp(EasyLocalization(
       supportedLocales: const [Locale("ar", "SA")],
       path: "assets/translations",

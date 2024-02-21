@@ -74,170 +74,164 @@ class PaidBeneficaryScreen extends StatelessWidget {
                               color: Theme.of(context).primaryColor,
                             )),
                       ),
-                      body: SingleChildScrollView(
-                        child: RefreshIndicator(
-                          onRefresh: () async {
-                            await NfcDataCubit.get(context).getPaidBeneficary(
-                                beneficaryId: paidBeneficaryId);
-                          },
-                          child: Column(
-                            children: [
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              state is! NfcDataLoading
-                                  ? SizedBox(
-                                      height:
-                                          MediaQuery.of(context).size.height *
-                                              1.1,
-                                      child: ListView.builder(
-                                        itemCount: paidBeneficaryModel
-                                                .paidBeneficary!.date?.length ??
-                                            0, // تحديد عدد العناصر
-                                        itemBuilder: (context, index) {
-                                          return Container(
-                                            decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(15),
-                                                border: Border.all(
-                                                  color:
-                                                      ColorManager.baseYellow,
-                                                  width: 1,
-                                                ),
-                                                color: Theme.of(context)
-                                                    .primaryColorDark),
-                                            padding: const EdgeInsets.all(11),
-                                            margin: const EdgeInsets.all(11),
-                                            child: InkWell(
-                                              onTap: paidBeneficaryModel
-                                                              .paidBeneficary!
-                                                              .date![index]
-                                                              .paidDone ==
-                                                          0 &&
-                                                      paidBeneficaryModel
-                                                              .paidBeneficary!
-                                                              .date![index]
-                                                              .uprove ==
-                                                          1
-                                                  ? () async {
-                                                      if (paidBeneficaryModel
-                                                              .paidBeneficary!
-                                                              .date![index]
-                                                              .type ==
-                                                          0) {
-                                                        _showConfirmationDialog(
-                                                          paidBeneficaryModel:
-                                                              paidBeneficaryModel,
-                                                          beneficaryName:
-                                                              beneficaryName!,
-                                                          contextScreen:
-                                                              context,
-                                                          index: index,
-                                                          vendorId:
-                                                              appStore.userId,
-                                                          paidBeneficaryId:
-                                                              paidBeneficaryModel
-                                                                  .paidBeneficary!
-                                                                  .date![index]
-                                                                  .id!,
-                                                          beneficaryId:
-                                                              paidBeneficaryModel
-                                                                      .beneficary
-                                                                      ?.id ??
-                                                                  beneficaryId!,
-                                                        );
-                                                      }
-                                                      if (paidBeneficaryModel
-                                                              .paidBeneficary!
-                                                              .date![index]
-                                                              .type ==
-                                                          1) {
-                                                        Navigator.push(
-                                                          context,
-                                                          MaterialPageRoute(
-                                                            builder: (context) => AddInvoice(
-                                                                beneficaryId:
-                                                                    beneficaryId!,
-                                                                paidBeneficaryModel:
-                                                                    paidBeneficaryModel,
-                                                                beneficaryName: paidBeneficaryModel
-                                                                        .beneficary
-                                                                        ?.fullName ??
-                                                                    beneficaryName!,
-                                                                index: index),
-                                                          ),
-                                                        );
-                                                      }
-                                                    }
-                                                  : null,
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.start,
-                                                children: [
-                                                  Row(
-                                                    children: [
-                                                      Text(
-                                                        'نوع الصرف: ${paidBeneficaryModel.paidBeneficary!.date![index].type == 0 ? "نقدا" : "مواد عينية" ?? ''}',
-                                                        style: TextStyle(
-                                                            color: Theme.of(
-                                                                    context)
-                                                                .primaryColor),
-                                                      ),
-                                                      Spacer(),
-                                                      paidBeneficaryModel
-                                                                  .paidBeneficary!
-                                                                  .date![index]
-                                                                  .paidDone ==
-                                                              1
-                                                          ? Icon(
-                                                              Icons
-                                                                  .check_circle,
-                                                              color:
-                                                                  Colors.green,
-                                                            )
-                                                          : Container()
-                                                    ],
-                                                  ),
-                                                  Text(
-                                                    'المبلغ الدفع: ${paidBeneficaryModel.paidBeneficary!.date![index].paidMoney ?? ''}',
-                                                    style: TextStyle(
-                                                        color: Theme.of(context)
-                                                            .primaryColor),
-                                                  ),
-                                                  Text(
-                                                    'المبلغ المتبقي المتاح: ${paidBeneficaryModel.paidBeneficary!.date![index].residual_money ?? ''}',
-                                                    style: TextStyle(
-                                                        color: Theme.of(context)
-                                                            .primaryColor),
-                                                  ),
-                                                  Text(
-                                                      style: TextStyle(
-                                                          color: Theme.of(
-                                                                  context)
-                                                              .primaryColor),
-                                                      'حاله الصرف: ${paidBeneficaryModel.paidBeneficary!.date![index].uprove == 1 && paidBeneficaryModel.paidBeneficary!.date![index].paidDone == 0 ? "جاري" : paidBeneficaryModel.paidBeneficary!.date![index].paidDone == 0 && paidBeneficaryModel.paidBeneficary!.date![index].uprove == 0 ? "في انتظار الموافقة" : "تم الصرف" ?? ''}'),
-                                                  Text(
-                                                      style: TextStyle(
-                                                          color: Theme.of(
-                                                                  context)
-                                                              .primaryColor),
-                                                      'التاريخ: ${paidBeneficaryModel.paidBeneficary!.date![index].date ?? ''}'),
-                                                ],
-                                              ),
+                      body: RefreshIndicator(
+                        onRefresh: () async {
+                          await NfcDataCubit.get(context).getPaidBeneficary(
+                              beneficaryId: paidBeneficaryId);
+                        },
+                        child: Column(
+                          children: [
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            if (state is! NfcDataLoading)
+                              Expanded(
+                                child: ListView.builder(
+                                  scrollDirection: Axis.vertical,
+                                  itemCount: paidBeneficaryModel
+                                          .paidBeneficary!.date?.length ??
+                                      0, // تحديد عدد العناصر
+                                  itemBuilder: (context, index) {
+                                    return Container(
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(15),
+                                          border: Border.all(
+                                            color: ColorManager.baseYellow,
+                                          width: 1,
+                                        ),
+                                        color: Theme.of(context)
+                                            .primaryColorDark),
+                                    padding: const EdgeInsets.all(11),
+                                    margin: const EdgeInsets.all(11),
+                                    child: InkWell(
+                                      onTap: paidBeneficaryModel
+                                          .paidBeneficary!
+                                          .date![index]
+                                          .paidDone ==
+                                          0 &&
+                                          paidBeneficaryModel
+                                              .paidBeneficary!
+                                              .date![index]
+                                              .uprove ==
+                                              1
+                                          ? () async {
+                                        if (paidBeneficaryModel
+                                            .paidBeneficary!
+                                            .date![index]
+                                            .type ==
+                                            0) {
+                                          _showConfirmationDialog(
+                                            paidBeneficaryModel:
+                                            paidBeneficaryModel,
+                                            beneficaryName:
+                                            beneficaryName!,
+                                            contextScreen:
+                                            context,
+                                            index: index,
+                                            vendorId:
+                                            appStore.userId,
+                                            paidBeneficaryId:
+                                            paidBeneficaryModel
+                                                .paidBeneficary!
+                                                .date![index]
+                                                .id!,
+                                            beneficaryId:
+                                            paidBeneficaryModel
+                                                .beneficary
+                                                ?.id ??
+                                                beneficaryId!,
+                                          );
+                                        }
+                                        if (paidBeneficaryModel
+                                            .paidBeneficary!
+                                            .date![index]
+                                            .type ==
+                                            1) {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => AddInvoice(
+                                                  beneficaryId:
+                                                  beneficaryId!,
+                                                  paidBeneficaryModel:
+                                                  paidBeneficaryModel,
+                                                  beneficaryName: paidBeneficaryModel
+                                                      .beneficary
+                                                      ?.fullName ??
+                                                      beneficaryName!,
+                                                  index: index),
                                             ),
                                           );
-                                        },
+                                        }
+                                      }
+                                          : null,
+                                      child: Column(
+                                        crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                        MainAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Text(
+                                                'نوع الصرف: ${paidBeneficaryModel.paidBeneficary!.date![index].type == 0 ? "نقدا" : "مواد عينية" ?? ''}',
+                                                style: TextStyle(
+                                                    color: Theme.of(
+                                                        context)
+                                                        .primaryColor),
+                                              ),
+                                              Spacer(),
+                                              paidBeneficaryModel
+                                                  .paidBeneficary!
+                                                  .date![index]
+                                                  .paidDone ==
+                                                  1
+                                                  ? Icon(
+                                                Icons
+                                                    .check_circle,
+                                                color:
+                                                Colors.green,
+                                              )
+                                                  : Container()
+                                            ],
+                                          ),
+                                          Text(
+                                            'المبلغ الدفع: ${paidBeneficaryModel.paidBeneficary!.date![index].paidMoney ?? ''}',
+                                            style: TextStyle(
+                                                color: Theme.of(context)
+                                                    .primaryColor),
+                                          ),
+                                          Text(
+                                            'المبلغ المتبقي المتاح: ${paidBeneficaryModel.paidBeneficary!.date![index].residual_money ?? ''}',
+                                            style: TextStyle(
+                                                color: Theme.of(context)
+                                                    .primaryColor),
+                                          ),
+                                          Text(
+                                              style: TextStyle(
+                                                  color: Theme.of(
+                                                      context)
+                                                      .primaryColor),
+                                              'حاله الصرف: ${paidBeneficaryModel.paidBeneficary!.date![index].uprove == 1 && paidBeneficaryModel.paidBeneficary!.date![index].paidDone == 0 ? "جاري" : paidBeneficaryModel.paidBeneficary!.date![index].paidDone == 0 && paidBeneficaryModel.paidBeneficary!.date![index].uprove == 0 ? "في انتظار الموافقة" : "تم الصرف" ?? ''}'),
+                                          Text(
+                                              style: TextStyle(
+                                                    color: Theme.of(context)
+                                                        .primaryColor),
+                                                'التاريخ: ${paidBeneficaryModel.paidBeneficary!.date![index].date ?? ''}'),
+                                          ],
+                                        ),
                                       ),
-                                    )
-                                  : const Center(
-                                      child: CircularProgressIndicator()),
-                              SizedBox(
-                                height: 20,
+                                    );
+                                  },
+                                ),
                               )
-                            ],
-                          ),
+                            else
+                              const Center(child: CircularProgressIndicator()),
+                            SizedBox(
+                              height: 20,
+                            )
+                          ],
                         ),
                       ));
                 }

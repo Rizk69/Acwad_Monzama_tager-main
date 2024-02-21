@@ -1,16 +1,11 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 import 'package:smartcard/app/models/invoice_beneficary.dart';
-import 'package:smartcard/app/models/model_keys.dart';
-import 'package:smartcard/main.dart';
-
 import '../utils/common.dart';
 import '../utils/routes_manager.dart';
 

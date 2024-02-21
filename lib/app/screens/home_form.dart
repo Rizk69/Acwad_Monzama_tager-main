@@ -5,6 +5,7 @@ import 'package:smartcard/app/screens/beneficary/nfc_contact_cubit/nfc_contact_c
 import 'package:smartcard/app/screens/beneficary/nfcccontactscreen.dart';
 import 'package:smartcard/app/utils/resource/theme_manger/cubit/app_cubit.dart';
 import '../../main.dart';
+import '../network/api_end_points.dart';
 import '../widgets/MyConnectivityStatefulWidget.dart';
 import '../widgets/backgrond_image.dart';
 import '../utils/drawerdata.dart';
@@ -25,6 +26,8 @@ class _HomeFormState extends State<HomeForm>
   @override
   void initState() {
     super.initState();
+    _checkFirstTimeUser();
+
     _getInvoiceCount();
     _animationController = AnimationController(
         vsync: this, duration: const Duration(milliseconds: 300));
@@ -48,6 +51,38 @@ class _HomeFormState extends State<HomeForm>
     _animationController.dispose();
 
     super.dispose();
+  }
+
+  void _checkFirstTimeUser() async {
+    bool isConnected = await ApiHelper().connectedToInternet();
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool isFirstTime = prefs.getBool('isFirstTime') ?? true;
+
+    if (isConnected && isFirstTime) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("مرحباً بك"),
+            content: Text("هل تريد مزامنه قاعده البيانات"),
+            actions: <Widget>[
+              TextButton(
+                child: Text("موافق"),
+                onPressed: () async {
+                  await AppCubit.get(context).getOfflineData(
+                      vendorId: appStore.userId, context: context);
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+
+      // Set isFirstTime to false to prevent showing the alert again
+      prefs.setBool('isFirstTime', false);
+    }
   }
 
   _onWillPop(bool s) async {
@@ -138,6 +173,7 @@ class _HomeFormState extends State<HomeForm>
                                   IconButton(
                                     onPressed: () {
                                       AppCubit.get(context).getOfflineData(
+                                          context: context,
                                           vendorId: appStore.userId);
                                     },
                                     icon: Icon(

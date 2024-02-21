@@ -30,12 +30,6 @@ class _NfcContactCardScreenState extends State<NfcContactCardScreen> {
     checkNfcAvailability();
   }
 
-  @override
-  void dispose() {
-    NfcManager.instance.stopSession();
-    super.dispose();
-  }
-
   Future<void> checkNfcAvailability() async {
     try {
       isNfcAvailable = await NfcManager.instance.isAvailable();
@@ -172,8 +166,8 @@ class _NfcContactCardScreenState extends State<NfcContactCardScreen> {
             MaterialPageRoute(
               builder: (context) => BeneficaryNfcScreen(
                 beneficaryNfcModel: beneficaryNfcModel,
-                    cubit: cubit,
-                  ),
+                cubit: cubit,
+              ),
             ),
           );
           return true;
@@ -393,24 +387,25 @@ class _NfcContactCardScreenState extends State<NfcContactCardScreen> {
             imageBackground(context),
             Scaffold(
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-              body: showPasswordDialog("43729786"),
+              body:
+                  //showPasswordDialog("336F7E86"),
 
-              // isNfcAvailable
-              //     ? Center(
-              //         child: SvgPicture.asset(
-              //           'assets/images/nfc_icon.svg',
-              //           color: Theme.of(context).primaryColor,
-              //           height: 200,
-              //           width: 200,
-              //         ),
-              //       )
-              //     : Center(
-              //         child: Text(
-              //         'NFC is not available',
-              //         style: TextStyle(
-              //           color: Theme.of(context).primaryColorLight,
-              //         ),
-              //       )),
+                  isNfcAvailable
+                      ? Center(
+                          child: SvgPicture.asset(
+                            'assets/images/nfc_icon.svg',
+                            color: Theme.of(context).primaryColor,
+                            height: 200,
+                            width: 200,
+                          ),
+                        )
+                      : Center(
+                          child: Text(
+                          'NFC is not available',
+                          style: TextStyle(
+                            color: Theme.of(context).primaryColorLight,
+                          ),
+                        )),
             ),
           ],
         ),

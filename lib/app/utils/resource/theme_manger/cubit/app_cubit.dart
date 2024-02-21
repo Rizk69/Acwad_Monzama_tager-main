@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -20,7 +21,8 @@ class AppCubit extends Cubit<ThemeState> {
 
   late OfflineModel offlineModel;
 
-  Future<void> getOfflineData({required int vendorId}) async {
+  Future<void> getOfflineData(
+      {required int vendorId, required BuildContext context}) async {
     try {
       emit(GetOfflineDataLoadingState());
 
@@ -39,13 +41,34 @@ class AppCubit extends Cubit<ThemeState> {
           await db.saveOfflineData(offlineModel);
 
           if (offlineModel.message == 'Success') {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                behavior: SnackBarBehavior.fixed,
+                content: Text('تم مزامنه البيانات بنجاح'),
+                backgroundColor: Colors.green,
+              ),
+            );
             emit(GetOfflineDataSuccessState());
           } else {
             print(offlineModel.message.toString());
             emit(GetOfflineDataErrorState(offlineModel.message.toString()));
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                behavior: SnackBarBehavior.floating,
+                content: Text(offlineModel.message.toString()),
+                backgroundColor: Colors.red,
+              ),
+            );
           }
         } else {
           print('Failed to load data');
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              behavior: SnackBarBehavior.floating,
+              content: Text('هناك خطا في اراسال البيانات'),
+              backgroundColor: Colors.red,
+            ),
+          );
           emit(GetOfflineDataErrorState('Failed to load data'));
         }
       } else {
@@ -81,14 +104,14 @@ class AppCubit extends Cubit<ThemeState> {
     }
   }
 
-
-
   Future<void> sendPaidOfflineToOnline() async {
     List<Map<String, dynamic>> requestDataList = offLineRequest.map((request) {
-      List<Map<String, dynamic>> productsList = request.products!.map((product) => {
-        'pro_id': product.id,
-        'count': product.count,
-      }).toList();
+      List<Map<String, dynamic>> productsList = request.products!
+          .map((product) => {
+                'pro_id': product.id,
+                'count': product.count,
+              })
+          .toList();
 
       return {
         'PaidBeneficaryId': request.paidBeneficaryId,
@@ -105,7 +128,6 @@ class AppCubit extends Cubit<ThemeState> {
     var body = jsonEncode(requestDataList);
 
     try {
-
       var response = await http.post(sendPaidUrl, headers: headers, body: body);
       if (response.statusCode == 200) {
         emit(SendOfflineDataSuccessState());
@@ -116,10 +138,9 @@ class AppCubit extends Cubit<ThemeState> {
       }
     } catch (e) {
       print(e);
-      emit(SendOfflineDataErrorState(e.toString()));    }
+      emit(SendOfflineDataErrorState(e.toString()));
+    }
   }
-
-
 
   // sendPaidOfflineToOnline() async {
   //   emit(SendOfflineDataLoadingState());
