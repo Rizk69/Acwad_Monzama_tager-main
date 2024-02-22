@@ -47,6 +47,12 @@ class _NfcContactCardScreenState extends State<NfcContactCardScreen> {
     }
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+    NfcManager.instance.stopSession();
+  }
+
   void _tagRead() {
     NfcManager.instance.startSession(onDiscovered: (NfcTag tag) async {
       try {

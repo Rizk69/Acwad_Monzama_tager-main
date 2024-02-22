@@ -368,27 +368,7 @@ class NfcDataCubit extends Cubit<NfcDataState> {
     try {
       emit(GetPaidBeneficaryLoadingState());
 
-      // Fetch data from OfflinePaidBeneficiary table first
-      final db = await DatabaseHelper.instance.database;
-      List<Map> results = await db.query(
-        'OfflinePaidBeneficiary',
-        where: 'beneficiaryId = ?',
-        whereArgs: [beneficaryId],
-      );
 
-      if (results.isNotEmpty) {
-        List<PaidBeneficaryData> paidBeneficaryDataList = results
-            .map((e) => PaidBeneficaryData.fromJson(e.cast<String, dynamic>()))
-            .toList();
-        paidBeneficary = PaidBeneficaryModel(
-          beneficary: null, // Adjust this according to your model structure
-          message: 'Success',
-          paidBeneficary: PaidBeneficary(date: paidBeneficaryDataList),
-        );
-        emit(GetPaidBeneficarySuccessState());
-      } else {
-        emit(GetPaidBeneficaryErrorState('No offline data available'));
-      }
 
       // Update data with API response if there is an internet connection
       bool isConnected = await ApiHelper().connectedToInternet();
@@ -409,6 +389,29 @@ class NfcDataCubit extends Cubit<NfcDataState> {
           }
         } else {
           emit(GetPaidBeneficaryErrorState('Failed to load data'));
+        }
+      } else {
+        // Fetch data from OfflinePaidBeneficiary table first
+        final db = await DatabaseHelper.instance.database;
+        List<Map> results = await db.query(
+          'OfflinePaidBeneficiary',
+          where: 'beneficiaryId = ?',
+          whereArgs: [beneficaryId],
+        );
+
+        if (results.isNotEmpty) {
+          List<PaidBeneficaryData> paidBeneficaryDataList = results
+              .map(
+                  (e) => PaidBeneficaryData.fromJson(e.cast<String, dynamic>()))
+              .toList();
+          paidBeneficary = PaidBeneficaryModel(
+            beneficary: null, // Adjust this according to your model structure
+            message: 'Success',
+            paidBeneficary: PaidBeneficary(date: paidBeneficaryDataList),
+          );
+          emit(GetPaidBeneficarySuccessState());
+        } else {
+          emit(GetPaidBeneficaryErrorState('No offline data available'));
         }
       }
     } catch (e) {
