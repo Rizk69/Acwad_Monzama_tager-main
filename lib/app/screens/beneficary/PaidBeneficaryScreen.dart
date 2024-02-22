@@ -8,14 +8,13 @@ import 'package:smartcard/app/screens/beneficary/addinvoice.dart';
 import 'package:smartcard/app/utils/resource/color_manager.dart';
 import 'package:smartcard/app/widgets/backgrond_image.dart';
 import 'package:smartcard/main.dart';
-
+import 'package:get/get.dart';
 import 'nfc_contact_cubit/nfc_contact_cubit.dart';
 
 class PaidBeneficaryScreen extends StatelessWidget {
   int paidBeneficaryId;
   int? beneficaryId;
   String? beneficaryName;
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   PaidBeneficaryScreen(
       {super.key,
@@ -24,12 +23,12 @@ class PaidBeneficaryScreen extends StatelessWidget {
       this.beneficaryName});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext contextscreen) {
     return Container(
-      color: Theme.of(context).canvasColor,
+      color: Theme.of(contextscreen).canvasColor,
       child: Stack(
         children: [
-          imageBackground(context),
+          imageBackground(contextscreen),
           BlocProvider(
             create: (context) => NfcDataCubit()
               ..getPaidBeneficary(beneficaryId: paidBeneficaryId),
@@ -50,7 +49,6 @@ class PaidBeneficaryScreen extends StatelessWidget {
                   var paidBeneficaryModel =
                       NfcDataCubit.get(context).paidBeneficary;
                   return Scaffold(
-                      key: _scaffoldKey,
                       backgroundColor:
                           Theme.of(context).scaffoldBackgroundColor,
                       appBar: AppBar(
@@ -89,7 +87,7 @@ class PaidBeneficaryScreen extends StatelessWidget {
                                 child: ListView.builder(
                                   scrollDirection: Axis.vertical,
                                   itemCount: paidBeneficaryModel
-                                      .paidBeneficary!.date?.length ??
+                                          .paidBeneficary!.date?.length ??
                                       0, // تحديد عدد العناصر
                                   itemBuilder: (contextBuilder, index) {
                                     return Container(
@@ -126,7 +124,7 @@ class PaidBeneficaryScreen extends StatelessWidget {
                                                         paidBeneficaryModel,
                                                     beneficaryName:
                                                         beneficaryName!,
-                                                    contextScreen: context,
+                                                    contextscreen: context,
                                                     index: index,
                                                     vendorId: appStore.userId,
                                                     paidBeneficaryId:
@@ -260,7 +258,7 @@ class PaidBeneficaryScreen extends StatelessWidget {
   }
 
   void _showConfirmationDialog({
-    required BuildContext contextScreen,
+    required BuildContext contextscreen,
     required int index,
     required int paidBeneficaryId,
     required int vendorId,
@@ -274,7 +272,7 @@ class PaidBeneficaryScreen extends StatelessWidget {
         TextEditingController(); // تمرير Controller كمعامل إضافي
 
     showDialog(
-      context: contextScreen,
+      context: contextscreen,
       builder: (BuildContext context) {
         return AlertDialog(
           backgroundColor: Theme.of(context).primaryColorDark,
@@ -319,10 +317,8 @@ class PaidBeneficaryScreen extends StatelessWidget {
               child: Text('تأكيد',
                   style: TextStyle(color: Theme.of(context).primaryColorDark)),
               onPressed: () async {
-                print(paidBeneficaryModel
-                    .paidBeneficary!.date![index].residual_money);
                 NfcDataCubit.get(context).makeCashPayment(
-                  context: contextScreen,
+                  context: contextscreen,
                   residualMoney: paidBeneficaryModel
                       .paidBeneficary!.date![index].residual_money
                       .toDouble(),
@@ -342,7 +338,7 @@ class PaidBeneficaryScreen extends StatelessWidget {
                   ),
                 );
 
-                Navigator.of(context).pop(); // Close the dialog
+                Navigator.of(context).pop();
               },
             ),
           ],

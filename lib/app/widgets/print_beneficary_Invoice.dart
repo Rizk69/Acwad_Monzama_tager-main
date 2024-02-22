@@ -8,7 +8,7 @@ import 'package:printing/printing.dart';
 import 'package:smartcard/app/models/invoice.dart';
 import 'package:smartcard/app/utils/routes_manager.dart';
 
-Future<void> printInvoice(Invoice? data ,context) async {
+Future<void> printInvoice(Invoice? data, context) async {
   Navigator.pushNamedAndRemoveUntil(
       context, Routes.homeFormRoute, (route) => false);
 
@@ -70,9 +70,10 @@ Future<void> printInvoice(Invoice? data ,context) async {
             pw.Directionality(
                 textDirection: pw.TextDirection.rtl,
                 child: pw.Center(
-                    child: pw.Text('${data?.data?.invoiceNo!=-1? data?.data?.invoiceNo : 'تمت عملية البيع في وضع الاوفلاين'}',
+                    child: pw.Text(
+                        '${data?.data?.invoiceNo != -1 ? data?.data?.invoiceNo : 'تمت عملية البيع في وضع الاوفلاين'}',
                         style: const pw.TextStyle(
-                          fontSize: 10,
+                          fontSize: 13,
                         )))),
             pw.Directionality(
                 textDirection: pw.TextDirection.rtl,
@@ -86,7 +87,7 @@ Future<void> printInvoice(Invoice? data ,context) async {
             pw.Directionality(
                 textDirection: pw.TextDirection.rtl,
                 child: pw.Center(
-                    child: pw.Text("${data?.data?.date??""}",
+                    child: pw.Text("${data?.data?.date ?? ""}",
                         style: const pw.TextStyle(
                           fontSize: 13,
                         )))),
@@ -102,14 +103,46 @@ Future<void> printInvoice(Invoice? data ,context) async {
             pw.Directionality(
                 textDirection: pw.TextDirection.rtl,
                 child: pw.Center(
-                    child: pw.Text("${data?.data?.residualMoney??0}",
+                    child: pw.Text("${data?.data?.totalPriceInvoice ?? 0}",
                         style: const pw.TextStyle(
                           fontSize: 13,
                         )))),
             pw.Directionality(
                 textDirection: pw.TextDirection.rtl,
                 child: pw.Center(
-                    child: pw.Text(' رصيد المستفيد المتبقي : ',
+                    child: pw.Text(' رصيد المسحوب : ',
+                        style: const pw.TextStyle(
+                          fontSize: 13,
+                        )))),
+          ]),
+          pw.Row(mainAxisAlignment: pw.MainAxisAlignment.end, children: [
+            pw.Directionality(
+                textDirection: pw.TextDirection.rtl,
+                child: pw.Center(
+                    child: pw.Text("${data?.data?.residualMoney ?? 0}",
+                        style: const pw.TextStyle(
+                          fontSize: 13,
+                        )))),
+            pw.Directionality(
+                textDirection: pw.TextDirection.rtl,
+                child: pw.Center(
+                    child: pw.Text(' رصيد المستفيد المتبقي لدفعه: ',
+                        style: const pw.TextStyle(
+                          fontSize: 13,
+                        )))),
+          ]),
+          pw.Row(mainAxisAlignment: pw.MainAxisAlignment.end, children: [
+            pw.Directionality(
+                textDirection: pw.TextDirection.rtl,
+                child: pw.Center(
+                    child: pw.Text("${data?.data?.balance ?? 0}",
+                        style: const pw.TextStyle(
+                          fontSize: 13,
+                        )))),
+            pw.Directionality(
+                textDirection: pw.TextDirection.rtl,
+                child: pw.Center(
+                    child: pw.Text(' رصيد الاجمالى : ',
                         style: const pw.TextStyle(
                           fontSize: 13,
                         )))),

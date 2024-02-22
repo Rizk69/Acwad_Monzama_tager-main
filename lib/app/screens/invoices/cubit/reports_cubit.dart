@@ -287,8 +287,7 @@ class ReportsCubit extends Cubit<ReportsState> {
 
   Future<void> getAllBeneficaryInvoices({required int beneficaryId}) async {
     try {
-      emit(
-          GetAllBeneficaryInvoicesLoadingState()); // Emit a loading state before making the API call
+      emit(GetAllBeneficaryInvoicesLoadingState());
 
       print(beneficaryId);
 

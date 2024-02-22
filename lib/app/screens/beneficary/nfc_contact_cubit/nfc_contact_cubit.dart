@@ -1,13 +1,13 @@
 import 'dart:convert';
 
-import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:smartcard/app/models/ProductModel.dart';
 import 'package:smartcard/app/models/benficary_data_model.dart';
 import 'package:smartcard/app/models/invoice.dart';
-import 'package:smartcard/app/models/invoice_beneficary.dart';
 import 'package:smartcard/app/models/offline_model.dart';
 import 'package:smartcard/app/utils/SignatureScreen.dart';
 import 'package:smartcard/app/utils/helper/database_helper.dart';
@@ -178,7 +178,8 @@ class NfcDataCubit extends Cubit<NfcDataState> {
       try {
         var paidBeneficaryUrl = Uri.parse(
             "${ApiHelper.setInvoiceBeneficary}?PaidBeneficaryId=$paidBeneficaryId&vendorId=$vendorId&beneficaryId=$beneficaryId&date=$date&paidmoney=$paidmoney");
-
+        print(
+            "${ApiHelper.setInvoiceBeneficary}?PaidBeneficaryId=$paidBeneficaryId&vendorId=$vendorId&beneficaryId=$beneficaryId&date=$date&paidmoney=$paidmoney");
         Map<String, String> headers = {'Accept': 'application/json'};
 
         var response = await http.post(paidBeneficaryUrl,
@@ -220,14 +221,15 @@ class NfcDataCubit extends Cubit<NfcDataState> {
       print("residualMoney $residualMoney");
 
       if (paidmoney > residualMoney) {
-        emit(SendOnlineErrorState(
-            'Paid money is greater than the residual money.'));
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+          const SnackBar(
             content: Text('المبلغ المراد سحبه اكبر من المتاح'),
             backgroundColor: Colors.red,
           ),
         );
+        emit(SendOnlineErrorState(
+            'Paid money is greater than the residual money.'));
+
         return;
       }
 
@@ -287,8 +289,20 @@ class NfcDataCubit extends Cubit<NfcDataState> {
             ),
             (route) => false,
           );
+          print('fdsbgdfgbv');
 
           emit(MakeCashSuccessState(cashInvoice!));
+        }
+        if (paidMoney > residualMoney) {
+          ScaffoldMessenger.maybeOf(context)?.showSnackBar(
+            SnackBar(
+              content: Text(
+                'المبلغ المراد سحبه أكبر من المتاح. المبلغ المتاح: $residualMoney',
+                style: TextStyle(color: Colors.white),
+              ),
+              backgroundColor: Colors.red,
+            ),
+          );
         }
 
         // printInvoice(cashInvoice);
@@ -312,21 +326,19 @@ class NfcDataCubit extends Cubit<NfcDataState> {
       print("residualMoney $residualMoney");
 
       if (paidMoney > residualMoney) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('المبلغ المراد سحبه اكبر من المتاح'),
+        ScaffoldMessenger.maybeOf(context)?.showSnackBar(
+          SnackBar(
+            content: Text(
+              'المبلغ المراد سحبه أكبر من المتاح. المبلغ المتاح: $residualMoney',
+              style: TextStyle(color: Colors.white),
+            ),
             backgroundColor: Colors.red,
           ),
         );
-        emit(const SendOnlineErrorState(
-            'Paid money is greater than the residual money.'));
 
         return;
       }
 
-      // Update residual_money in the database
-
-      // Offline mode
       OffLineRequest offLineRequestBody = OffLineRequest(
         products: [],
         paidBeneficaryId: paidBeneficaryId,
@@ -368,9 +380,6 @@ class NfcDataCubit extends Cubit<NfcDataState> {
     try {
       emit(GetPaidBeneficaryLoadingState());
 
-
-
-      // Update data with API response if there is an internet connection
       bool isConnected = await ApiHelper().connectedToInternet();
       if (isConnected) {
         var paidBeneficaryUrl =

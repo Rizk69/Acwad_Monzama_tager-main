@@ -17,13 +17,17 @@ class InvoiceData {
   int? invoiceNo;
   String? date;
   num? residualMoney;
+  String? totalPriceInvoice;
+  num? balance;
 
   InvoiceData(
       {this.vendorName,
-        this.beneficaryName,
-        this.invoiceNo,
-        this.date,
-        this.residualMoney});
+      this.beneficaryName,
+      this.invoiceNo,
+      this.date,
+      this.balance,
+      this.totalPriceInvoice,
+      this.residualMoney});
 
   InvoiceData.fromJson(Map<String, dynamic> json) {
     vendorName = json['vendorName'];
@@ -31,6 +35,8 @@ class InvoiceData {
     invoiceNo = json['invoiceNo'];
     date = json['date'];
     residualMoney = json['residual_money'];
+    balance = json['balance'];
+    totalPriceInvoice = json['totalPrice_invoice'];
   }
 
 }
