@@ -20,6 +20,7 @@ class HomeForm extends StatefulWidget {
 class _HomeFormState extends State<HomeForm>
     with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
+
   bool isFabEnabled = false;
   int invoiceCount = 0;
 
@@ -193,7 +194,7 @@ class _HomeFormState extends State<HomeForm>
                                 ],
                               ),
                               body: Container(
-                                color: Colors.transparent,
+                                color: Colors.white,
                                 child: Center(
                                   child: SingleChildScrollView(
                                     child: Column(
@@ -204,8 +205,9 @@ class _HomeFormState extends State<HomeForm>
                                       children: [
                                         SizedBox(
                                             height: MediaQuery.of(context)
-                                                .size
-                                                .height,
+                                                    .size
+                                                    .height /
+                                                1.5,
                                             child:
                                                 const NfcContactCardScreen()),
                                       ],

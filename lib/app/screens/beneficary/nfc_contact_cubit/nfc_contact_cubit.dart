@@ -312,14 +312,15 @@ class NfcDataCubit extends Cubit<NfcDataState> {
       print("residualMoney $residualMoney");
 
       if (paidMoney > residualMoney) {
-        emit(SendOnlineErrorState(
-            'Paid money is greater than the residual money.'));
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+          const SnackBar(
             content: Text('المبلغ المراد سحبه اكبر من المتاح'),
             backgroundColor: Colors.red,
           ),
         );
+        emit(const SendOnlineErrorState(
+            'Paid money is greater than the residual money.'));
+
         return;
       }
 

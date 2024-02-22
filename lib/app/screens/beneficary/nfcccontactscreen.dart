@@ -85,7 +85,9 @@ class _NfcContactCardScreenState extends State<NfcContactCardScreen> {
           Map<String, dynamic> responseBody = jsonDecode(response.body);
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(responseBody['exists'] == false ? 'False' : 'True'),
+              content: Text(responseBody['exists'] == false
+                  ? 'الكارت غير موجود'
+                  : 'الكارت موجود'),
               backgroundColor:
                   responseBody['exists'] == false ? Colors.red : Colors.green,
             ),
@@ -387,25 +389,24 @@ class _NfcContactCardScreenState extends State<NfcContactCardScreen> {
             imageBackground(context),
             Scaffold(
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-              body:
-                  //showPasswordDialog("336F7E86"),
+              body: showPasswordDialog("336F7E86"),
 
-                  isNfcAvailable
-                      ? Center(
-                          child: SvgPicture.asset(
-                            'assets/images/nfc_icon.svg',
-                            color: Theme.of(context).primaryColor,
-                            height: 200,
-                            width: 200,
-                          ),
-                        )
-                      : Center(
-                          child: Text(
-                          'NFC is not available',
-                          style: TextStyle(
-                            color: Theme.of(context).primaryColorLight,
-                          ),
-                        )),
+              // isNfcAvailable
+              //     ? Center(
+              //         child: SvgPicture.asset(
+              //           'assets/images/nfc_icon.svg',
+              //           color: Theme.of(context).primaryColor,
+              //           height: 200,
+              //           width: 200,
+              //         ),
+              //       )
+              //     : Center(
+              //         child: Text(
+              //         'NFC is not available',
+              //         style: TextStyle(
+              //           color: Theme.of(context).primaryColorLight,
+              //         ),
+              //       )),
             ),
           ],
         ),
