@@ -396,7 +396,7 @@ class _NfcContactCardScreenState extends State<NfcContactCardScreen> {
             imageBackground(context),
             Scaffold(
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-              body: showPasswordDialog("739BBB86"),
+              body: showPasswordDialog("336F7E86"),
 
               // isNfcAvailable
               //     ? Center(

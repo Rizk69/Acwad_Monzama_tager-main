@@ -358,7 +358,7 @@ class AddInvoice extends StatelessWidget {
                                                   beneficaryName:
                                                       beneficaryName,
                                                 ),
-                                            context: context,
+                                                context: context,
                                                 paidmoney:
                                                     NfcDataCubit.get(context)
                                                         .calculateTotalPrice(),
@@ -410,7 +410,7 @@ class AddInvoice extends StatelessWidget {
     List<Map> paidBeneficiaryData = await db.query(
       'OfflinePaidBeneficiary',
       columns: ['residual_money'],
-      where: 'beneficiaryId = ?',
+      where: 'beneficary_id = ?',
       whereArgs: [beneficiaryId],
       orderBy: 'date DESC',
       limit: 1,

@@ -17,7 +17,7 @@ class InvoiceData {
   int? invoiceNo;
   String? date;
   num? residualMoney;
-  String? totalPriceInvoice;
+  num? totalPriceInvoice;
   num? balance;
 
   InvoiceData(
