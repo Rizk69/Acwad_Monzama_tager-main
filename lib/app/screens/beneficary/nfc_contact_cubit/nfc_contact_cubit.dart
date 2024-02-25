@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get/get.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:smartcard/app/models/ProductModel.dart';
 import 'package:smartcard/app/models/benficary_data_model.dart';
@@ -401,12 +400,13 @@ class NfcDataCubit extends Cubit<NfcDataState> {
         }
       } else {
         final db = await DatabaseHelper.instance.database;
+        print(beneficaryId);
         List<Map> results = await db.query(
           'OfflinePaidBeneficiary',
-          where: 'beneficiaryId = ?',
-          whereArgs: [beneficaryId],
+          where: 'beneficiaryId=?'.trim(),
+          whereArgs: ["$beneficaryId"],
         );
-
+        print("results$results");
         if (results.isNotEmpty) {
           print(results);
           List<PaidBeneficaryData> paidBeneficaryDataList = results
@@ -420,10 +420,12 @@ class NfcDataCubit extends Cubit<NfcDataState> {
           );
           emit(GetPaidBeneficarySuccessState());
         } else {
+          print('No offline data available');
           emit(GetPaidBeneficaryErrorState('No offline data available'));
         }
       }
     } catch (e) {
+      print(e.toString());
       emit(GetPaidBeneficaryErrorState(e.toString()));
     }
   }

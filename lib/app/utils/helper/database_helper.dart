@@ -468,6 +468,7 @@ CREATE TABLE OfflineCategoriesData (
       beneficiary.paidBeneficary = paidBeneficary;
       beneficiaries.add(beneficiary);
     }
+    print(beneficiaries.toString());
 
     return OfflineModel(beneficaries: beneficiaries);
   }

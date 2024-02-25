@@ -74,6 +74,7 @@ class AppCubit extends Cubit<ThemeState> {
       } else {
         // Retrieve the data from SQLite
         OfflineModel? offlineData = await db.getOfflineDataFromDB();
+        print(offlineData.toString());
         if (offlineData != null) {
           offlineModel = offlineData;
           emit(GetOfflineDataSuccessState());
