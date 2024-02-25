@@ -319,6 +319,8 @@ CREATE TABLE OfflineCategoriesData (
     return InvoiceBeneficary(data: invoiceBeneficaryDataList);
   }
 
+
+
   Future<void> saveOfflineData(OfflineModel data) async {
     final db = await database;
 
@@ -384,7 +386,7 @@ CREATE TABLE OfflineCategoriesData (
           print('Beneficiary data inserted successfully');
         }
 
-        for (var paidBeneficiary in beneficiary.paidBeneficiaries ?? []) {
+        for (var paidBeneficiary in beneficiary.paidBeneficary ?? []) {
           var paidBeneficiaryData = {
             'id': paidBeneficiary.id,
             'date': paidBeneficiary.date,
@@ -469,6 +471,9 @@ CREATE TABLE OfflineCategoriesData (
 
     return OfflineModel(beneficaries: beneficiaries);
   }
+
+
+
 
   Future<Map<String, dynamic>> getBeneficiaryData(int beneficiaryId) async {
     Database db = await openDatabase('invoice.db');
