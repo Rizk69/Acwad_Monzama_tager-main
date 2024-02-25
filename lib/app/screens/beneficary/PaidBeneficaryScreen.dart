@@ -189,12 +189,12 @@ class PaidBeneficaryScreen extends StatelessWidget {
                                                     : Container()
                                               ],
                                             ),
-                                            Text(
-                                              'المبلغ الدفع: ${paidBeneficaryModel.paidBeneficary!.date![index].paidMoney ?? ''}',
-                                              style: TextStyle(
-                                                  color: Theme.of(context)
-                                                      .primaryColor),
-                                            ),
+                                            // Text(
+                                            //   'المبلغ الدفع: ${paidBeneficaryModel.paidBeneficary!.date![index].paidMoney ?? ''}',
+                                            //   style: TextStyle(
+                                            //       color: Theme.of(context)
+                                            //           .primaryColor),
+                                            // ),
                                             Text(
                                               'المبلغ المتبقي المتاح: ${paidBeneficaryModel.paidBeneficary!.date![index].residual_money ?? ''}',
                                               style: TextStyle(

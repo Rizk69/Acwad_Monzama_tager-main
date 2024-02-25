@@ -72,8 +72,8 @@ Future<void> printInvoice(Invoice? data, context) async {
                 child: pw.Center(
                     child: pw.Text(
                         '${data?.data?.invoiceNo != -1 ? data?.data?.invoiceNo : 'تمت عملية البيع في وضع الاوفلاين'}',
-                        style: const pw.TextStyle(
-                          fontSize: 13,
+                        style: pw.TextStyle(
+                          fontSize: data?.data?.invoiceNo != -1 ? 13 : 11,
                         )))),
             pw.Directionality(
                 textDirection: pw.TextDirection.rtl,
@@ -103,7 +103,7 @@ Future<void> printInvoice(Invoice? data, context) async {
             pw.Directionality(
                 textDirection: pw.TextDirection.rtl,
                 child: pw.Center(
-                    child: pw.Text("${data?.data?.totalPriceInvoice ?? 0}",
+                    child: pw.Text("${data?.data?.totalPriceInvoice ?? ''}",
                         style: const pw.TextStyle(
                           fontSize: 13,
                         )))),
@@ -119,7 +119,7 @@ Future<void> printInvoice(Invoice? data, context) async {
             pw.Directionality(
                 textDirection: pw.TextDirection.rtl,
                 child: pw.Center(
-                    child: pw.Text("${data?.data?.residualMoney ?? 0}",
+                    child: pw.Text("${data?.data?.residualMoney ?? ''}",
                         style: const pw.TextStyle(
                           fontSize: 13,
                         )))),
@@ -135,7 +135,7 @@ Future<void> printInvoice(Invoice? data, context) async {
             pw.Directionality(
                 textDirection: pw.TextDirection.rtl,
                 child: pw.Center(
-                    child: pw.Text("${data?.data?.balance ?? 0}",
+                    child: pw.Text("${data?.data?.balance ?? ''}",
                         style: const pw.TextStyle(
                           fontSize: 13,
                         )))),

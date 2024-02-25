@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get/get.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:smartcard/app/models/ProductModel.dart';
 import 'package:smartcard/app/models/benficary_data_model.dart';
@@ -330,7 +329,7 @@ class NfcDataCubit extends Cubit<NfcDataState> {
           SnackBar(
             content: Text(
               'المبلغ المراد سحبه أكبر من المتاح. المبلغ المتاح: $residualMoney',
-              style: TextStyle(color: Colors.white),
+              style: const TextStyle(color: Colors.white),
             ),
             backgroundColor: Colors.red,
           ),
@@ -399,8 +398,7 @@ class NfcDataCubit extends Cubit<NfcDataState> {
         } else {
           emit(GetPaidBeneficaryErrorState('Failed to load data'));
         }
-      }
-      else {
+      } else {
         final db = await DatabaseHelper.instance.database;
         List<Map> results = await db.query(
           'OfflinePaidBeneficiary',
@@ -408,7 +406,7 @@ class NfcDataCubit extends Cubit<NfcDataState> {
           whereArgs: [beneficaryId],
         );
 
-        if (results.isNotEmpty){
+        if (results.isNotEmpty) {
           print(results);
           List<PaidBeneficaryData> paidBeneficaryDataList = results
               .map(
@@ -430,7 +428,6 @@ class NfcDataCubit extends Cubit<NfcDataState> {
       emit(GetPaidBeneficaryErrorState(e.toString()));
     }
   }
-
 
   // Future<void> getPaidBeneficary({required int beneficaryId}) async {
   //   try {
@@ -472,7 +469,6 @@ class NfcDataCubit extends Cubit<NfcDataState> {
   //     emit(GetPaidBeneficaryErrorState(e.toString()));
   //   }
   // }
-
 }
 
 class ProductBody {
