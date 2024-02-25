@@ -8,7 +8,6 @@ import 'package:smartcard/app/screens/beneficary/addinvoice.dart';
 import 'package:smartcard/app/utils/resource/color_manager.dart';
 import 'package:smartcard/app/widgets/backgrond_image.dart';
 import 'package:smartcard/main.dart';
-import 'package:get/get.dart';
 import 'nfc_contact_cubit/nfc_contact_cubit.dart';
 
 class PaidBeneficaryScreen extends StatelessWidget {
