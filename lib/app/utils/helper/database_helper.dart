@@ -105,7 +105,7 @@ CREATE TABLE OfflineBeneficiary (
 
     await db.execute('''
 CREATE TABLE OfflinePaidBeneficiary (
-  id INTEGER PRIMARY KEY,
+  id INTEGER ,
   date TEXT,
   cashOrCategory TEXT,
   name TEXT,
@@ -113,8 +113,8 @@ CREATE TABLE OfflinePaidBeneficiary (
   paidDone INTEGER,
   residual_money REAL,
   type INTEGER,
-  beneficiaryId INTEGER,
-  FOREIGN KEY (beneficiaryId) REFERENCES OfflineBeneficiary(id)
+  beneficary_id INTEGER,
+  FOREIGN KEY (beneficary_id) REFERENCES OfflineBeneficiary(id)
 );
 ''');
 
@@ -396,21 +396,21 @@ CREATE TABLE OfflineCategoriesData (
             'paidDone': paidBeneficiary.paidDone,
             'residual_money': paidBeneficiary.residual_money,
             'type': paidBeneficiary.type,
-            'beneficiaryId': beneficiary.id,
+            'beneficary_id': beneficiary.id,
           };
 
           List<Map> existingPaidBeneficiaryRecords = await db.query(
             'OfflinePaidBeneficiary',
-            where: 'id = ?',
-            whereArgs: [paidBeneficiary.id],
+            where: 'id = ? AND beneficary_id = ?',
+            whereArgs: [paidBeneficiary.id, beneficiary.id],
           );
 
           if (existingPaidBeneficiaryRecords.isNotEmpty) {
             await db.update(
               'OfflinePaidBeneficiary',
               paidBeneficiaryData,
-              where: 'id = ?',
-              whereArgs: [paidBeneficiary.id],
+              where: 'id = ? AND beneficary_id = ?',
+              whereArgs: [paidBeneficiary.id, beneficiary.id],
             );
             print('Paid Beneficiary data updated successfully');
           } else {
@@ -473,6 +473,22 @@ CREATE TABLE OfflineCategoriesData (
   }
 
 
+  Future<PaidBeneficary?> getPaidBeneficaryData(int beneficaryId) async {
+    final db = await database;
+    List<Map<String, dynamic>> result = await db.query(
+      'OfflinePaidBeneficiary',
+      where: 'beneficary_id = ?',
+      whereArgs: [beneficaryId],
+    );
+    print(result);
+    if (result.isNotEmpty) {
+      // Assuming that you have a method to convert the Map to PaidBeneficary object
+      return PaidBeneficary.fromJson(result.first);
+    }
+
+    return null;
+  }
+
 
 
   Future<Map<String, dynamic>> getBeneficiaryData(int beneficiaryId) async {
@@ -487,7 +503,7 @@ CREATE TABLE OfflineCategoriesData (
     List<Map> paidBeneficiaryData = await db.query(
       'OfflinePaidBeneficiary',
       columns: ['residual_money'],
-      where: 'beneficiaryId = ?',
+      where: 'id = ? AND beneficary_id = ?',
       whereArgs: [beneficiaryId],
       orderBy: 'date DESC',
       limit: 1,

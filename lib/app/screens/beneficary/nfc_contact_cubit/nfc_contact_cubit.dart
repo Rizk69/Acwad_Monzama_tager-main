@@ -399,15 +399,16 @@ class NfcDataCubit extends Cubit<NfcDataState> {
         } else {
           emit(GetPaidBeneficaryErrorState('Failed to load data'));
         }
-      } else {
+      }
+      else {
         final db = await DatabaseHelper.instance.database;
         List<Map> results = await db.query(
           'OfflinePaidBeneficiary',
-          where: 'beneficiaryId = ?',
+          where: 'beneficary_id = ?',
           whereArgs: [beneficaryId],
         );
 
-        if (results.isNotEmpty) {
+        if (results.isNotEmpty){
           print(results);
           List<PaidBeneficaryData> paidBeneficaryDataList = results
               .map(
@@ -420,13 +421,58 @@ class NfcDataCubit extends Cubit<NfcDataState> {
           );
           emit(GetPaidBeneficarySuccessState());
         } else {
+          print('No offline data available');
           emit(GetPaidBeneficaryErrorState('No offline data available'));
         }
       }
     } catch (e) {
+      print(e.toString());
       emit(GetPaidBeneficaryErrorState(e.toString()));
     }
   }
+
+
+  // Future<void> getPaidBeneficary({required int beneficaryId}) async {
+  //   try {
+  //     emit(GetPaidBeneficaryLoadingState());
+  //
+  //     bool isConnected = await ApiHelper().connectedToInternet();
+  //     if (isConnected) {
+  //       var paidBeneficaryUrl =
+  //       Uri.parse("${ApiHelper.getPaidBeneficary}$beneficaryId");
+  //       Map<String, String> headers = {'Accept': 'application/json'};
+  //
+  //       var response = await http.get(paidBeneficaryUrl, headers: headers);
+  //       if (response.statusCode == 200) {
+  //         var body = jsonDecode(response.body);
+  //         paidBeneficary = PaidBeneficaryModel.fromJson(body);
+  //         if (paidBeneficary.message == 'Success') {
+  //           emit(GetPaidBeneficarySuccessState());
+  //         } else {
+  //           emit(GetPaidBeneficaryErrorState(paidBeneficary.message.toString()));
+  //         }
+  //       } else {
+  //         emit(GetPaidBeneficaryErrorState('Failed to load data'));
+  //       }
+  //     } else {
+  //       // Fetch data from local database when internet is not connected
+  //       var offlineData = await DatabaseHelper.instance.getPaidBeneficaryData(beneficaryId);
+  //       if (offlineData != null) {
+  //         paidBeneficary = PaidBeneficaryModel(
+  //           message: 'Success',
+  //           paidBeneficary: offlineData,
+  //         );
+  //         emit(GetPaidBeneficarySuccessState());
+  //       } else {
+  //         emit(GetPaidBeneficaryErrorState('No offline data available'));
+  //       }
+  //     }
+  //   } catch (e) {
+  //     print(e.toString());
+  //     emit(GetPaidBeneficaryErrorState(e.toString()));
+  //   }
+  // }
+
 }
 
 class ProductBody {

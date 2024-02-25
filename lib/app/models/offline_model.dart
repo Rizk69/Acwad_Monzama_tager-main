@@ -92,6 +92,7 @@ class PaidBeneficaryData {
   dynamic residual_money;
   int? paidDone;
   int? type;
+  int? beneficary_id;
   List<CategoriesData>? products;
 
   PaidBeneficaryData(
@@ -102,6 +103,7 @@ class PaidBeneficaryData {
         this.uprove,
         this.paidMoney,
         this.residual_money,
+        this.beneficary_id,
         this.type,
         this.products,
         this.paidDone});
@@ -115,6 +117,7 @@ class PaidBeneficaryData {
     paidMoney = json['paid_money']??0;
     type = json['type']??0;
     residual_money = json['residual_money']??0;
+    beneficary_id = json['beneficary_id']??0;
     paidDone = json['paidDone']??0;
 
 
@@ -136,6 +139,7 @@ class PaidBeneficaryData {
     data['paid_money'] = paidMoney??0;
     data['residual_money'] = residual_money??0;
     data['paidDone'] = paidDone??0;
+    data['beneficary_id'] = beneficary_id??0;
     data['type'] = type??0;
 
     if (products != null) {
