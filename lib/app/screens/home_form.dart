@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nb_utils/nb_utils.dart';
-import 'package:smartcard/app/screens/beneficary/nfc_contact_cubit/nfc_contact_cubit.dart';
 import 'package:smartcard/app/screens/beneficary/nfcccontactscreen.dart';
 import 'package:smartcard/app/utils/resource/theme_manger/cubit/app_cubit.dart';
 import '../../main.dart';
@@ -194,7 +193,7 @@ class _HomeFormState extends State<HomeForm>
                                 ],
                               ),
                               body: Container(
-                                color: Colors.white,
+                                color: Theme.of(context).primaryColorDark,
                                 child: Center(
                                   child: SingleChildScrollView(
                                     child: Column(
@@ -207,9 +206,10 @@ class _HomeFormState extends State<HomeForm>
                                             height: MediaQuery.of(context)
                                                     .size
                                                     .height /
-                                                1.5,
-                                            child:
-                                                const NfcContactCardScreen()),
+                                                1.9,
+                                            child: NfcContactCardScreen(
+                                              isHome: true,
+                                            )),
                                       ],
                                     ),
                                   ),

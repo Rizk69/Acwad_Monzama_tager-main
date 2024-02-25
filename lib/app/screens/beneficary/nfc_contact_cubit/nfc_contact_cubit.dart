@@ -400,7 +400,6 @@ class NfcDataCubit extends Cubit<NfcDataState> {
           emit(GetPaidBeneficaryErrorState('Failed to load data'));
         }
       } else {
-        // Fetch data from OfflinePaidBeneficiary table first
         final db = await DatabaseHelper.instance.database;
         List<Map> results = await db.query(
           'OfflinePaidBeneficiary',
@@ -409,12 +408,13 @@ class NfcDataCubit extends Cubit<NfcDataState> {
         );
 
         if (results.isNotEmpty) {
+          print(results);
           List<PaidBeneficaryData> paidBeneficaryDataList = results
               .map(
                   (e) => PaidBeneficaryData.fromJson(e.cast<String, dynamic>()))
               .toList();
           paidBeneficary = PaidBeneficaryModel(
-            beneficary: null, // Adjust this according to your model structure
+            beneficary: null,
             message: 'Success',
             paidBeneficary: PaidBeneficary(date: paidBeneficaryDataList),
           );

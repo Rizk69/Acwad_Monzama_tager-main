@@ -79,8 +79,6 @@ CREATE TABLE ProductAllInvoice (
 );
   ''');
 
-
-
     await db.execute('''
 CREATE TABLE OfflineVendorData (
   id INTEGER PRIMARY KEY,
@@ -142,9 +140,6 @@ CREATE TABLE OfflineCategoriesData (
 
     await database; // إعادة فتح القاعدة لإنشائها من جديد
   }
-
-
-
 
   Future<void> saveInvoiceBeneficary(InvoiceBeneficary data) async {
     final db = await DatabaseHelper.instance.database;
@@ -213,6 +208,7 @@ CREATE TABLE OfflineCategoriesData (
       }
     }
   }
+
   Future<InvoiceBeneficary> fetchInvoiceBeneficary() async {
     final db = await DatabaseHelper.instance.database;
     List<Map> beneficaryDatas = await db.query('InvoiceBeneficaryData');
@@ -233,7 +229,6 @@ CREATE TABLE OfflineCategoriesData (
 
     return InvoiceBeneficary(data: invoiceBeneficaryDataList);
   }
-
 
   Future<void> saveDataToSQLite(InvoiceBeneficary data) async {
     final db = await DatabaseHelper.instance.database;
@@ -302,6 +297,7 @@ CREATE TABLE OfflineCategoriesData (
       }
     }
   }
+
   Future<InvoiceBeneficary> fetchDataFromSQLite() async {
     final db = await DatabaseHelper.instance.database;
     List<Map> beneficaryDatas = await db.query('AllInvoiceBeneficaryData');
@@ -323,148 +319,156 @@ CREATE TABLE OfflineCategoriesData (
     return InvoiceBeneficary(data: invoiceBeneficaryDataList);
   }
 
-
   Future<void> saveOfflineData(OfflineModel data) async {
     final db = await database;
 
-    // Insert or update vendor data
-    if (data.vendor != null) {
-      var vendorData = {
-        'id': data.vendor!.id,
-        'name': data.vendor!.name,
-        'phone': data.vendor!.phone,
-        'accountID': data.vendor!.accountID,
-        'balance': data.vendor!.balance,
-        'status': data.vendor!.status,
-        'email': data.vendor!.email,
-      };
+    try {
+      if (data.vendor != null) {
+        var vendorData = {
+          'id': data.vendor!.id,
+          'name': data.vendor!.name,
+          'phone': data.vendor!.phone,
+          'accountID': data.vendor!.accountID,
+          'balance': data.vendor!.balance,
+          'status': data.vendor!.status,
+          'email': data.vendor!.email,
+        };
 
-      List<Map> existingVendorRecords = await db.query(
-        'OfflineVendorData',
-        where: 'id = ?',
-        whereArgs: [data.vendor!.id],
-      );
-
-      if (existingVendorRecords.isNotEmpty) {
-        await db.update(
+        List<Map> existingVendorRecords = await db.query(
           'OfflineVendorData',
-          vendorData,
           where: 'id = ?',
           whereArgs: [data.vendor!.id],
         );
-      } else {
-        await db.insert('OfflineVendorData', vendorData);
+
+        if (existingVendorRecords.isNotEmpty) {
+          await db.update(
+            'OfflineVendorData',
+            vendorData,
+            where: 'id = ?',
+            whereArgs: [data.vendor!.id],
+          );
+          print('Vendor data updated successfully');
+        } else {
+          await db.insert('OfflineVendorData', vendorData);
+          print('Vendor data inserted successfully');
+        }
       }
-    }
 
-    // Insert or update beneficiaries and their related data
-    for (var beneficiary in data.beneficaries ?? []) {
-      var beneficiaryData = {
-        'id': beneficiary.id,
-        'fullName': beneficiary.fullName,
-        'mobile': beneficiary.mobile,
-        'balance': beneficiary.balance,
-        'cardID': beneficiary.cardID,
-        'cardpassword': beneficiary.cardpassword,
-        'nationalID': beneficiary.nationalID,
-      };
+      for (var beneficiary in data.beneficaries ?? []) {
+        var beneficiaryData = {
+          'id': beneficiary.id,
+          'fullName': beneficiary.fullName,
+          'mobile': beneficiary.mobile,
+          'balance': beneficiary.balance,
+          'cardID': beneficiary.cardID,
+          'cardpassword': beneficiary.cardpassword,
+          'nationalID': beneficiary.nationalID,
+        };
 
-      List<Map> existingBeneficiaryRecords = await db.query(
-        'OfflineBeneficiary',
-        where: 'id = ?',
-        whereArgs: [beneficiary.id],
-      );
-
-      if (existingBeneficiaryRecords.isNotEmpty) {
-        await db.update(
+        List<Map> existingBeneficiaryRecords = await db.query(
           'OfflineBeneficiary',
-          beneficiaryData,
           where: 'id = ?',
           whereArgs: [beneficiary.id],
         );
-      } else {
-        await db.insert('OfflineBeneficiary', beneficiaryData);
-      }
 
-      for (var paidBeneficiary in beneficiary.paidBeneficary ?? []) {
-        var paidBeneficiaryData = {
-          'id': paidBeneficiary.id,
-          'date': paidBeneficiary.date,
-          'cashOrCategory': paidBeneficiary.cashOrCategory,
-          'name': paidBeneficiary.name,
-          'paid_money': paidBeneficiary.paidMoney,
-          'paidDone': paidBeneficiary.paidDone,
-          'residual_money': paidBeneficiary.residual_money,
-          'type': paidBeneficiary.type,
-          'beneficiaryId': beneficiary.id,
-        };
-
-        List<Map> existingPaidBeneficiaryRecords = await db.query(
-          'OfflinePaidBeneficiary',
-          where: 'id = ?',
-          whereArgs: [paidBeneficiary.id],
-        );
-
-        if (existingPaidBeneficiaryRecords.isNotEmpty) {
+        if (existingBeneficiaryRecords.isNotEmpty) {
           await db.update(
+            'OfflineBeneficiary',
+            beneficiaryData,
+            where: 'id = ?',
+            whereArgs: [beneficiary.id],
+          );
+          print('Beneficiary data updated successfully');
+        } else {
+          await db.insert('OfflineBeneficiary', beneficiaryData);
+          print('Beneficiary data inserted successfully');
+        }
+
+        for (var paidBeneficiary in beneficiary.paidBeneficiaries ?? []) {
+          var paidBeneficiaryData = {
+            'id': paidBeneficiary.id,
+            'date': paidBeneficiary.date,
+            'cashOrCategory': paidBeneficiary.cashOrCategory,
+            'name': paidBeneficiary.name,
+            'paid_money': paidBeneficiary.paidMoney,
+            'paidDone': paidBeneficiary.paidDone,
+            'residual_money': paidBeneficiary.residual_money,
+            'type': paidBeneficiary.type,
+            'beneficiaryId': beneficiary.id,
+          };
+
+          List<Map> existingPaidBeneficiaryRecords = await db.query(
             'OfflinePaidBeneficiary',
-            paidBeneficiaryData,
             where: 'id = ?',
             whereArgs: [paidBeneficiary.id],
           );
-        } else {
-          await db.insert('OfflinePaidBeneficiary', paidBeneficiaryData);
-        }
 
-        for (var category in paidBeneficiary.products ?? []) {
-          var categoryData = {
-            'id': category.id,
-            'name': category.name,
-            'price': category.price,
-            'paidBeneficiaryId': paidBeneficiary.id,
-          };
-
-          List<Map> existingCategoryRecords = await db.query(
-            'OfflineCategoriesData',
-            where: 'id = ?',
-            whereArgs: [category.id],
-          );
-
-          if (existingCategoryRecords.isNotEmpty) {
+          if (existingPaidBeneficiaryRecords.isNotEmpty) {
             await db.update(
+              'OfflinePaidBeneficiary',
+              paidBeneficiaryData,
+              where: 'id = ?',
+              whereArgs: [paidBeneficiary.id],
+            );
+            print('Paid Beneficiary data updated successfully');
+          } else {
+            await db.insert('OfflinePaidBeneficiary', paidBeneficiaryData);
+            print('Paid Beneficiary data inserted successfully');
+          }
+
+          for (var category in paidBeneficiary.products ?? []) {
+            var categoryData = {
+              'id': category.id,
+              'name': category.name,
+              'price': category.price,
+              'paidBeneficiaryId': paidBeneficiary.id,
+            };
+
+            List<Map> existingCategoryRecords = await db.query(
               'OfflineCategoriesData',
-              categoryData,
               where: 'id = ?',
               whereArgs: [category.id],
             );
-          } else {
-            await db.insert('OfflineCategoriesData', categoryData);
+
+            if (existingCategoryRecords.isNotEmpty) {
+              await db.update(
+                'OfflineCategoriesData',
+                categoryData,
+                where: 'id = ?',
+                whereArgs: [category.id],
+              );
+              print('Category data updated successfully');
+            } else {
+              await db.insert('OfflineCategoriesData', categoryData);
+              print('Category data inserted successfully');
+            }
           }
         }
       }
+    } catch (e) {
+      print('Error saving offline data: $e');
     }
   }
 
   Future<OfflineModel?> getOfflineDataFromDB() async {
     final db = await database;
-    List<Map<String, dynamic>> beneficiariesData = await db.query('OfflineBeneficiary');
+    List<Map<String, dynamic>> beneficiariesData =
+        await db.query('OfflineBeneficiary');
 
     List<Beneficiary> beneficiaries = [];
     for (var beneficiaryData in beneficiariesData) {
-      List<PaidBeneficaryData> paidBeneficary = (jsonDecode(beneficiaryData['paidBeneficary']) as List)
-          .map((e) => PaidBeneficaryData.fromJson(e))
-          .toList();
+      List<PaidBeneficaryData> paidBeneficary =
+          (jsonDecode(beneficiaryData['paidBeneficary']) as List)
+              .map((e) => PaidBeneficaryData.fromJson(e))
+              .toList();
 
       Beneficiary beneficiary = Beneficiary.fromJson(beneficiaryData);
       beneficiary.paidBeneficary = paidBeneficary;
       beneficiaries.add(beneficiary);
     }
 
-    // Handle the vendor data similarly...
-    return OfflineModel(beneficaries:  beneficiaries);
+    return OfflineModel(beneficaries: beneficiaries);
   }
-
-
 
   Future<Map<String, dynamic>> getBeneficiaryData(int beneficiaryId) async {
     Database db = await openDatabase('invoice.db');
@@ -485,7 +489,7 @@ CREATE TABLE OfflineCategoriesData (
     );
 
     String beneficiaryName =
-    beneficiaryData.isNotEmpty ? beneficiaryData[0]['fullName'] : '';
+        beneficiaryData.isNotEmpty ? beneficiaryData[0]['fullName'] : '';
     num residualMoney = paidBeneficiaryData.isNotEmpty
         ? paidBeneficiaryData[0]['residual_money']
         : 0.0;
@@ -493,9 +497,8 @@ CREATE TABLE OfflineCategoriesData (
     return {'fullName': beneficiaryName, 'residual_money': residualMoney};
   }
 
-
-
-  Future<void> updateResidualMoney(int paidBeneficiaryId, double amountToSubtract) async {
+  Future<void> updateResidualMoney(
+      int paidBeneficiaryId, double amountToSubtract) async {
     Database db = await openDatabase('invoice.db');
     // First, get the current residual_money for the given paidBeneficiaryId
     List<Map> result = await db.query(
@@ -518,7 +521,6 @@ CREATE TABLE OfflineCategoriesData (
       );
     }
   }
-
 
   Future close() async {
     final db = await instance.database;

@@ -30,14 +30,14 @@ class AppCubit extends Cubit<ThemeState> {
 
       if (isConnected) {
         var offlineUrl = Uri.parse("${ApiHelper.offline}$vendorId");
+        print('"${ApiHelper.offline}$vendorId"');
         Map<String, String> headers = {'Accept': 'application/json'};
         var response = await http.get(offlineUrl, headers: headers);
 
         if (response.statusCode == 200) {
           var body = jsonDecode(response.body);
           offlineModel = OfflineModel.fromJson(body);
-
-          // Save the data to SQLite
+          print("${body}____________");
           await db.saveOfflineData(offlineModel);
 
           if (offlineModel.message == 'Success') {

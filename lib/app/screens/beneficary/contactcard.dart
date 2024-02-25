@@ -23,7 +23,7 @@ class _ContactCardState extends State<ContactCard> {
         ),
         backgroundColor: ColorManager.primary,
       ),
-      body: const NfcContactCardScreen(),
+      body: NfcContactCardScreen(isHome: true),
     );
   }
 }

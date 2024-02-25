@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:nfc_manager/nfc_manager.dart';
 import 'dart:typed_data';
@@ -7,12 +8,15 @@ import 'package:http/http.dart' as http;
 import 'package:smartcard/app/network/api_end_points.dart';
 import 'package:smartcard/app/utils/helper/database_helper.dart';
 import '../../models/BeneficaryNfcModel.dart';
+import '../auth/cubit/login_cubit.dart';
 import 'BeneficaryNfcScreen.dart';
 import '../../widgets/backgrond_image.dart';
 import 'nfc_contact_cubit/nfc_contact_cubit.dart';
 
 class NfcContactCardScreen extends StatefulWidget {
-  const NfcContactCardScreen({Key? key}) : super(key: key);
+  bool isHome;
+
+  NfcContactCardScreen({super.key, required this.isHome});
 
   @override
   _NfcContactCardScreenState createState() => _NfcContactCardScreenState();
@@ -21,13 +25,14 @@ class NfcContactCardScreen extends StatefulWidget {
 class _NfcContactCardScreenState extends State<NfcContactCardScreen> {
   ValueNotifier<dynamic> result = ValueNotifier(null);
   bool isNfcAvailable = false;
-  bool _isObscure = true;
 
   @override
   void initState() {
     super.initState();
-    _tagRead();
-    checkNfcAvailability();
+    if (widget.isHome) {
+      _tagRead();
+      checkNfcAvailability();
+    }
   }
 
   Future<void> checkNfcAvailability() async {
@@ -45,12 +50,6 @@ class _NfcContactCardScreenState extends State<NfcContactCardScreen> {
       });
       print('Error checking NFC availability: $e');
     }
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    NfcManager.instance.stopSession();
   }
 
   void _tagRead() {
@@ -272,114 +271,116 @@ class _NfcContactCardScreenState extends State<NfcContactCardScreen> {
 
   Widget showPasswordDialog(String cardId) {
     String password = '';
-    return Center(
-      child: Container(
-        margin: EdgeInsets.all(15),
-        height: MediaQuery.of(context).size.height / 3,
-        width: MediaQuery.of(context).size.width,
-        padding: EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          color: Theme.of(context).primaryColorDark,
-          borderRadius: BorderRadius.circular(15),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.5),
-              spreadRadius: 5,
-              blurRadius: 7,
-              offset: const Offset(0, 8),
-            ),
-          ],
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            Text(
-              'أدخل كلمة المرور',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 18.0,
-                fontWeight: FontWeight.bold,
-                color: Theme.of(context).primaryColor,
+    return BlocProvider(
+      create: (context) => LoginCubit(),
+      child: Center(
+        child: Container(
+          margin: EdgeInsets.all(15),
+          height: MediaQuery.of(context).size.height / 3,
+          width: MediaQuery.of(context).size.width,
+          padding: EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: Theme.of(context).primaryColorDark,
+            borderRadius: BorderRadius.circular(15),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.5),
+                spreadRadius: 5,
+                blurRadius: 7,
+                offset: const Offset(0, 8),
               ),
-            ),
-            SizedBox(height: 23),
-            TextFormField(
-              keyboardType: TextInputType.number,
-              obscureText: _isObscure,
-              onChanged: (value) {
-                password = value;
-              },
-              style: TextStyle(
-                color: Theme.of(context).primaryColorLight,
-              ),
-              decoration: InputDecoration(
-                enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(13),
-                    borderSide: BorderSide(
-                      color: Theme.of(context).primaryColorLight,
-                    )),
-                focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(13),
-                    borderSide: BorderSide(
-                      color: Theme.of(context).primaryColorLight,
-                    )),
-                fillColor: Theme.of(context).primaryColorLight,
-                labelText: 'كلمة المرور',
-                labelStyle: TextStyle(
-                  color: Theme.of(context).primaryColorLight,
-                ),
-                hintStyle: TextStyle(
-                  color: Theme.of(context).primaryColorLight,
-                ),
-                border: OutlineInputBorder(
-                  borderSide: BorderSide(
-                      color: Theme.of(context).primaryColorLight, width: 1),
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                suffixIcon: IconButton(
-                  icon: Icon(
-                    _isObscure ? Icons.visibility_off : Icons.visibility,
-                    color: Theme.of(context).primaryColorLight,
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      _isObscure = !_isObscure; // Toggle the visibility
-                    });
-                  },
+            ],
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              Text(
+                'أدخل كلمة المرور',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 18.0,
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).primaryColor,
                 ),
               ),
-            ),
-            Spacer(),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                TextButton(
-                  onPressed: () async {
-                    await _checkPasswordNfc(cardId, password);
-                  },
-                  child: Text(
-                    'موافق',
+              const SizedBox(height: 23),
+              BlocBuilder<LoginCubit, LoginState>(
+                builder: (context, state) {
+                  return TextFormField(
+                    keyboardType: TextInputType.number,
+                    obscureText: LoginCubit.get(context).isPassword,
+                    onChanged: (value) {
+                      password = value;
+                    },
                     style: TextStyle(
                       color: Theme.of(context).primaryColorLight,
                     ),
-                  ),
-                ),
-                SizedBox(width: 24.0),
-                TextButton(
-                  onPressed: () {
-                    checkNfcAvailability();
-                    Navigator.of(context).pop();
-                  },
-                  child: Text(
-                    'إلغاء',
-                    style: TextStyle(
-                      color: Theme.of(context).primaryColorLight,
+                    decoration: InputDecoration(
+                        enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(13),
+                            borderSide: BorderSide(
+                              color: Theme.of(context).primaryColorLight,
+                            )),
+                        focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(13),
+                            borderSide: BorderSide(
+                              color: Theme.of(context).primaryColorLight,
+                            )),
+                        fillColor: Theme.of(context).primaryColorLight,
+                        labelText: 'كلمة المرور',
+                        labelStyle: TextStyle(
+                          color: Theme.of(context).primaryColorLight,
+                        ),
+                        hintStyle: TextStyle(
+                          color: Theme.of(context).primaryColorLight,
+                        ),
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(
+                              color: Theme.of(context).primaryColorLight,
+                              width: 1),
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        suffixIcon: IconButton(
+                          icon: Icon(LoginCubit.get(context).suffixIcon),
+                          onPressed: () {
+                            LoginCubit.get(context).changePasswordIcon();
+                          },
+                        )),
+                  );
+                },
+              ),
+              Spacer(),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  TextButton(
+                    onPressed: () async {
+                      await _checkPasswordNfc(cardId, password);
+                    },
+                    child: Text(
+                      'موافق',
+                      style: TextStyle(
+                        color: Theme.of(context).primaryColorLight,
+                      ),
                     ),
                   ),
-                ),
-              ],
-            ),
-          ],
+                  SizedBox(width: 24.0),
+                  TextButton(
+                    onPressed: () {
+                      checkNfcAvailability();
+                      Navigator.of(context).pop();
+                    },
+                    child: Text(
+                      'إلغاء',
+                      style: TextStyle(
+                        color: Theme.of(context).primaryColorLight,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -395,7 +396,7 @@ class _NfcContactCardScreenState extends State<NfcContactCardScreen> {
             imageBackground(context),
             Scaffold(
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-              body: showPasswordDialog("336F7E86"),
+              body: showPasswordDialog("F3B2A486"),
 
               // isNfcAvailable
               //     ? Center(
