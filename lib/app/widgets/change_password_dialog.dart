@@ -90,88 +90,90 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog>
                 ),
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Text(
-                        'Change Password',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      SizedBox(height: 1.h),
-                      TextFormField(
-                        controller: passwordController,
-                        obscureText: LoginCubit.get(context).isPassword,
-                        decoration: InputDecoration(
-                          labelText: 'Current Password',
-                          border: const OutlineInputBorder(),
-                          filled: true,
-                          fillColor: Colors.grey[200],
-                          suffixIcon: IconButton(
-                            icon: Icon(LoginCubit.get(context).suffixIcon),
-                            onPressed: () {
-                              LoginCubit.get(context).changePasswordIcon();
-                            },
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 1.h),
-                      TextFormField(
-                        controller: newPasswordController,
-                        obscureText: LoginCubit.get(context).isPassword,
-                        decoration: InputDecoration(
-                          labelText: 'New Password',
-                          border: const OutlineInputBorder(),
-                          filled: true,
-                          fillColor: Colors.grey[200],
-                          suffixIcon: IconButton(
-                            icon: Icon(LoginCubit.get(context).suffixIcon),
-                            onPressed: () {
-                              LoginCubit.get(context).changePasswordIcon();
-                            },
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 1.h),
-                      TextFormField(
-                        controller: confirmNewPasswordController,
-                        obscureText: LoginCubit.get(context).isPassword,
-                        decoration: InputDecoration(
-                          labelText: 'Confirm New Password',
-                          border: const OutlineInputBorder(),
-                          filled: true,
-                          fillColor: Colors.grey[200],
-                          suffixIcon: IconButton(
-                            icon: Icon(LoginCubit.get(context).suffixIcon),
-                            onPressed: () {
-                              LoginCubit.get(context).changePasswordIcon();
-                            },
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 3.h),
-                      ElevatedButton(
-                        onPressed: () {
-                          LoginCubit.get(context).changePassword(
-                              currentPassword: passwordController.text,
-                              newPassword: newPasswordController.text,
-                              newPasswordConfirmation:
-                                  confirmNewPasswordController.text);
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: ColorManager.secondary,
-                        ),
-                        child: const Text(
-                          'Confirm',
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Text(
+                          'Change Password',
                           style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
-                      ),
-                    ],
+                        SizedBox(height: 1.h),
+                        TextFormField(
+                          controller: passwordController,
+                          obscureText: LoginCubit.get(context).isPassword,
+                          decoration: InputDecoration(
+                            labelText: 'Current Password',
+                            border: const OutlineInputBorder(),
+                            filled: true,
+                            fillColor: Colors.grey[200],
+                            suffixIcon: IconButton(
+                              icon: Icon(LoginCubit.get(context).suffixIcon),
+                              onPressed: () {
+                                LoginCubit.get(context).changePasswordIcon();
+                              },
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 1.h),
+                        TextFormField(
+                          controller: newPasswordController,
+                          obscureText: LoginCubit.get(context).isPassword,
+                          decoration: InputDecoration(
+                            labelText: 'New Password',
+                            border: const OutlineInputBorder(),
+                            filled: true,
+                            fillColor: Colors.grey[200],
+                            suffixIcon: IconButton(
+                              icon: Icon(LoginCubit.get(context).suffixIcon),
+                              onPressed: () {
+                                LoginCubit.get(context).changePasswordIcon();
+                              },
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 1.h),
+                        TextFormField(
+                          controller: confirmNewPasswordController,
+                          obscureText: LoginCubit.get(context).isPassword,
+                          decoration: InputDecoration(
+                            labelText: 'Confirm New Password',
+                            border: const OutlineInputBorder(),
+                            filled: true,
+                            fillColor: Colors.grey[200],
+                            suffixIcon: IconButton(
+                              icon: Icon(LoginCubit.get(context).suffixIcon),
+                              onPressed: () {
+                                LoginCubit.get(context).changePasswordIcon();
+                              },
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 3.h),
+                        ElevatedButton(
+                          onPressed: () {
+                            LoginCubit.get(context).changePassword(
+                                currentPassword: passwordController.text,
+                                newPassword: newPasswordController.text,
+                                newPasswordConfirmation:
+                                    confirmNewPasswordController.text);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: ColorManager.secondary,
+                          ),
+                          child: const Text(
+                            'Confirm',
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),

@@ -245,9 +245,13 @@ class NfcDataCubit extends Cubit<NfcDataState> {
       );
 
       offLineRequest.add(offLineRequestBody);
-      await saveOffLineRequestsToSharedPreferences(
-          data: data, context: context);
       await db.updateResidualMoney(paidBeneficaryId, calculateTotalPrice());
+      await db.subtractFromBalance(beneficaryId, calculateTotalPrice());
+      await saveOffLineRequestsToSharedPreferences(
+          paidMony: paidmoney.toString(),
+          data: data,
+          context: context,
+          beneficaryId: beneficaryId);
 
       emit(SendOnlineSuccessState());
     }
@@ -348,17 +352,26 @@ class NfcDataCubit extends Cubit<NfcDataState> {
       );
 
       offLineRequest.add(offLineRequestBody);
-      await saveOffLineRequestsToSharedPreferences(
-          data: data, context: context);
       await db.updateResidualMoney(paidBeneficaryId, paidMoney);
+      await db.subtractFromBalance(beneficaryId, paidMoney);
+      await saveOffLineRequestsToSharedPreferences(
+          paidMony: paidMoney.toString(),
+          data: data,
+          context: context,
+          beneficaryId: beneficaryId);
 
       emit(SendOnlineSuccessState());
     }
   }
 
   Future<void> saveOffLineRequestsToSharedPreferences(
-      {required InvoiceData data, required BuildContext context}) async {
+      {required InvoiceData data,
+      required BuildContext context,
+      required String paidMony,
+      required int beneficaryId}) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    final db = DatabaseHelper.instance;
+    var balance = await db.getBalance(beneficaryId);
     List<String> offLineRequestStrings =
         offLineRequest.map((e) => jsonEncode(e.toJson())).toList();
     await prefs
@@ -369,7 +382,9 @@ class NfcDataCubit extends Cubit<NfcDataState> {
           Invoice(
             data: data,
           ),
-          context);
+          context,
+          paidMony,
+          balance.toString());
     });
   }
 

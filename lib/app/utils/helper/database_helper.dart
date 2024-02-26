@@ -319,8 +319,6 @@ CREATE TABLE OfflineCategoriesData (
     return InvoiceBeneficary(data: invoiceBeneficaryDataList);
   }
 
-
-
   Future<void> saveOfflineData(OfflineModel data) async {
     final db = await database;
 
@@ -473,7 +471,6 @@ CREATE TABLE OfflineCategoriesData (
     return OfflineModel(beneficaries: beneficiaries);
   }
 
-
   Future<PaidBeneficary?> getPaidBeneficaryData(int beneficaryId) async {
     final db = await database;
     List<Map<String, dynamic>> result = await db.query(
@@ -489,8 +486,6 @@ CREATE TABLE OfflineCategoriesData (
 
     return null;
   }
-
-
 
   Future<Map<String, dynamic>> getBeneficiaryData(int beneficiaryId) async {
     Database db = await openDatabase('invoice.db');
@@ -522,7 +517,6 @@ CREATE TABLE OfflineCategoriesData (
   Future<void> updateResidualMoney(
       int paidBeneficiaryId, double amountToSubtract) async {
     Database db = await openDatabase('invoice.db');
-    // First, get the current residual_money for the given paidBeneficiaryId
     List<Map> result = await db.query(
       'OfflinePaidBeneficiary',
       columns: ['residual_money'],
@@ -534,13 +528,68 @@ CREATE TABLE OfflineCategoriesData (
       double currentResidualMoney = result[0]['residual_money'];
       double newResidualMoney = currentResidualMoney - amountToSubtract;
 
-      // Update the residual_money with the new value
       await db.update(
         'OfflinePaidBeneficiary',
         {'residual_money': newResidualMoney},
         where: 'id = ?',
         whereArgs: [paidBeneficiaryId],
       );
+    }
+  }
+
+  Future<void> subtractFromBalance(
+      int beneficiaryId, double amountToSubtract) async {
+    Database db = await openDatabase('invoice.db');
+
+    try {
+      List<Map> result = await db.query(
+        'OfflineBeneficiary',
+        columns: ['balance'],
+        where: 'id = ?',
+        whereArgs: [beneficiaryId],
+      );
+
+      if (result.isNotEmpty) {
+        double currentBalance = result[0]['balance'];
+        double newBalance = currentBalance - amountToSubtract;
+        print('Current Balance: $currentBalance, New Balance: $newBalance');
+
+        int updateCount = await db.update(
+          'OfflineBeneficiary',
+          {'balance': newBalance},
+          where: 'id = ?',
+          whereArgs: [beneficiaryId],
+        );
+
+        print('Number of rows updated: $updateCount');
+      } else {
+        print('No beneficiary found with ID: $beneficiaryId');
+      }
+    } catch (e) {
+      print('Error in subtractFromBalance:$e');
+    }
+  }
+
+  Future<double> getBalance(int beneficiaryId) async {
+    Database db = await openDatabase('invoice.db');
+
+    try {
+      List<Map> result = await db.query(
+        'OfflineBeneficiary',
+        columns: ['balance'],
+        where: 'id = ?',
+        whereArgs: [beneficiaryId],
+      );
+
+      if (result.isNotEmpty) {
+        double balance = result[0]['balance'];
+        return balance;
+      } else {
+        return 0.0; // You can choose an appropriate default value
+      }
+    } catch (e) {
+      print('Error in getBalance: $e');
+      return 0.0; // Return a default value in case of error
     }
   }
 

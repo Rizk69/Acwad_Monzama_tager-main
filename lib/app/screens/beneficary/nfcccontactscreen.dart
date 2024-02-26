@@ -23,6 +23,7 @@ class NfcContactCardScreen extends StatefulWidget {
 }
 
 class _NfcContactCardScreenState extends State<NfcContactCardScreen> {
+  TextEditingController passwordController = TextEditingController();
   ValueNotifier<dynamic> result = ValueNotifier(null);
   bool isNfcAvailable = false;
 
@@ -94,7 +95,7 @@ class _NfcContactCardScreenState extends State<NfcContactCardScreen> {
                   ? 'الكارت غير موجود'
                   : 'الكارت موجود'),
               backgroundColor:
-                  responseBody['exists'] == false ? Colors.red : Colors.green,
+              responseBody['exists'] == false ? Colors.red : Colors.green,
             ),
           );
           print('Server response: ${response.body}');
@@ -164,7 +165,7 @@ class _NfcContactCardScreenState extends State<NfcContactCardScreen> {
         print("Card password $password");
         Map<String, dynamic> responseBody = jsonDecode(response.body);
         BeneficaryNfcModel beneficaryNfcModel =
-            BeneficaryNfcModel.fromJson(responseBody);
+        BeneficaryNfcModel.fromJson(responseBody);
 
         if (response.statusCode == 200) {
           ScaffoldMessenger.of(context).hideCurrentSnackBar();
@@ -307,10 +308,11 @@ class _NfcContactCardScreenState extends State<NfcContactCardScreen> {
               BlocBuilder<LoginCubit, LoginState>(
                 builder: (context, state) {
                   return TextFormField(
+                    controller: passwordController,
                     keyboardType: TextInputType.number,
                     obscureText: LoginCubit.get(context).isPassword,
                     onChanged: (value) {
-                      password = value;
+                      passwordController.text = value;
                     },
                     style: TextStyle(
                       color: Theme.of(context).primaryColorLight,
@@ -355,7 +357,7 @@ class _NfcContactCardScreenState extends State<NfcContactCardScreen> {
                 children: [
                   TextButton(
                     onPressed: () async {
-                      await _checkPasswordNfc(cardId, password);
+                      await _checkPasswordNfc(cardId, passwordController.text);
                     },
                     child: Text(
                       'موافق',
@@ -396,7 +398,7 @@ class _NfcContactCardScreenState extends State<NfcContactCardScreen> {
             imageBackground(context),
             Scaffold(
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-              body: showPasswordDialog("336F7E86"),
+              body: showPasswordDialog("739BBB86"),
 
               // isNfcAvailable
               //     ? Center(

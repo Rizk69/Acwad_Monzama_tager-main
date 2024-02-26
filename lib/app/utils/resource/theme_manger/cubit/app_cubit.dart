@@ -91,7 +91,6 @@ class AppCubit extends Cubit<ThemeState> {
   }
 
   List<OffLineRequest> offLineRequest = [];
-
   Future<void> loadOffLineRequestsFromSharedPreferences() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     List<String>? offLineRequestStrings =
@@ -101,11 +100,14 @@ class AppCubit extends Cubit<ThemeState> {
           .map((e) => OffLineRequest.fromJson(jsonDecode(e)))
           .toList();
       print(offLineRequest.length);
+
       emit(GetRequestSuccessState());
     }
   }
 
   Future<void> sendPaidOfflineToOnline() async {
+    await loadOffLineRequestsFromSharedPreferences();
+
     List<Map<String, dynamic>> requestDataList = offLineRequest.map((request) {
       List<Map<String, dynamic>> productsList = request.products!
           .map((product) => {
@@ -131,16 +133,25 @@ class AppCubit extends Cubit<ThemeState> {
     try {
       var response = await http.post(sendPaidUrl, headers: headers, body: body);
       if (response.statusCode == 200) {
+        await clearOfflineData();
         emit(SendOfflineDataSuccessState());
-        SharedPreferences prefs = await SharedPreferences.getInstance();
-        await prefs.remove('offLineRequests');
       } else {
-        emit(SendOfflineDataErrorState("Erorr"));
+        emit(SendOfflineDataErrorState("Error"));
       }
     } catch (e) {
       print(e);
       emit(SendOfflineDataErrorState(e.toString()));
     }
+  }
+
+  Future<void> clearOfflineData() async {
+    offLineRequest = []; // Clear the list
+    await deleteOffLineRequests(); // Clear the SharedPreferences
+  }
+
+  Future<void> deleteOffLineRequests() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove('offLineRequests');
   }
 
   // sendPaidOfflineToOnline() async {

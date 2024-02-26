@@ -8,7 +8,8 @@ import 'package:printing/printing.dart';
 import 'package:smartcard/app/models/invoice.dart';
 import 'package:smartcard/app/utils/routes_manager.dart';
 
-Future<void> printInvoice(Invoice? data, context) async {
+Future<void> printInvoice(
+    Invoice? data, context, String paid, String balance) async {
   Navigator.pushNamedAndRemoveUntil(
       context, Routes.homeFormRoute, (route) => false);
 
@@ -103,7 +104,8 @@ Future<void> printInvoice(Invoice? data, context) async {
             pw.Directionality(
                 textDirection: pw.TextDirection.rtl,
                 child: pw.Center(
-                    child: pw.Text("${data?.data?.totalPriceInvoice ?? ''}",
+                    child: pw.Text(
+                        "${data?.data?.invoiceNo != -1 ? data?.data?.totalPriceInvoice : paid}",
                         style: const pw.TextStyle(
                           fontSize: 13,
                         )))),
@@ -135,7 +137,8 @@ Future<void> printInvoice(Invoice? data, context) async {
             pw.Directionality(
                 textDirection: pw.TextDirection.rtl,
                 child: pw.Center(
-                    child: pw.Text("${data?.data?.balance ?? ''}",
+                    child: pw.Text(
+                        "${data?.data?.invoiceNo != -1 ? data?.data?.balance : balance}",
                         style: const pw.TextStyle(
                           fontSize: 13,
                         )))),

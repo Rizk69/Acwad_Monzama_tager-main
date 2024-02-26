@@ -113,6 +113,9 @@ class PaidBeneficaryScreen extends StatelessWidget {
                                                         .uprove ==
                                                     1
                                             ? () async {
+                                                print(paidBeneficaryModel
+                                                        .beneficary?.id ??
+                                                    beneficaryId!);
                                                 if (paidBeneficaryModel
                                                         .paidBeneficary!
                                                         .date![index]
@@ -124,42 +127,42 @@ class PaidBeneficaryScreen extends StatelessWidget {
                                                     beneficaryName:
                                                         beneficaryName!,
                                                     contextscreen: context,
-                                                    index: index,
-                                                    vendorId: appStore.userId,
-                                                    paidBeneficaryId:
-                                                        paidBeneficaryModel
-                                                            .paidBeneficary!
-                                                            .date![index]
-                                                            .id!,
+                                              index: index,
+                                              vendorId: appStore.userId,
+                                              paidBeneficaryId:
+                                              paidBeneficaryModel
+                                                  .paidBeneficary!
+                                                  .date![index]
+                                                  .id!,
+                                              beneficaryId:
+                                              paidBeneficaryModel
+                                                  .beneficary
+                                                  ?.id ??
+                                                  beneficaryId!,
+                                            );
+                                          }
+                                          if (paidBeneficaryModel
+                                              .paidBeneficary!
+                                              .date![index]
+                                              .type ==
+                                              1) {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) => AddInvoice(
                                                     beneficaryId:
-                                                        paidBeneficaryModel
-                                                                .beneficary
-                                                                ?.id ??
-                                                            beneficaryId!,
-                                                  );
-                                                }
-                                                if (paidBeneficaryModel
-                                                        .paidBeneficary!
-                                                        .date![index]
-                                                        .type ==
-                                                    1) {
-                                                  Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                      builder: (context) => AddInvoice(
-                                                          beneficaryId:
-                                                              beneficaryId!,
-                                                          paidBeneficaryModel:
-                                                              paidBeneficaryModel,
-                                                          beneficaryName:
-                                                              paidBeneficaryModel
-                                                                      .beneficary
-                                                                      ?.fullName ??
-                                                                  beneficaryName!,
-                                                          index: index),
-                                                    ),
-                                                  );
-                                                }
+                                                    beneficaryId!,
+                                                    paidBeneficaryModel:
+                                                    paidBeneficaryModel,
+                                                    beneficaryName:
+                                                    paidBeneficaryModel
+                                                        .beneficary
+                                                        ?.fullName ??
+                                                        beneficaryName!,
+                                                    index: index),
+                                              ),
+                                            );
+                                          }
                                               }
                                             : null,
                                         child: Column(
